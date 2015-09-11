@@ -1,5 +1,7 @@
 # Blind copy trainer
 
+The trainer: [blind_copy_trainer.html][trainer].
+
 I've run across the following article on the web: [Want to Become a Better
 Writer? Copy the Work of Others!][copy] It's quite an interesting read. I'm
 especially interested in Stevenson's method. It says he could read a passage
@@ -47,8 +49,9 @@ where to put the commas and how to start new sentences without "and", "but",
 This is something I'd like to try but I haven't found any application which
 would work exactly as above, so I hacked a little javascript app to try it. You
 need to put the text into it but I've pre-filled it with a few short texts to
-test on. 
+test on.
 
+[trainer]: https://rawgit.com/ypsu/experiments/master/blind_copy_trainer/blind_copy_trainer.html
 [copy]: http://www.artofmanliness.com/2014/03/26/want-to-become-a-better-writer-copy-the-work-of-others/
 [loci]: https://en.wikipedia.org/wiki/Method_of_loci
 [workshop]: http://brainworkshop.sourceforge.net/
