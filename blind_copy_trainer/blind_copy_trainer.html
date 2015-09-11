@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Blind copy trainer</title>
+</head>
+<body>
+<noscript>Sorry this stuff needs JavaScript! :(</noscript>
+
+<p>
+	<input type="checkbox" id="sounds" checked/>Enable sounds
+</p>
+
+<form id="main_form" action="javascript:start_game();">
+	Select example text:
+	<select id="sample_selector" disabled onchange="load_sample_text()">
+		<option>loading...</option>
+		<option>Custom</option>
+	</select>
+	<br/>
+	<textarea id="input_text" cols="70" rows="15"
+		onkeypress="set_sample_selector_to_custom()">
+	</textarea>
+	<br/>
+	<input type="submit" id="start_button" value="loading..." disabled/>
+</form>
+
+<h2 id="snippet"></h2>
+
+<script>
+var enum_screen = {
+	menu: 0,
+	snippet_show: 1,
+	snippet_entry: 2,
+	game_finished: 3,
+};
+
+var gamestate = {
+	screen: enum_screen.menu,
+	snippets: [],
+	snippet_index: 0,
+	entry_index: 0,
+};
+
+s_fail = new Audio("data/fail.wav");
+s_pass = new Audio("data/pass.wav");
+s_win = new Audio("data/win.wav");
+window.onload = function() {
+	var selector = document.getElementById("sample_selector");
+	for (title in sample_texts) {
+		var option = document.createElement("option");
+		option.text = title;
+		selector.add(option);
+	}
+	selector.remove(0);
+	selector.selectedIndex = 1;
+	selector.disabled = false;
+	var start_button = document.getElementById("start_button");
+	start_button.value = "Start";
+	start_button.disabled = false;
+	load_sample_text();
+	snippet = document.getElementById("snippet");
+	sounds = document.getElementById("sounds");
+};
+
+function play_sound(s) {
+	if (sounds.checked) {
+		s.currentTime = 0;
+		s.play();
+	}
+}
+
+function load_sample_text() {
+	var sample = document.getElementById("sample_selector").value;
+	if (sample == "Custom")
+		return;
+	var input_text = document.getElementById("input_text");
+	input_text.value = sample_texts[sample].join("\n");
+};
+
+function set_sample_selector_to_custom() {
+	document.getElementById("sample_selector").selectedIndex = 0;
+};
+
+function start_game() {
+	gamestate.snippet_index = 0;
+	document.getElementById("main_form").style.display = "none";
+	input_text = document.getElementById("input_text");
+	gamestate.snippets = input_text.value.split("\n");
+	for (i in gamestate.snippets) {
+		gamestate.snippets[i] = gamestate.snippets[i].trim();
+	}
+	gamestate.snippets = gamestate.snippets.filter(function(v) {
+		return v != "";
+	});
+	show_snippet();
+};
+
+function show_snippet() {
+	if (gamestate.snippet_index == gamestate.snippets.length) {
+		gamestate.screen = enum_screen.game_finished;
+		var h = "<span style=\"color:green\">";
+		h += "Congrats, you've beaten the challenge! ";
+		h += "Press Escape to get back.</span>";
+		snippet.innerHTML = h;
+		return;
+	}
+
+	gamestate.screen = enum_screen.snippet_show;
+	gamestate.entry_index = 0;
+	s = gamestate.snippets[gamestate.snippet_index];
+	html = s.replace(/[\u00A0-\u9999<>\&]/gim, function(ch) {
+		return "&#" + ch.charCodeAt(0) + ";";
+	});
+	snippet.innerHTML = html;
+}
+
+document.onkeydown = function(evt) {
+	var evt = evt || window.event;
+	if (gamestate.screen == enum_screen.menu)
+		return true;
+	if (evt.keyCode == 27) {
+		snippet.innerHTML = "";
+		gamestate.screen = enum_screen.menu;
+		main_form = document.getElementById("main_form");
+		main_form.style.display = "";
+		return false;
+	}
+	return true;
+}
+
+document.onkeypress = function(evt) {
+	var evt = evt || window.event;
+	var ch = String.fromCharCode(evt.charCode);
+	var gs = gamestate;
+	if (gs.screen == enum_screen.menu)
+		return true;
+	if (evt.ctrlKey || evt.altKey || evt.charCode == 0) {
+		return true;
+	}
+	if (gs.screen == enum_screen.game_finished) {
+		return false;
+	}
+	if (gs.screen == enum_screen.snippet_show) {
+		if (gs.entry_index == 0 && ch.trim() == "")
+			return false;
+		snippet.innerHTML = "";
+		gs.screen = enum_screen.snippet_entry;
+	}
+	var nch = gs.snippets[gs.snippet_index][gs.entry_index];
+	if (ch != nch) {
+		show_snippet();
+		play_sound(s_fail);
+		return false;
+	}
+	gs.entry_index += 1;
+	if (gs.entry_index == gs.snippets[gs.snippet_index].length) {
+		gs.snippet_index += 1;
+		if (gs.snippet_index < gs.snippets.length)
+			play_sound(s_pass);
+		else
+			play_sound(s_win);
+		show_snippet();
+	}
+	return false;
+}
+
+var sample_texts = {};
+sample_texts["Tutorial"] = [
+	"after",
+	"start",
+	"type",
+	"every",
+	"word",
+	"you",
+	"see",
+	"even multiple words",
+	"Capital letters matter",
+	"Don't forget the punctuation!",
+	"Select a different level for larger challenge.",
+	"Or use a custom text -- separate the snippets via newlines.",
+	"This concludes the tutorial.",
+	"Good luck on your adventurous endeavor bounteous of thrills!",
+];
+sample_texts["Chinese anti-drone laser - Level 1 English News"] = [
+	"China creates a laser cannon.",
+	"This laser shoots at drones.",
+	"It locates them in 5 seconds.",
+	"People test the system.",
+	"It destroys 30 out of 30 drones.",
+	"It is better than helicopters.",
+	"Why is China afraid of drones?",
+	"Drones are small and cheap.",
+	"They are the perfect weapon for terrorists.",
+	"China wants to have the lasers at big events.",
+];
+sample_texts["Never Gonna Give You Up - Rick Astley"] = [
+	"We're no strangers to love,",
+	"You know the rules and so do I.",
+	"A full commitment's what I'm thinking of,",
+	"You wouldnt get this from any other guy.",
+	"",
+	"I just wanna tell you how I'm feeling,",
+	"Gotta make you understand...",
+	"",
+	"Never gonna give you up,",
+	"Never gonna let you down,",
+	"Never gonna run around and desert you.",
+	"Never gonna make you cry,",
+	"Never gonna say goodbye,",
+	"Never gonna tell a lie and hurt you.",
+	"",
+	"We've known each other for so long",
+	"Your heart's been aching",
+	"But you're too shy to say it.",
+	"Inside we both know what's been going on,",
+	"We know the game and we're gonna play it.",
+	"",
+	"Annnnnd if you ask me how I'm feeling,",
+	"Don't tell me you're too blind to see...",
+];
+sample_texts["Word crimes - Weird Al Yankovic"] = [
+	"Everybody shut up, WOO!",
+	"Everyone listen up!",
+	"Hey, hey, hey, uh",
+	"Hey, hey, hey",
+	"Hey, hey, hey",
+	"",
+	"If you can't write in the proper way",
+	"If you don't know how to conjugate",
+	"Maybe you flunked that class",
+	"And maybe now you find",
+	"That people mock you online",
+	"",
+	"Okay, now here's the deal",
+	"I'll try to educate ya",
+	"Gonna familiarize",
+	"You with the nomenclature",
+	"You'll learn the definitions",
+	"Of nouns and prepositions",
+	"Literacy's your mission",
+	"And that's why I think it's a",
+	"",
+	"Good time",
+	"To learn some grammar",
+	"Now, did I stammer",
+	"Work on that grammar",
+	"You should know when",
+	"It's \"less\" or it's \"fewer\"",
+	"Like people who were",
+	"Never raised in a sewer",
+	"",
+	"I hate these word crimes",
+	"Like I could care less",
+	"That means you do care",
+	"At least a little",
+	"Don't be a moron",
+	"You'd better slow down",
+	"And use the right pronoun",
+	"Show the world you're no clown",
+	"Everybody wise up!",
+	"",
+	"Say you got an \"I\",\"T\"",
+	"Followed by apostrophe, \"s\"",
+	"Now what does that mean?",
+	"You would not use \"it's\" in this case",
+	"As a possessive",
+	"It's a contraction",
+	"What's a contraction?",
+	"Well, it's the shortening of a word, or a group of words",
+	"By the omission of a sound or letter",
+	"",
+	"Okay, now here's some notes",
+	"Syntax you're always mangling",
+	"No \"x\" in \"espresso\"",
+	"Your participle's danglin'",
+	"But I don't want your drama",
+	"If you really wanna",
+	"Leave out that Oxford comma",
+	"Just keep in mind",
+	"",
+	"That \"be\", \"see\", \"are\", \"you\"",
+	"Are words, not letters",
+	"Get it together",
+	"Use your spellchecker",
+	"You should never",
+	"Write words using numbers",
+	"Unless you're seven",
+	"Or your name is Prince",
+	"",
+	"I hate these word crimes",
+	"You really need a",
+	"Full time proofreader",
+	"You dumb mouth-breather",
+	"Well, you should hire",
+	"Some cunning linguist",
+	"To help you distinguish",
+	"What is proper English",
+	"",
+	"One thing I ask of you",
+	"Time to learn your homophones is past due",
+	"Learn to diagram a sentence too",
+	"Always say \"to whom\"",
+	"Don't ever say \"to who\"",
+	"And listen up when I tell you this",
+	"I hope you never use quotation marks for emphasis",
+	"You finished second grade",
+	"I hope you can tell",
+	"If you're doing good or doing well",
+	"About better figure out the difference",
+	"Irony is not coincidence",
+	"And I thought that you'd gotten it through your skull",
+	"What's figurative and what's literal",
+	"Oh but, just now, you said",
+	"You literally couldn't get out of bed",
+	"That really makes me want to literally",
+	"Smack a crowbar upside your stupid head",
+	"",
+	"I read your e-mail",
+	"It's quite apparent",
+	"Your grammar's errant",
+	"You're incoherent",
+	"Saw your blog post",
+	"It's really fantastic",
+	"That was sarcastic (Oh, psych!)",
+	"'Cause you write like a spastic",
+	"",
+	"I hate these Word Crimes",
+	"Your prose is dopey",
+	"Think you should only",
+	"Write in emoji",
+	"Oh, you're a lost cause",
+	"Go back to pre-school",
+	"Get out of the gene pool",
+	"Try your best to not drool",
+	"",
+	"Never mind I give up",
+	"Really now I give up",
+	"Hey, hey, hey",
+	"Hey, hey, hey",
+	"Go Away!",
+];
+sample_texts["Brain - Simple English Wikipedia"] = [
+	"The brain is the part of the body,",
+	"which lets us, and other animals,",
+	"make sense of the world.",
+	"It gets input from sense organs,",
+	"and changes behaviour in response to this information.",
+	"In humans, the brain also controls our use of language,",
+	"and is capable of abstract thought.",
+	"The brain is the control centre of the whole body.",
+	"The brain is made up of a special type of cells.",
+	"They are connected with each other and with the nerves in our body.",
+	"In all animals the delicate brain is protected in some way.",
+	"In ourselves, and all vertebrates,",
+	"it is protected by the bones of the skull.",
+];
+sample_texts["Tongue twisters"] = [
+	"How can a clam cram in a clean cream can?",
+	"Send toast to ten tense stout saints' ten tall tents.",
+	"Coy knows pseudonoise codes.",
+	"Can you can a can as a canner can can a can?",
+	"Seth at Sainsbury's sells thick socks.",
+	"Roberta ran rings around the Roman ruins.",
+	"Clean clams crammed in clean cans.",
+	"Stupid superstition!",
+	"If Stu chews shoes, should Stu choose the shoes he chews?",
+	"Ann and Andy's anniversary is in April.",
+	"Four furious friends fought for the phone.",
+	"Plymouth sleuths thwart Luther's slithering.",
+	"Three short sword sheaths.",
+	"Green glass globes glow greenly.",
+	"The queen in green screamed.",
+	"I wish to wash my Irish wristwatch.",
+	"On a lazy laser raiser lies a laser ray eraser.",
+	"Nothing is worth thousands of deaths.",
+	"I wish you were a fish in my dish.",
+	"Five frantic frogs fled from fifty fierce fishes.",
+	"A pessimistic pest exists amidst us.",
+	"Round and round the rugged rock the ragged rascal ran.",
+]
+sample_texts["Huckleberry Finn - Mark Twain"] = [
+	"YOU don't know about me without you have read a book by the name of " +
+		"Adventures of Tom Sawyer; but that ain't no matter.",
+	"That book was made by Mr. Mark Twain, and he told the truth, mainly.",
+	"There was things which he stretched, but mainly he told the truth. " +
+		"That is nothing.",
+	"I never seen anybody but lied one time or another, without it was " +
+		"Aunt Polly, or the widow, or maybe Mary.",
+	"Aunt Polly--Tom's Aunt Polly, she is--and Mary, and the Widow " +
+		"Douglas is all told about in that book,",
+	"which is mostly a true book, with some stretchers, as I said before.",
+];
+sample_texts["Lorem ipsum"] = [
+	"Lorem ipsum dolor sit amet,",
+	"consectetur adipiscing elit,",
+	"sed do eiusmod tempor incididunt",
+	"ut labore et dolore magna aliqua.",
+	"Ut enim ad minim veniam,",
+	"quis nostrud exercitation ullamco",
+	"laboris nisi ut aliquip ex ea commodo consequat.",
+	"Duis aute irure dolor in reprehenderit",
+	"in voluptate velit esse cillum dolore",
+	"eu fugiat nulla pariatur.",
+	"Excepteur sint occaecat cupidatat non proident,",
+	"sunt in culpa qui officia deserunt mollit anim id est laborum.",
+];
+</script>
+
+</body>
+</html>
