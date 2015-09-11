@@ -8,4 +8,4 @@ word.
 The .zip file contains the source along with prebuilt Linux and Windows
 binaries.
 
-Development timelapse: http://youtu.be/gMtEd9tQiM8
+Development timelapse: https://youtu.be/gMtEd9tQiM8
