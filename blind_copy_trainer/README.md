@@ -50,5 +50,5 @@ need to put the text into it but I've pre-filled it with a few short texts to
 test on. 
 
 [copy]: http://www.artofmanliness.com/2014/03/26/want-to-become-a-better-writer-copy-the-work-of-others/
-[loci]: http://en.wikipedia.org/wiki/Method_of_loci
+[loci]: https://en.wikipedia.org/wiki/Method_of_loci
 [workshop]: http://brainworkshop.sourceforge.net/
