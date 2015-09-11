@@ -985,10 +985,10 @@ Also note that I'm not the first person to think these thoughts. Initially I was
 convinced that whenever I want to add a comment I shall make a new function. But
 I was never really sure when to do so. Should I do that almost everywhere?
 Should all my functions be only several lines of code? After a while a came
-across some tips from Braid's creator, Jonathan Blow on programming. This is one
-[his tips][blow]: "Use straight-line code instead of function calls for single
-instances." But the post which pushed me over to try this approach was [John
-Carmack's essay][carmack] on inlined code. It's a fun read, go read it!
+across some tips from Braid's creator, [Jonathan Blow on programming][blow].
+This is one his tips: "Use straight-line code instead of function calls for
+single instances." But the post which pushed me over to try this approach was
+[John Carmack's essay][carmack] on inlined code. It's a fun read, go read it!
 
 Now that I've actually tried this method I no longer feel obsessing about long
 functions, in fact I'll try to write longer functions elsewhere as well -- if
