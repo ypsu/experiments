@@ -994,5 +994,5 @@ Now that I've actually tried this method I no longer feel obsessing about long
 functions, in fact I'll try to write longer functions elsewhere as well -- if
 they make sense of course.
 
-[blow] http://www.magicaltimebean.com/2011/07/the-specific-solution-thoughts-on-jonathan-blows-how-to-program-independent-games/
-[carmack] http://number-none.com/blow/john_carmack_on_inlined_code.html
+[blow]: http://www.magicaltimebean.com/2011/07/the-specific-solution-thoughts-on-jonathan-blows-how-to-program-independent-games/
+[carmack]: http://number-none.com/blow/john_carmack_on_inlined_code.html
