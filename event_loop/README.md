@@ -76,13 +76,13 @@ that it is global, work hard to keep the information in it minimal.
 Next idea: There is nothing wrong with long functions. But still, people find it
 painful to read them. Why is that? If you go deep down there's only two main
 things the processor can do: compute and jump. The compute lines look like
-"x=<expr>" while the jump lines look like "if (x) { y }". I believe the most
+`x=<expr>` while the jump lines look like `if (x) { y }`. I believe the most
 pain comes from the jumping part. When you are reading y, you need to know about
-x. If you have "if (x){if(y){z}}" now you need about both x and y, also about
+x. If you have `if (x){if(y){z}}` now you need about both x and y, also about
 the fact that they occur at the same time and read z under those circumstances.
 This is a huge cognitive drain for my simple mind. People don't like such drain.
 So what is the typical advice? Create a new function and call that:
-"f(){if(y){z}} ... if(x){f()}". See? No deep conditionals anymore! I think
+`f(){if(y){z}} ... if(x){f()}`. See? No deep conditionals anymore! I think
 that's backwards. That just moves the complexity to a different place and when
 you try to read f() it's not entirely clear what's happening and if you do then
 you have a similar cognitive strain.
@@ -839,7 +839,7 @@ error:
 ```
 
 Now that we the full contents, we need to extract the jpg urls from it. We won't
-get fancy here. Let's just look at all the "url": "<foobar.com/blah.jpg>" type
+get fancy here. Let's just look at all the `"url": "<foobar.com/blah.jpg>"` type
 of pairs in the returned json via a simple strstr. And for the first 5 images
 let's start up a wget command in the background. Let's take a look at the
 current version of the getpics_state structure:

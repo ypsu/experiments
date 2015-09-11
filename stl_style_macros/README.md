@@ -8,7 +8,7 @@ Although I'm not too fond of too much generic programming but there are
 definitely cases when it comes in handy. This is best demonstrated by C++'s STL
 which is collection of utilities and classes for vectors, heaps, binary search
 trees, hash_maps, etc. for arbitrary types. They are quite easy to use. Just
-type vector<int> v; and you have a vector of integers and every operation on
+type `vector<int> v;` and you have a vector of integers and every operation on
 them is type-safe.
 
 The ease of use of the C++ templates comes with a cost though. In each
@@ -16,7 +16,7 @@ compilation unit you use a template function (aka in each .cc file) you will
 instantiate it (aka compile it). This will slow down the compilation and
 increase the size of the resulting .o files even though the duplicates are
 thrown out at the linking stage. This can add up to significant time when you
-are using a vector<int> throughout 1000+ files and trying to do a clean build
+are using a `vector<int>` throughout 1000+ files and trying to do a clean build
 not to mention the fact that even the tiniest change in the implementation will
 invalidate those 1000+ files which you then need to recompile.
 
