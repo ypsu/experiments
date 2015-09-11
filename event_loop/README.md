@@ -1,6 +1,6 @@
 # Event handling with long linear functions in C
 
-_Note_: This is rather a braindump. I have not cleaned up this text so my
+*Note*: This is rather a braindump. I have not cleaned up this text so my
 thoughts are jumping around and I'm repeating the same ideas at a lot of places.
 Be warned!
 
