@@ -976,10 +976,10 @@ though. Let's just abort if for some reason we get into a bad state:
 ```
 
 And now you have a 225 line length function. It's quite long. See the full
-source at the end for the full glory. But now it is your turn to look at that
-full listing and determine whether the longer function is easier to read or not.
-In fact as a practice I urge you to convert this code into a lot of small
-functions and compare the two codes to see which ones you prefer.
+source for the full glory. But now it is your turn to look at that full listing
+and determine whether the longer function is easier to read or not. In fact as a
+practice I urge you to convert this code into a lot of small functions and
+compare the two codes to see which ones you prefer.
 
 Also note that I'm not the first person to think these thoughts. Initially I was
 convinced that whenever I want to add a comment I shall make a new function. But
