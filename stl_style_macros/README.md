@@ -37,14 +37,20 @@ macros. Those macros are a bit awkward to write. For instance you have to
 terminate all lines via backslashes and have to be very careful when referencing
 macro arguments.
 
-glib is one of the most well known generic library for C. It actually contains
-examples for both approaches. GHashTable has pointers everywhere while GArray
-has macros everywhere.
+[glib] is one of the most well known generic library for C. It actually contains
+examples for both approaches. [GHashTable] has pointers everywhere while
+[GArray] has macros everywhere.
+
+[glib]: https://en.wikipedia.org/wiki/GLib
+[GHashTable]: https://developer.gnome.org/glib/2.30/glib-Hash-Tables.html
+[GArray]: https://developer.gnome.org/glib/2.30/glib-Arrays.html
 
 Even with the latter example of GArray, you have to pass the type to the macro
-even for simple functions like g_array_index. That looks like it isn't very type
-safe. Also, it means that each compilation unit contains the definitions of
+even for simple functions like [g_array_index]. That looks like it isn't very
+type safe. Also, it means that each compilation unit contains the definitions of
 those functions rather than quarantined into single separate translation unit.
+
+[g_array_index]: https://developer.gnome.org/glib/2.30/glib-Arrays.html#g-array-index
 
 So here comes the next idea which I don't see quite often on the forums. It is a
 bit more verbose so maybe that's why. It won't be as easy to use as STL, but
@@ -54,10 +60,12 @@ containers, you will get all type-specific compiler optimizations and each
 generic container will be defined only in a single translation unit. In fact it
 will be an error to specify it in multiple ones. Note that because of that you
 will need to statically link your binaries (which is a good idea just by itself)
-and enable link time optimization in your compiler for the optimizations to
-fully work. It is a bit non-obvious how to set up proper static linking with
+and enable [link time optimization][lto] in your compiler for the optimizations
+to fully work. It is a bit non-obvious how to set up proper static linking with
 proper symbol visibility and ensuring that the LTO works, but it is doable given
 enough research in the deep web archives.
+
+[lto]: https://gcc.gnu.org/wiki/LinkTimeOptimization
 
 I'll demonstrate my idea with two concepts. The first will be a generic
 resizeable array (the vector in C++) and the second will be a generic sort
