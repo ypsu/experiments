@@ -1,7 +1,5 @@
 # Together - a multiplayer jiggsaw puzzle game
 
-![screenshot](screenshot.png)
-
 A friend of mine and me wanted to solve jigsaw puzzles together over the
 internet. We've found a flash version of a multiplayer jigsaw puzzle solver but
 it lagged awfully bad and flash doesn't work well on my linux box. There was an
@@ -50,3 +48,5 @@ Loading is slow, please be patient. (I could make it faster, I'm just lazy.).
 
 The .zip file contains the source along with prebuilt Linux and Windows
 binaries.
+
+![screenshot](screenshot.png)

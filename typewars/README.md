@@ -1,7 +1,5 @@
 # Typewars
 
-![screenshot](screenshot.png)
-
 After playing a lot of The Typing of the Dead and TypeRacer I was interested
 whether it is possible create a multiplayer typing game where the goal of the
 players is to destroy each other with their typing skills instead of just racing
@@ -55,3 +53,5 @@ of sync).
 
 The .zip file contains the source along with prebuilt Linux and Windows
 binaries.
+
+![screenshot](screenshot.png)

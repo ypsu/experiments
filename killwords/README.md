@@ -1,7 +1,5 @@
 # Killwords
 
-![screenshot](screenshot.png)
-
 This is a keyboard killer game. When you start the game lots of words appear.
 All you have to is to type them. Type a word, press enter and profit. You can
 type free words. Free words are those which weren't typed by any player so far.
@@ -15,3 +13,5 @@ The .zip file contains the source along with prebuilt Linux and Windows
 binaries.
 
 Development timelapse: https://youtu.be/plQK9-sO5UE
+
+![screenshot](screenshot.png)
