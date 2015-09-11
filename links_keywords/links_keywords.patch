@@ -1,0 +1,42 @@
+--- a/session.c	2012-06-06 21:49:37.000000000 +0200
++++ b/session.c	2013-07-05 15:53:01.421036831 +0200
+@@ -2499,11 +2499,38 @@
+ }
+ 
+ /* this doesn't send referer */
+ void goto_url(struct session *ses, unsigned char *url)
+ {
+-	goto_url_f(ses, NULL, url, NULL, NULL, -1, 0, 1, 0);
++	FILE *f;
++	char newurl[MAX_STR_LEN];
++	static char keywords[MAX_STR_LEN];
++	if (keywords[0] == 0) {
++		const char *home = (const char*) links_home;
++		snprintf(keywords, MAX_STR_LEN, "%skeywords.txt", home ? home : "");
++	}
++
++	newurl[0] = 0;
++	f = fopen(keywords, "r");
++	if (f != NULL) {
++		char key[MAX_STR_LEN], entry[MAX_STR_LEN];
++		while (fscanf(f, "%s %s", key, entry) == 2) {
++			int keylen = strlen(key);
++			if (strncmp((const char*)url, key, keylen) != 0)
++				continue;
++			if (url[keylen] != 0 && url[keylen] != ' ')
++				continue;
++			const char *suffix = "";
++			if (url[keylen] != 0)
++				suffix = (const char*) url + keylen + 1;
++			snprintf(newurl, MAX_STR_LEN, "%s%s", entry, suffix);
++			break;
++		}
++		fclose(f);
++	}
++
++	goto_url_f(ses, NULL, newurl[0] != 0 ? (unsigned char*) newurl : url, NULL, NULL, -1, 0, 1, 0);
+ }
+ 
+ /* this one sends referer */
+ void goto_url_not_from_dialog(struct session *ses, unsigned char *url)
+ {
