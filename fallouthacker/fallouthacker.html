@@ -182,9 +182,9 @@ function render(wordset) {
 	var span = function(text, newset) {
 		return " <span " +
 			"style=\"border-style:solid; border-width:thin\" " +
-			"onclick=\"javascript:render(" + newset + ")\">" +
+			"onclick=\"javascript:render(" + newset + ")\">&nbsp;" +
 			text +
-			"</span>";
+			"&nbsp;</span>";
 	};
 	var ui = "Select the emphasised word for an optimal move ";
 	ui += "then click on the number the game returned.<br/><br/>";
