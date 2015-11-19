@@ -2,9 +2,10 @@
 
 The games called Fallout 3 and Fallout 4 have a hacking minigame which is quite
 hard for me to solve by hand, so I wrote a solver to alleviate the pain.
-Although there do exist solvers on the internet like [hackfallout.analogbit.com]
-but at the time of writing this document it did not solve the challenges in an
-optimal way. For example the game challenged me for
+Although there do exist solvers on the internet like
+http://hackfallout.analogbit.com but at the time of writing this document it did
+not solve the challenges in an optimal way. For example the game challenged me
+for
 
 ```
     arts find prod back grow held take used vats work bids made frag raid
