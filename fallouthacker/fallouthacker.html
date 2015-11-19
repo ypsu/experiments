@@ -181,7 +181,8 @@ function render(wordset) {
 	var wordlen = globals.words[0].length;
 	var span = function(text, newset) {
 		return " <span " +
-			"style=\"border-style:solid; border-width:thin\" " +
+			"style=\"border-style:solid; border-width:thin; " +
+			"cursor:pointer\" " +
 			"onclick=\"javascript:render(" + newset + ")\">&nbsp;" +
 			text +
 			"&nbsp;</span>";
