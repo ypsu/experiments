@@ -8,7 +8,7 @@ not solve the challenges in an optimal way. For example the game challenged me
 for
 
 ```
-    arts find prod back grow held take used vats work bids made frag raid
+arts find prod back grow held take used vats work bids made frag raid
 ```
 
 and that solver solved it for `raid` in 5 steps although the game only gives you
