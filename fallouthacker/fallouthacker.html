@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Fallout 3/4 hacker tool</title>
+</head>
+<body>
+<h1>Fallout 3/4 hacker tool</h1>
+
+<noscript>Sorry this stuff needs JavaScript! :(</noscript>
+
+<form id="main_form" action="javascript:start();">
+	Enter the space separated list of words:
+	<input type="text" id="input_words" size="80" autofocus/>
+	<input type="submit" id="start_button" value="Start"/>
+</form>
+
+<p id="ui" style="font-family:monospace"></p>
+
+<script>
+// This solver tries to solve the fallout hacking challenge in minimal number of
+// steps. It does this by trying every possible combination of moves and always
+// picks the move where the resulting subproblem is solved by the least amount
+// of remaining steps.
+//
+// The script's input is a list of words. n is the number of words. From this
+// point on we work on subsets of these words. Each subset is represented by its
+// binary representation, a number ranging from 0 (empty set), 2^n-1 (set
+// containing all words). The number 1 represents a set with only the first
+// word, number 6 a set with the 2nd and 3rd word and so on. Set manipulation is
+// then easy: e.g. you can just subtract numbers to remove elements from the
+// set.
+//
+// The algorithm's time complexity: O(2^n * n^3)
+// The algorithm's memory complexity: O(2^n)
+// Because of the exponential nature, we'll hard-limit the word count to a small
+// number (around 20). The game never challenges that many words anyways.
+
+var globals = {
+	// n: Number of words 
+	n: 0,
+	// words: List of the input words. All of them are the same length. All
+	// indices in this script reference the words from this array.
+	words: [],
+	// likeness[i*n + j]: Fallout's "likeness" factor between word i and j.
+	// The size of this array is n*n.
+	likeness: [],
+	// solutions[set]: It contains the number of rounds needed in the worst
+	// case assuming we select the word sel as the next step. It is encoded
+	// as follows: rounds*n + sel. The size of this array is 2^n.
+	solutions: [],
+}
+
+// Returns the first element from the bitset set. Basically this is equivalent
+// to the number of the trailing zeros in set's binary representation.
+function firstElem(set) {
+	// http://graphics.stanford.edu/~seander/bithacks.html#ZerosOnRightModLookup
+	var mod37bitposition = [
+		32, 0, 1, 26, 2, 23, 27, 0, 3, 16, 24, 30, 28, 11, 0, 13, 4, 7,
+		17, 0, 25, 22, 31, 15, 29, 10, 12, 6, 0, 21, 14, 9, 5, 20, 8,
+		19, 18
+	];
+	return mod37bitposition[(-set & set) % 37];
+}
+
+// This is a helper function to remove those words from set which do not have
+// like likeness to the word base.
+function eliminate(set, base, like) {
+	var remains = 0;
+	var it = set;
+	while (it > 0) {
+		var i = firstElem(it);
+		it -= 1 << i;
+		if (globals.likeness[base*globals.n+i] == like) {
+			remains |= 1 << i;
+		}
+	}
+	return remains;
+}
+
+function start() {
+	document.getElementById("ui").innerHTML = "Calculating solution.";
+	// Force redraw.
+	window.setTimeout(precalculate, 10);
+
+}
+
+// This function precalculates the solution and then starts the UI.
+function precalculate() {
+	// Read, parse and verify the input words.
+	globals.words = document.getElementById("input_words").value.split(" ");
+	n = globals.n = globals.words.length;
+	if (n == 0) {
+		return;
+	}
+	if (n > 20) {
+		ui.innerHTML = "Too many words. Only 20 is supported.";
+		return;
+	}
+	var wordlen = globals.words[0].length;
+	for (var wi in globals.words) {
+		var w = globals.words[wi];
+		if (w.length != wordlen) {
+			ui.innerHTML = "Inconsistent word lengths starting " +
+				"from \"" + w + "\".";
+			return;
+		}
+	}
+
+	// Calculate the fallout likeness factor for each word pair.
+	globals.likeness = [];
+	for (var i = 0; i < n*n; i++) {
+		var p = globals.words[Math.floor(i / n)];
+		var q = globals.words[i % n];
+		var like = 0;
+		for (var k = 0; k < wordlen; k++) {
+			if (p.charAt(k) == q.charAt(k)) {
+				like += 1;
+			}
+		}
+		globals.likeness[i] = like;
+	}
+
+	// Calculate the solution for each possible wordset. See
+	// globals.solutions' definition to understand what are we calculating
+	// here.
+	var sols = globals.solutions;
+	for (var wordset = 1; wordset < (1<<n); wordset++) {
+		// Handle base cases.
+		if (wordset == (1 << firstElem(wordset))) {
+			sols[wordset] = n + firstElem(wordset);
+			continue;
+		}
+
+		// selection: Which word do we choose as next step to solve the
+		// puzzle?
+		// We will choose the one which minimizes the solution steps.
+		var mn = 9999999;
+		// selit: Current selection's iterator.
+		var selit = wordset;
+		while (selit > 0) {
+			var selidx = firstElem(selit);
+			selit -= 1 << selidx;
+			// For each possible outcome/solution, find the worst
+			// (longest) one.
+			var mx = 0;
+			// solit: Solution iterator (solution is also an index).
+			var solit = wordset;
+			while (solit > 0) {
+				var solidx = firstElem(solit);
+				solit -= 1 << solidx;
+				// Calculate which words remain and how long is
+				// the remaining game when solidx is the
+				// solution.
+				var like = globals.likeness[selidx*n+solidx];
+				var rem = eliminate(wordset, selidx, like);
+				var result = n + sols[rem];
+				var depth = Math.floor(result / n);
+				if (depth*n + selidx > mx) {
+					mx = depth*n + selidx;
+				}
+			}
+			if (mx < mn) {
+				mn = mx;
+			}
+		}
+		sols[wordset] = mn;
+	}
+
+	render((1<<n) - 1);
+}
+
+// Render a gamestate with buttons into possible next gamestates.
+function render(wordset) {
+	if (wordset == 0) {
+		document.getElementById("ui").innerHTML = "Error. :(";
+		return;
+	}
+	var n = globals.n;
+	var words = globals.words;
+	var wordlen = globals.words[0].length;
+	var span = function(text, newset) {
+		return " <span " +
+			"style=\"border-style:solid; border-width:thin\" " +
+			"onclick=\"javascript:render(" + newset + ")\">" +
+			text +
+			"</span>";
+	};
+	var ui = "Select the emphasised word for an optimal move ";
+	ui += "then click on the number the game returned.<br/><br/>";
+	for (var i = 0; i < n; i++) {
+		if ((wordset & (1<<i)) == 0) {
+			ui += "<s>" + words[i] + "</s><br/>\n";
+			continue;
+		}
+		if (i == globals.solutions[wordset] % n) {
+			ui += "<em><u>" + words[i] + "</u></em>:";
+		} else {
+			ui += words[i] + ":";
+		}
+		ui += span("dud", wordset - (1<<i));
+		// Calculate which likeness values are possible to return. We
+		// calculate it by trying every possible word as solution.
+		var like = [];
+		var solit = wordset;
+		while (solit > 0) {
+			var sol = firstElem(solit);
+			solit -= 1 << sol;
+			like[globals.likeness[i*n+sol]] = true;
+		}
+		for (var j = 0; j <= wordlen; j++) {
+			if (like[j]) {
+				ui += span(j, eliminate(wordset, i, j));
+			}
+		}
+		ui += "<br/>";
+	}
+	document.getElementById("ui").innerHTML = ui;
+}
+</script>
+</body>
+</html>
