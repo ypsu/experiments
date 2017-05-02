@@ -1,0 +1,90 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<title>Kamehameha game</title></head>
+<body>
+<canvas id="c" width="1280" height="720" style="border:1px solid #000000;">
+</canvas>
+<p>Left player attacks with the left shift, right player attacks with the right
+shift. Let the strongest one win!</p>
+<script>
+
+// Global variables.
+var c = document.getElementById("c");
+var ctx = c.getContext("2d");
+var lefts = [];
+var rights = [];
+var leftattacked = false;
+var rightattacked = false;
+var explosions = [];
+var frame = 0;
+
+// Keyboard handler.
+document.addEventListener('keydown', function(event) {
+  if (event.keyCode == 16) {
+    if (event.location == 1) {
+      leftattacked = true;
+    } else if (event.location == 2) {
+      rightattacked = true;
+    }
+  }
+});
+
+// Game loop.
+function gameloop() {
+  // Update game state.
+  frame += 1;
+  if (leftattacked) {
+    leftattacked = false;
+    lefts.push(100);
+  }
+  if (rightattacked) {
+    rightattacked = false;
+    rights.push(1100);
+  }
+  for (var i = 0; i < lefts.length; i++) {
+    lefts[i] += 10;
+  }
+  for (var i = 0; i < rights.length; i++) {
+    rights[i] -= 10;
+  }
+  while (lefts.length >= 1 && rights.length >= 1 && lefts[0] >= rights[0]) {
+    explosions.push([(lefts[0] + rights[0]) / 2, frame])
+    lefts.shift();
+    rights.shift();
+  }
+  while (explosions.length >= 1 && explosions[0][1] + 20 < frame) {
+    explosions.shift();
+  }
+  if (lefts[0] >= 1100) {
+    ctx.fillText("LEFT WON", 500, 100);
+    return;
+  }
+  if (rights[0] < 100) {
+    ctx.fillText("RIGHT WON", 500, 100);
+    return;
+  }
+
+  // Render the frame.
+  ctx.clearRect(0, 0, 1200, 700);
+  ctx.fillStyle = "gray";
+  ctx.fillRect(50, 300, 50, 100);
+  ctx.fillRect(1100, 300, 50, 100);
+  ctx.fillStyle = "black";
+  for (var i = 0; i < lefts.length; i++) {
+    ctx.fillRect(lefts[i], 340, 10, 10);
+  }
+  for (var i = 0; i < rights.length; i++) {
+    ctx.fillRect(rights[i], 340, 10, 10);
+  }
+  ctx.fillStyle = "orange";
+  for (var i = 0; i < explosions.length; i++) {
+    ctx.fillRect(explosions[i][0], 330, 30, 30);
+  }
+  ctx.fillStyle = "black";
+  window.requestAnimationFrame(gameloop);
+}
+
+ctx.font = '50px arial'
+window.requestAnimationFrame(gameloop);
+</script>
+</body>
+</html>
