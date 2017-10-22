@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Dodgem</title>
+</head>
+<body>
+<canvas id='canvaselem' width='500' height='500' style='border:1px solid black;'></canvas>
+<p>
+Move around with wasd or the arrows. No goal other than stay alive as long as
+you can! Refresh via ctrl-R or F5 to retry.
+</p>
+</body>
+<script>
+var ctx = document.getElementById('canvaselem').getContext('2d');
+var canvaswidth = 500, canvasheight = 500;
+var keysdown = [];
+var frame = 1;
+var pos = [300, 20];
+var pellets = [];
+
+document.addEventListener('keydown', function(event) {
+  console.log(event.key);
+  keysdown[event.key] = frame;
+});
+document.addEventListener('keyup', function(event) {
+  keysdown[event.key] = 0;
+});
+
+function gameloop() {
+  if (keysdown['a'] > 0 || keysdown['ArrowLeft'] > 0) {
+    pos[0] -= 2;
+  }
+  if (keysdown['d'] > 0 || keysdown['ArrowRight'] > 0) {
+    pos[0] += 2;
+  }
+  if (keysdown['w'] > 0 || keysdown['ArrowUp'] > 0) {
+    pos[1] -= 2;
+  }
+  if (keysdown['s'] > 0 || keysdown['ArrowDown'] > 0) {
+    pos[1] += 2;
+  }
+  if (frame % 30 == 0) {
+    var pelletpos = [0, pos[1]]
+    pellets.push(pelletpos);
+  } else if (frame % 10 == 0) {
+    var pelletpos = [0, Math.floor(Math.random() * canvasheight)];
+    pellets.push(pelletpos);
+  }
+  for (var i = 0; i < pellets.length; i++) {
+    pellets[i][0] += 6;
+  }
+  ctx.clearRect(0, 0, canvaswidth, canvasheight);
+  ctx.fillStyle = 'gray'
+  ctx.fillRect(pos[0], pos[1], 20, 20);
+  ctx.fillStyle = 'blue'
+  for (var i = 0; i < pellets.length; i++) {
+    ctx.fillRect(pellets[i][0] - 3, pellets[i][1] - 3, 6, 6);
+  }
+  frame++;
+  for (var i = 0; i < pellets.length; i++) {
+    var xcollide = pos[0] <= pellets[i][0] && pellets[i][0] <= pos[0]+20;
+    var ycollide = pos[1] <= pellets[i][1] && pellets[i][1] <= pos[1]+20;
+    if (xcollide && ycollide) {
+      return;
+    }
+  }
+  window.requestAnimationFrame(gameloop);
+}
+
+gameloop();
+</script>
+</html>
