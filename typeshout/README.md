@@ -1,6 +1,6 @@
 # typeshout
 
-This is a silly, text based multiplayer game over websockets. Spacewar was its
+This is a silly, text based multiplayer game over websockets. Spaceteam was its
 original inspiration but I heavily simplified the gameplay. All players must
 reside within shouting distance for the game to make sense. Once the players
 connect to a server, they join a common lobby, negotiate the game settings and
