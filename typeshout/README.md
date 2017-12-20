@@ -11,7 +11,7 @@ cannot type its own words. If nobody types a player's word in the alloted time
 the whole group loses the game. The game ends when the players type in a given
 amount of words correctly.
 
-![screenshot](/sshot.png?raw=true)
+![screenshot](sshot.png?raw=true)
 
 ## Usage
 
