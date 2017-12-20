@@ -201,7 +201,7 @@ int main(int argc, char **argv) {
     switch (opt) {
     case 'w':
       file = fopen(optarg, "r");
-      check(file != NULL);
+      check(file != nil);
       break;
     case 'p':
       serverport = atoi(optarg);
