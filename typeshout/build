@@ -1,0 +1,2 @@
+#!/bin/bash
+clang -g -static -std=c99 -Wall -Wextra -Werror -o typeshout *.c

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<title>typeshout</title>
+<input id="cmd" autofocus maxlength="100">
+<pre id="pre">
+loading. note that this game needs javascript.
+</pre>
+<script>
+s = {
+  // conn represents the websocket to the server.
+  conn: null,
+  pre: null,
+  cmd: null,
+};
+
+function connerror() {
+  s.pre.innerHTML = "";
+}
+
+function connclose() {
+  s.pre.innerHTML = "error: connection closed\n" + s.pre.innerHTML;
+  cmd.parentNode.removeChild(cmd);
+}
+
+function connmessage(ev) {
+  s.pre.innerHTML = ev.data;
+}
+
+function onenter(ev) {
+  if (ev.keyCode != 13) return;
+  s.conn.send(s.cmd.value);
+  s.cmd.value = "";
+}
+
+function main() {
+  s.pre = document.getElementById("pre");
+  s.cmd = document.getElementById("cmd");
+  s.cmd.onkeypress = onenter;
+  s.conn = new WebSocket('ws://' + window.location.host + '/typeshoutclient');
+  s.conn.onclose = connclose;
+  s.conn.onerror = connerror;
+  s.conn.onmessage = connmessage;
+}
+
+main();
+</script>
