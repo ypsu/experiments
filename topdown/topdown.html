@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<head>
+  <title>topdown</title>
+  <meta charset="utf-8">
+</head>
+<body>
+  <img name="playerpic" src="player.png" style="display:none;"/>
+  <img name="zombiepic" src="zombie.png" style="display:none;"/>
+  <canvas id="canvas"></canvas>
+</body>
+<script>
+var g = {
+  canvas: null,
+  ctx: null,
+  width: 0,
+  height: 0,
+  lasttimestamp: 0,
+  keysheld: {},
+  gameover: false,
+  player: {
+    v: 300,
+    x: 300,
+    y: 200,
+    dir: 0,
+    bobv: 100,
+    bobheight: 0,
+    bobmaxh: 10,
+    bobdir: 0,
+    lastshot: 0,
+  },
+  smoketrail: [],
+  bullets: [],
+  zombies: [],
+};
+function keydown(event) {
+  g.keysheld[event.key] = true;
+}
+function keyup(event) {
+  g.keysheld[event.key] = false;
+}
+function loop(timestamp) {
+  // run the simulation.
+  // dt is delta time in seconds.
+  dt = (timestamp - g.lasttimestamp) / 1000.0;
+  if (dt > 0.04) dt = 0.04;
+  g.lasttimestamp = timestamp;
+  if (!g.gameover) {
+    var moved = false;
+    if (g.keysheld['ArrowUp']) {
+      g.player.y -= g.player.v * dt;
+      g.player.dir = 3;
+      moved = true;
+    }
+    if (g.keysheld['ArrowDown']) {
+      g.player.y += g.player.v * dt;
+      g.player.dir = 0;
+      moved = true;
+    }
+    if (g.keysheld['ArrowLeft']) {
+      g.player.x -= g.player.v * dt;
+      g.player.dir = 1;
+      moved = true;
+    }
+    if (g.keysheld['ArrowRight']) {
+      g.player.x += g.player.v * dt;
+      g.player.dir = 2;
+      moved = true;
+    }
+    if (!moved) g.player.bobdir = 0;
+    if (moved && g.player.bobheight == 0) {
+      g.player.bobdir = 1;
+      trail = {
+        x: g.player.x,
+        y: g.player.y + 50,
+        r: 6,
+        v: 10,
+      };
+      g.smoketrail.push(trail);
+    }
+    if (g.player.bobdir == 1) {
+      g.player.bobheight += g.player.bobv * dt;
+      if (g.player.bobheight > g.player.bobmaxh) {
+        g.player.bobheight = g.player.bobmaxh;
+        g.player.bobdir = 0;
+      }
+    } else if (g.player.bobheight > 0) {
+      g.player.bobheight -= g.player.bobv * dt;
+      if (g.player.bobheight < 0) g.player.bobheight = 0;
+    }
+    if (g.zombies.length < 4) {
+      for (var i = 0; i < 4; i++) {
+        var z = {
+          x: i % 2 ? 100 : g.width - 100,
+          y: Math.floor(i / 2) ? 100 : g.height - 100,
+          v: 150,
+        };
+        var blocked = false;
+        for (var j = 0; !blocked && j < g.zombies.length; j++) {
+          var zz = g.zombies[j];
+          var dist = Math.hypot(z.x - zz.x, z.y - zz.y);
+          if (dist < 100) blocked = true;
+        }
+        if (!blocked) {
+          g.zombies.push(z);
+          break;
+        }
+      }
+    }
+    for (var i = 0; i < g.zombies.length; i++) {
+      var z = g.zombies[i];
+      var zvx = 0, zvy = 0;
+      var rpx = Math.round(g.player.x / 25);
+      var rpy = Math.round(g.player.y / 25);
+      var rzx = Math.round(z.x / 25);
+      var rzy = Math.round(z.y / 25);
+      if (rpx < rzx) {
+        zvx = -1;
+      } else if (rpx > rzx) {
+        zvx = 1;
+      } else if (rpy < rzy) {
+        zvy = -1;
+      } else if (rpy > rzy) {
+        zvy = 1;
+      }
+      z.x += zvx * z.v * dt;
+      z.y += zvy * z.v * dt;
+      var dist = Math.hypot(g.player.x - z.x, g.player.y - z.y);
+      if (dist < 100) {
+        g.gameover = true;
+      }
+    }
+    if (g.keysheld[' '] && timestamp - g.player.lastshot > 300) {
+      g.player.lastshot = timestamp;
+      bullet = {
+        x: g.player.x,
+        y: g.player.y,
+        vx: 0,
+        vy: 0,
+        lastsmoke: 0,
+      };
+      if (g.player.dir == 0) {
+        bullet.y += 50;
+        bullet.vy = 500;
+      } else if (g.player.dir == 1) {
+        bullet.x -= 50;
+        bullet.vx = -500;
+      } else if (g.player.dir == 2) {
+        bullet.x += 50;
+        bullet.vx = 500;
+      } else if (g.player.dir == 3) {
+        bullet.y -= 50;
+        bullet.vy = -500;
+      }
+      g.bullets.push(bullet);
+    }
+    for (var i = 0; i < g.bullets.length; i++) {
+      var b = g.bullets[i];
+      b.x += b.vx * dt;
+      b.y += b.vy * dt;
+      b.lastsmoke += dt;
+      if (b.lastsmoke > 0.05) {
+        b.lastsmoke = 0;
+        trail = {
+          x: b.x,
+          y: b.y,
+          r: 4,
+          v: 8,
+        };
+        g.smoketrail.push(trail);
+      }
+      for (var j = 0; j < g.zombies.length; j++) {
+        var z = g.zombies[j];
+        var dist = Math.hypot(b.x - z.x, b.y - z.y);
+        if (dist < 50) {
+          g.bullets.splice(i--, 1);
+          g.zombies.splice(j--, 1);
+        }
+      }
+    }
+    for (var i = 0; i < g.bullets.length; i++) {
+      var b = g.bullets[i];
+      if (b.x < 0 || b.y < 0 || b.x > g.width || b.y > g.height) {
+        g.bullets.shift();
+      }
+    }
+    for (var i = 0; i < g.smoketrail.length; i++) {
+      var smoke = g.smoketrail[i];
+      smoke.r -= smoke.v * dt;
+    }
+    while (g.smoketrail.length > 0 && g.smoketrail[0].r < 0) {
+      g.smoketrail.shift();
+    }
+  }
+
+  // draw the scene.
+  g.ctx.fillStyle = "lightgreen";
+  g.ctx.fillRect(0, 0, g.width, g.height);
+  g.ctx.stroke();
+  g.ctx.fillStyle = "darkgray";
+  for (var i = 0; i < g.smoketrail.length; i++) {
+    smoke = g.smoketrail[i];
+    r = smoke.r;
+    g.ctx.fillRect(smoke.x - r, smoke.y - r, 2 * r, 2 * r);
+  }
+  var px = g.player.x - 50;
+  var py = g.player.y - 50 - g.player.bobheight;
+  g.ctx.drawImage(playerpic, g.player.dir * 100, 0, 100, 100, px, py, 100, 100);
+  for (var i = 0; i < g.zombies.length; i++) {
+    var z = g.zombies[i];
+    var d = g.player.x < z.x ? 1 : 2;
+    var zx = z.x - 50;
+    var zy = z.y - 50;
+    g.ctx.drawImage(zombiepic, d * 100, 0, 100, 100, zx, zy, 100, 100);
+  }
+  g.ctx.fillStyle = "gray";
+  g.ctx.fillRect(g.player.x - 25, g.player.y + 50, 50, 3);
+  g.ctx.fillStyle = "darkblue";
+  for (var i = 0; i < g.bullets.length; i++) {
+    var b = g.bullets[i];
+    var r = 5;
+    g.ctx.fillRect(b.x - r, b.y - r, 2 * r, 2 * r);
+  }
+  if (g.gameover) {
+    g.ctx.fillStyle = "black";
+    g.ctx.fillText("Game over!", 10, g.height - 10);
+  }
+  window.requestAnimationFrame(loop);
+}
+function main() {
+  g.canvas = document.getElementById("canvas");
+  g.ctx = g.canvas.getContext("2d");
+  g.width = window.innerWidth - 20;
+  g.height = window.innerHeight - 20;
+  g.canvas.width = g.width;
+  g.canvas.height = g.height;
+  document.addEventListener("keydown", keydown);
+  document.addEventListener("keyup", keyup);
+  loop(0);
+}
+main();
+</script>
