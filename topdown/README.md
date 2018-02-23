@@ -6,4 +6,4 @@ at https://youtu.be/rSwe49Kw0gQ.
 
 The game is at https://rawgit.com/ypsu/experiments/master/topdown/topdown.html.
 
-Use arrow keys to move around, use space to shoot.
+Use arrow keys or wasd to move around, use space to shoot.

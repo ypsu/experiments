@@ -46,22 +46,22 @@ function loop(timestamp) {
   g.lasttimestamp = timestamp;
   if (!g.gameover) {
     var moved = false;
-    if (g.keysheld['ArrowUp']) {
+    if (g.keysheld['ArrowUp'] || g.keysheld['w']) {
       g.player.y -= g.player.v * dt;
       g.player.dir = 3;
       moved = true;
     }
-    if (g.keysheld['ArrowDown']) {
+    if (g.keysheld['ArrowDown'] || g.keysheld['s']) {
       g.player.y += g.player.v * dt;
       g.player.dir = 0;
       moved = true;
     }
-    if (g.keysheld['ArrowLeft']) {
+    if (g.keysheld['ArrowLeft'] || g.keysheld['a']) {
       g.player.x -= g.player.v * dt;
       g.player.dir = 1;
       moved = true;
     }
-    if (g.keysheld['ArrowRight']) {
+    if (g.keysheld['ArrowRight'] || g.keysheld['d']) {
       g.player.x += g.player.v * dt;
       g.player.dir = 2;
       moved = true;
@@ -89,9 +89,10 @@ function loop(timestamp) {
     }
     if (g.zombies.length < 4) {
       for (var i = 0; i < 4; i++) {
+        var r = Math.floor(Math.random() * 4);
         var z = {
-          x: i % 2 ? 100 : g.width - 100,
-          y: Math.floor(i / 2) ? 100 : g.height - 100,
+          x: r % 2 ? 100 : g.width - 100,
+          y: Math.floor(r / 2) ? 100 : g.height - 100,
           v: 150,
         };
         var blocked = false;
