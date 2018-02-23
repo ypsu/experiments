@@ -5,3 +5,5 @@ hour or two. I've recorded a screencast of making this game which is available
 at https://youtu.be/rSwe49Kw0gQ.
 
 The game is at https://rawgit.com/ypsu/experiments/master/topdown/topdown.html.
+
+Use arrow keys to move around, use space to shoot.
