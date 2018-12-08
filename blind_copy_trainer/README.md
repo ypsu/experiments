@@ -51,7 +51,7 @@ would work exactly as above, so I hacked a little javascript app to try it. You
 need to put the text into it but I've pre-filled it with a few short texts to
 test on.
 
-[trainer]: https://rawgit.com/ypsu/experiments/master/blind_copy_trainer/blind_copy_trainer.html
+[trainer]: https://raw.githack.com/ypsu/experiments/master/blind_copy_trainer/blind_copy_trainer.html
 [copy]: http://www.artofmanliness.com/2014/03/26/want-to-become-a-better-writer-copy-the-work-of-others/
 [loci]: https://en.wikipedia.org/wiki/Method_of_loci
 [workshop]: http://brainworkshop.sourceforge.net/

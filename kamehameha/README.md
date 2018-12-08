@@ -9,4 +9,4 @@ other player rapidly, trying to overcome their rockets and finally hit them. Use
 left and right shift to shoot the rockets.
 
 You can find the game at
-https://rawgit.com/ypsu/experiments/master/kamehameha/kamehameha.html.
+https://raw.githack.com/ypsu/experiments/master/kamehameha/kamehameha.html.

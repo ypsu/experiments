@@ -11,4 +11,4 @@ projects with changing requirements.
 The result: [mult.pdf][result].
 
 [litprog]: https://en.wikipedia.org/wiki/Literate_programming
-[result]: https://rawgit.com/ypsu/experiments/master/mult/mult.pdf
+[result]: https://raw.githack.com/ypsu/experiments/master/mult/mult.pdf

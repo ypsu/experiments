@@ -6,4 +6,4 @@ named it "Sort the lines!".
 
 The game: [sort_the_lines.html][game]
 
-[game]: https://rawgit.com/ypsu/experiments/master/sort_the_lines/sort_the_lines.html
+[game]: https://raw.githack.com/ypsu/experiments/master/sort_the_lines/sort_the_lines.html

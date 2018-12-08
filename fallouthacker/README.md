@@ -19,4 +19,4 @@ and pictures.
 
 It is available here: [fallouthacker.html][link].
 
-[link]: https://rawgit.com/ypsu/experiments/master/fallouthacker/fallouthacker.html
+[link]: https://raw.githack.com/ypsu/experiments/master/fallouthacker/fallouthacker.html
