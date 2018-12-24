@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='utf-8'>
+<title>aoc2018day23part2 visualization</title>
+</head>
+<body>
+<h1>Advent of code 2018 day 23 part 2 visualization</h1>
+
+<p>There's a lot of either incorrect or very complicated (ILP) solutions to part
+2 even though the correct solution is quite straightforward and very fast (runs
+in a few ms in C, few seconds in javascript). I'll describe it through a 2D
+version of the problem. The 3d version is the same but the splitting part
+creates 8 cubes rather than 4 squares.<p>
+
+<p>Although I'm not 100% sure, I think the algorithm is O(n^2 * log^k(d)) where
+d is the width or height of the space where the nanobots live and k is the
+spatial dimension (2 for 2D, 3 for 3D). I omit the details from here but there's
+more explanation at <a
+href='https://www.reddit.com/r/adventofcode/comments/a8sqov/help_day_23_part_2_any_provably_correct_fast/ecf5vcm'>
+https://www.reddit.com/r/adventofcode/comments/a8sqov/help_day_23_part_2_any_provably_correct_fast/ecf5vcm</a>.
+The complexity explanation is wrong, I think it needs at most log^k(d) steps for
+the single bot case but it's still not too much. Just see how the search behaves
+with one bot to see how it converges. I'm not sure if it's really log^k(d)
+though, just a hunch.</p>
+
+<p>The idea is to have 'searchsquares'. Each searchsquare has several
+properties:</p>
+
+<ul>
+  <li>bottom left corner of the square</li>
+  <li>size of the square (always power of two)</li>
+  <li>number of bots that have the square in range (in other words: number of
+    bots whose range touches the square)</li>
+  <li>distance to origin</li>
+</ul>
+
+<p>Then the algorithm is the following:<p>
+
+<pre>
+Create a searchsquare that covers all the bots.
+Push that onto the work queue.
+Loop {
+  Pop a searchsquare from the queue that is:
+    a) covers most bots,
+    b) in case of ties is closest to origin,
+    c) in case of ties is the smallest.
+  If the popped searchsquare has a size of 1 {
+    Print the popped searchsquare's distance to origin.
+    Exit.
+  }
+  Split it into 4 smaller searchsquares.
+  Count the number of nanobots in each.
+  Push the 4 smaller searchsquares to the work queue.
+}
+</pre>
+
+<p>Here's a javascript demo that demonstrates how the algorithm's searchsquares
+slowly find the point of interest. It consists of two parts. In part 1 you add
+all the bots, then in part 2 you observe the simulation.</p>
+
+<p>Part 1 controls:</p>
+<ul>
+  <li>left click: select bot</li>
+  <li>right click: put down a bot</li>
+  <li>middle click: adjust bot range</li>
+  <li>shift left click: delete a bot</li>
+</ul>
+
+<p>In part 2 (the simulation part) all you need to is to spam the Step button
+and observe the behavior. In each step the algorithm pops the front of the
+queue, replaces it with 4 small squares (it omits empty squares though) and then
+highlights the new top of the queue. The top of the queue is always the
+searchsquare with most bots (or closest to origin in case of ties). You can
+click on the canvas to highlight other searchsquares to see where are they in
+the queue or what bots are they covering.</p>
+
+<p>
+<canvas id='canvas' width='800' height='600' style='border:1px solid #000000;'>
+</canvas>
+<select id='botslist' multiple='multiple' style='height:600px'>
+  <option>list of nanobots</option>
+</select>
+<select id='sslist' multiple='multiple' style='height:600px'>
+  <option>list of searchsquares</option>
+</select>
+</p>
+
+<p>
+<button id='startbutton' onclick='startstepclick()'>Start</button>
+<button id='clearbutton' onclick='resetsim()'>Clear nanobots</button>
+</p>
+
+<p>Work queue (binary heap order): <span id='qlist'>...</span></p>
+
+<p>Processed searchsquares: <span id='donelist'>...</span></pr>
+
+<p>The indices here are searchsquares. Click in the searchsquares list to see
+a specific searchsquare visualised.</p>
+
+<p>
+Result: <span id='resultspan'></span>
+</p>
+
+<p>
+Note that my claim is that the algorithm will not proces more than O(n *
+log^2(1024)) = <span id='limitspan'>0 * 100 = 0</span> squares.
+</p>
+
+<p>For reference here is a solver for the 3D case. Copy paste the problem's
+input and click solve.</p>
+
+<textarea id='biginput' cols='60' rows='8'>
+pos=&lt;10,12,12&gt;, r=2
+pos=&lt;12,14,12&gt;, r=2
+pos=&lt;16,12,12&gt;, r=4
+pos=&lt;14,14,14&gt;, r=6
+pos=&lt;50,50,50&gt;, r=200
+pos=&lt;10,10,10&gt;, r=5
+</textarea>
+<p><button id='bigsolve' onclick='solve()'>Solve</button></p>
+<p>Result: <span id='bigresult'>press solve first</span></p>
+
+<script>
+var g = {
+  // ctx is the canvas context for 2d rendering.
+  ctx: null,
+  // width and height are the canvas dimensions.
+  width: 800,
+  height: 600,
+  workqueue: [],
+  processed: [],
+  bots: [],
+  searchsquares: [],
+}
+
+function canvasclick(event) {
+  var clickx = Math.round(event.clientX - canvas.getBoundingClientRect().left);
+  var clicky = Math.round(event.clientY - canvas.getBoundingClientRect().top);
+  clickx -= g.width / 2;
+  clicky -= g.height / 2;
+  event.preventDefault();
+  if (g.searchsquares.length > 0) {
+    for (var i = g.searchsquares.length - 1; i >= 0; i--) {
+      var ss = g.searchsquares[i];
+      if (ssdist(ss, clickx, clicky, 0) == 0) {
+        sslist.selectedIndex = i + 1;
+        break;
+      }
+    }
+    rendercanvas();
+    return;
+  }
+  if (event.button == 2) {
+    g.bots.push({ x: clickx, y: clicky, r: 50 });
+    setlists();
+    botslist.selectedIndex = g.bots.length;
+    startbutton.disabled = '';
+    resultspan.textContent = 'Hit Start.'
+  } else if (event.button == 1 && botslist.selectedIndex >= 1) {
+    var selidx = botslist.selectedIndex - 1;
+    var bot = g.bots[selidx];
+    bot.r = Math.abs(clickx - bot.x) + Math.abs(clicky - bot.y);
+    setlists();
+    botslist.selectedIndex = selidx + 1;
+  } else if (event.button == 0) {
+    var bestbotidx = -1;
+    var bestbotdist = 999999;
+    for (var i = 0; i < g.bots.length; i++) {
+      var bot = g.bots[i];
+      var d = Math.abs(bot.x - clickx) + Math.abs(bot.y - clicky);
+      if (d < 12 && d < bestbotdist) {
+        bestbotdist = d;
+        bestbotidx = i;
+      }
+    }
+    if (bestbotidx > -1) {
+      if (event.shiftKey) {
+        g.bots.splice(bestbotidx, 1);
+        setlists();
+      } else {
+        botslist.selectedIndex = bestbotidx + 1;
+      }
+    }
+  }
+  rendercanvas();
+}
+
+function rangedist(x, lo, hi) {
+  if (x < lo) return lo - x;
+  if (x > hi) return x - hi;
+  return 0;
+}
+
+function ssdist(ss, x, y, z) {
+  var x1 = ss.x, x2 = ss.x + ss.sz - 1;
+  var y1 = ss.y, y2 = ss.y + ss.sz - 1;
+  var z1 = ss.z, z2 = ss.z + ss.sz - 1;
+  return rangedist(x, x1, x2) + rangedist(y, y1, y2) + rangedist(z, z1, z2);
+}
+
+function countbots(ss) {
+  var cnt = 0;
+  for (var i = 0; i < g.bots.length; i++) {
+    var bot = g.bots[i];
+    if (ssdist(ss, bot.x, bot.y, bot.z) <= bot.r) cnt++;
+  }
+  return cnt;
+}
+
+// return true if g.searchsquares[i] < g.searchsquares[j].
+function cmpss(i, j) {
+  var a = g.searchsquares[g.workqueue[i]];
+  var b = g.searchsquares[g.workqueue[j]];
+  if (a.bots != b.bots) return a.bots > b.bots;
+  if (a.dist != b.dist) return a.dist < b.dist;
+  return a.sz < b.sz;
+}
+
+function queueposswap(i, j) {
+  var t = g.workqueue[i];
+  g.workqueue[i] = g.workqueue[j];
+  g.workqueue[j] = t;
+}
+
+function bubbleup() {
+  var pos = g.workqueue.length;
+  while (pos > 1 && cmpss(pos - 1, (pos >> 1) - 1)) {
+    queueposswap(pos - 1, (pos >> 1) - 1);
+    pos >>= 1;
+  }
+}
+
+function bubbledown() {
+  var pos = 1;
+  while (2 * pos <= g.workqueue.length) {
+    var swappos = 2 * pos;
+    if (swappos + 1 <= g.workqueue.length && cmpss(swappos, swappos - 1)) {
+      swappos++;
+    }
+    if (cmpss(swappos - 1, pos - 1)) {
+      queueposswap(swappos - 1, pos - 1);
+      pos = swappos;
+    } else {
+      break;
+    }
+  }
+}
+
+function startstepclick() {
+  if (g.searchsquares.length == 0) {
+    g.searchsquares.push({
+      x: -512,
+      y: -512,
+      z: 0,
+      sz: 1024,
+    });
+    g.searchsquares[0].dist = ssdist(g.searchsquares[0], 0, 0, 0);
+    g.searchsquares[0].bots = countbots(g.searchsquares[0]);
+    g.workqueue.push(0);
+    startbutton.textContent = 'Step';
+    resultspan.textContent = 'Keep hitting Step.'
+    clearbutton.textContent = 'Reset sim';
+  } else {
+    var top = g.workqueue[0];
+    if (g.workqueue.length > 1) {
+      g.workqueue[0] = g.workqueue.splice(-1, 1)[0];
+      bubbledown();
+    } else {
+      g.workqueue = []
+    }
+    g.processed.push(top);
+    var ss = g.searchsquares[top];
+    if (ss.sz == 1) {
+      startbutton.disabled = 'disabled';
+      var dist = Math.abs(ss.x) + Math.abs(ss.y);
+      var result = `distance: ${dist}, `
+      result += `bots in range: ${ss.bots}, `;
+      result += `pos: (${ss.x}, ${ss.y})`;
+      resultspan.textContent = result;
+    } else {
+      var add = function(x, y) {
+        var newss = {
+          x: x,
+          y: y,
+          z: 0,
+          sz: ss.sz / 2,
+        };
+        newss.dist = ssdist(newss, 0, 0, 0);
+        newss.bots = countbots(newss);
+        if (newss.bots != 0) {
+          g.workqueue.push(g.searchsquares.length);
+          g.searchsquares.push(newss);
+          bubbleup();
+        }
+      };
+      add(ss.x, ss.y);
+      add(ss.x + ss.sz / 2, ss.y);
+      add(ss.x, ss.y + ss.sz / 2);
+      add(ss.x + ss.sz / 2, ss.y + ss.sz / 2);
+    }
+  }
+  setlists();
+  sslist.selectedIndex = g.workqueue[0] + 1;
+  rendercanvas();
+}
+
+function setlists() {
+  var oldindex = botslist.selectedIndex;
+  while (botslist.options.length > 1) {
+    botslist.remove(botslist.options.length - 1);
+  }
+  for (var i = 0; i < g.bots.length; i++) {
+    var bot = g.bots[i];
+    var opt = document.createElement('option');
+    opt.text = `pos=(${bot.x}, ${bot.y}), r=${bot.r}`
+    botslist.add(opt);
+  }
+  botslist.selectedIndex = oldindex;
+
+  oldindex = sslist.selectedIndex;
+  while (sslist.options.length > 1) {
+    sslist.remove(sslist.options.length - 1);
+  }
+  for (var i = 0; i < g.searchsquares.length; i++) {
+    var ss = g.searchsquares[i];
+    var opt = document.createElement('option');
+    opt.text = `${i}: pos=(${ss.x}, ${ss.y}), sz=${ss.sz}`
+    opt.text += `, bots=${ss.bots}`
+    opt.text += `, dist=${ss.dist}`
+    sslist.add(opt);
+  }
+  sslist.selectedIndex = oldindex;
+
+  limitspan.textContent = `${g.bots.length} * 100 = ${g.bots.length * 100}`;
+}
+
+function rendercanvas() {
+  g.ctx.fillStyle = 'white';
+  g.ctx.fillRect(-g.width / 2, -g.height / 2, g.width, g.height);
+
+  // render the searchsquares.
+  var selectedss = -1;
+  var ss = null;
+  if (sslist.selectedIndex >= 1) selectedss = sslist.selectedIndex - 1;
+  if (selectedss != -1) {
+    ss = g.searchsquares[selectedss];
+    g.ctx.fillStyle = 'lightgreen';
+    g.ctx.fillRect(ss.x, ss.y, ss.sz, ss.sz);
+    g.ctx.strokeStyle = 'gray';
+    g.ctx.beginPath();
+    g.ctx.moveTo(-g.width / 2, ss.y);
+    g.ctx.lineTo(g.width / 2, ss.y);
+    g.ctx.moveTo(ss.x, -g.height / 2);
+    g.ctx.lineTo(ss.x, g.height / 2);
+    g.ctx.stroke();
+  }
+
+  // render helper lines for the center.
+  g.ctx.strokeStyle = '#dddddd';
+  g.ctx.beginPath();
+  g.ctx.moveTo(-g.width / 2, 0);
+  g.ctx.lineTo(g.width / 2, 0);
+  g.ctx.moveTo(0, -g.height / 2);
+  g.ctx.lineTo(0, g.height);
+  g.ctx.stroke();
+
+  // render the bots.
+  var selectedbot = -1;
+  if (selectedss == -1 && botslist.selectedIndex >= 1) {
+    selectedbot = botslist.selectedIndex - 1;
+  }
+  for (var i = 0; i < g.bots.length; i++) {
+    var bot = g.bots[i];
+    g.ctx.fillStyle = '#88222288';
+    g.ctx.beginPath();
+    g.ctx.moveTo(bot.x - bot.r, bot.y);
+    g.ctx.lineTo(bot.x, bot.y - bot.r);
+    g.ctx.lineTo(bot.x + bot.r, bot.y);
+    g.ctx.lineTo(bot.x, bot.y + bot.r);
+    g.ctx.fill();
+  }
+  for (var i = 0; i < g.bots.length; i++) {
+    var bot = g.bots[i];
+    if (i == selectedbot) {
+      g.ctx.fillStyle = 'red';
+    } else if (selectedss != -1 && ssdist(ss, bot.x, bot.y, bot.z) <= bot.r) {
+      g.ctx.fillStyle = 'red';
+    } else {
+      g.ctx.fillStyle = 'black';
+    }
+    g.ctx.fillRect(bot.x - 4, bot.y - 4, 9, 9);
+  }
+
+  var queuetxt = '';
+  for (var i = 0; i < g.workqueue.length; i++) {
+    if (queuetxt != '') queuetxt += ', ';
+    if (g.workqueue[i] == selectedss) {
+      queuetxt += '<span style="color:red">';
+    }
+    queuetxt += g.workqueue[i];
+    if (g.workqueue[i] == selectedss) {
+      queuetxt += '</span>';
+    }
+  }
+  qlist.innerHTML = queuetxt;
+
+  var processedtxt = '';
+  for (var i = 0; i < g.processed.length; i++) {
+    if (processedtxt != '') processedtxt += ', ';
+    if (g.processed[i] == selectedss) {
+      processedtxt += '<span style="color:red">';
+    }
+    processedtxt += g.processed[i];
+    if (g.processed[i] == selectedss) {
+      processedtxt += '</span>';
+    }
+  }
+  processedtxt += ` (${g.processed.length} in total)`;
+  donelist.innerHTML = processedtxt;
+}
+
+function resetsim() {
+  if (g.searchsquares.length == 0) {
+    g.bots = [];
+  } else {
+    g.workqueue = [];
+    g.processed = [];
+    g.searchsquares = [];
+  }
+  startbutton.textContent = 'Start';
+  if (g.bots.length == 0) {
+    startbutton.disabled = 'disabled';
+  } else {
+    startbutton.disabled = '';
+  }
+  clearbutton.textContent = 'Clear nanobots';
+  resultspan.textContent = 'Add bots first.';
+  setlists();
+  rendercanvas();
+}
+
+function solve() {
+  g.bots = [];
+  g.workqueue = [];
+  g.searchsquares = [];
+  g.processed = [];
+
+  var lines = biginput.value.split('\n');
+  for (var i = 0; i < lines.length; i++) {
+    var line = lines[i].trim();
+    if (line.length == 0) continue;
+    var nums = lines[i].split(/[a-z,=<> ]/).filter(x => x);
+    if (nums.length != 4) {
+      bigresult.textContent = `Couldn't parse: ${line}`;
+      return;
+    }
+    g.bots.push({
+      x: nums[0],
+      y: nums[1],
+      z: nums[2],
+      r: nums[3],
+    });
+  }
+
+  g.searchsquares.push({
+    x: -1000000000,
+    y: -1000000000,
+    z: -1000000000,
+    sz: 2147483648,
+  });
+  g.searchsquares[0].dist = ssdist(g.searchsquares[0], 0, 0, 0);
+  g.searchsquares[0].bots = countbots(g.searchsquares[0]);
+  g.workqueue.push(0);
+
+  while (true) {
+    if (g.workqueue.length == 0) {
+      bigresult.textContent = 'Internal error.';
+      break;
+    }
+    var top = g.workqueue[0];
+    if (g.workqueue.length > 1) {
+      g.workqueue[0] = g.workqueue.splice(-1, 1)[0];
+      bubbledown();
+    } else {
+      g.workqueue = []
+    }
+    g.processed.push(top);
+    var ss = g.searchsquares[top];
+    if (ss.sz == 1) {
+      var dist = Math.abs(ss.x) + Math.abs(ss.y) + Math.abs(ss.z);
+      var result = `distance: ${dist}, `
+      result += `bots in range: ${ss.bots}, `;
+      result += `pos: (${ss.x}, ${ss.y}, ${ss.z}), `;
+      result += `nodes processed: ${g.processed.length}`;
+      bigresult.textContent = result;
+      break;
+    } else {
+      var nsz = ss.sz / 2;
+      var add = function(x, y, z) {
+        var newss = {
+          x: x,
+          y: y,
+          z: z,
+          sz: nsz,
+        };
+        newss.dist = ssdist(newss, 0, 0, 0);
+        newss.bots = countbots(newss);
+        if (newss.bots != 0) {
+          g.workqueue.push(g.searchsquares.length);
+          g.searchsquares.push(newss);
+          bubbleup();
+        }
+      };
+      add(ss.x, ss.y, ss.z);
+      add(ss.x + nsz, ss.y, ss.z);
+      add(ss.x, ss.y + nsz, ss.z);
+      add(ss.x + nsz, ss.y + nsz, ss.z);
+      add(ss.x, ss.y, ss.z + nsz);
+      add(ss.x + nsz, ss.y, ss.z + nsz);
+      add(ss.x, ss.y + nsz, ss.z + nsz);
+      add(ss.x + nsz, ss.y + nsz, ss.z + nsz);
+    }
+  }
+
+  resetsim();
+  resetsim();
+}
+
+function init() {
+  g.ctx = canvas.getContext('2d');
+  g.ctx.translate(g.width / 2, g.height / 2);
+  canvas.addEventListener('mousedown', canvasclick);
+  canvas.addEventListener('contextmenu', function(e) {
+    if (e.button == 2) e.preventDefault();
+  });
+  botslist.addEventListener('change', rendercanvas);
+  sslist.addEventListener('change', rendercanvas);
+  resetsim();
+}
+
+init();
+</script>
+
+</body>
+</html>
