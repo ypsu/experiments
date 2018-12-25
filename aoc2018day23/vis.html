@@ -7,22 +7,20 @@
 <body>
 <h1>Advent of code 2018 day 23 part 2 visualization</h1>
 
-<p>There's a lot of either incorrect or very complicated (ILP) solutions to part
-2 even though the correct solution is quite straightforward and very fast (runs
-in a few ms in C, few seconds in javascript). I'll describe it through a 2D
-version of the problem. The 3d version is the same but the splitting part
-creates 8 cubes rather than 4 squares.<p>
+<p>This is a description of a correct algorithm that doesn't involve ILP and
+still runs reasonably fast on the problem input (few ms in C, few seconds in
+javascript). I'll describe it through a 2D version of the problem. The 3d
+version is the same but the splitting part creates 8 cubes rather than 4
+squares.<p>
 
-<p>Although I'm not 100% sure, I think the algorithm is O(n^2 * log^k(d)) where
-d is the width or height of the space where the nanobots live and k is the
-spatial dimension (2 for 2D, 3 for 3D). I omit the details from here but there's
-more explanation at <a
-href='https://www.reddit.com/r/adventofcode/comments/a8sqov/help_day_23_part_2_any_provably_correct_fast/ecf5vcm'>
-https://www.reddit.com/r/adventofcode/comments/a8sqov/help_day_23_part_2_any_provably_correct_fast/ecf5vcm</a>.
-The complexity explanation is wrong, I think it needs at most log^k(d) steps for
-the single bot case but it's still not too much. Just see how the search behaves
-with one bot to see how it converges. I'm not sure if it's really log^k(d)
-though, just a hunch.</p>
+<p>In a previous version of this page I claimed that this is a pretty fast
+algorithm in general but a reddit user quickly pointed out that it is not the
+case and provided a testcase that pretty much kills this algorithm performance
+wise, see <a href="worstcase.input">worstcase.input</a> (yay, Cunningham's Law
+works). For reference here's the full thread: <a
+href="https://reddit.com/r/adventofcode/comments/a99n7x">https://reddit.com/r/adventofcode/comments/a99n7x</a>.
+Nevertheless, this is should be still a usable approach to solving the
+problem.</p>
 
 <p>The idea is to have 'searchsquares'. Each searchsquare has several
 properties:</p>
@@ -42,7 +40,7 @@ Create a searchsquare that covers all the bots.
 Push that onto the work queue.
 Loop {
   Pop a searchsquare from the queue that is:
-    a) covers most bots,
+    a) is in range for most of the bots,
     b) in case of ties is closest to origin,
     c) in case of ties is the smallest.
   If the popped searchsquare has a size of 1 {
@@ -102,11 +100,6 @@ a specific searchsquare visualised.</p>
 Result: <span id='resultspan'></span>
 </p>
 
-<p>
-Note that my claim is that the algorithm will not proces more than O(n *
-log^2(1024)) = <span id='limitspan'>0 * 100 = 0</span> squares.
-</p>
-
 <p>For reference here is a solver for the 3D case. Copy paste the problem's
 input and click solve.</p>
 
@@ -120,6 +113,10 @@ pos=&lt;10,10,10&gt;, r=5
 </textarea>
 <p><button id='bigsolve' onclick='solve()'>Solve</button></p>
 <p>Result: <span id='bigresult'>press solve first</span></p>
+
+<p>Look for the solve() function in the source of this page to see the
+javascript version or look at <a href="23.c">23.c</a> to see the C version of
+this solver.
 
 <script>
 var g = {
@@ -331,8 +328,6 @@ function setlists() {
     sslist.add(opt);
   }
   sslist.selectedIndex = oldindex;
-
-  limitspan.textContent = `${g.bots.length} * 100 = ${g.bots.length * 100}`;
 }
 
 function rendercanvas() {
