@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='utf-8'>
+<title>MelodyDB</title>
+</head>
+<body style='cursor:default'>
+
+<p>
+This is just a simple Nokia RTTL player. Just click on a row to play it. Click
+again to make it stop.
+</p>
+
+<p>
+<button onclick="start(rttlinput.value);">Play custom</button>
+<input
+  id='rttlinput'
+  style='width:calc(100% - 10em)'
+>
+</p>
+
+<p>
+These are melodies that can be played on a xylophone with only a few mismatched
+notes:
+</p>
+
+<ul>
+  <li>AdamsFamily:d=4,o=6,b=160:8c,f,8a,f,8c,b5,2g,8f,e,8g,e,8e5,a5,2f,8c,f,8a,f,8c,b5,2g,8f,e,8c,d,8e,1f,8c,8d,8e,8f,1p,8d,8e,8f#,8g,1p,8d,8e,8f#,8g,p,8d,8e,8f#,8g,p,c,8e,1f</li>
+  <li>BackToTheFuture:d=4,o=5,b=180:2c6,8b,8a,b,a,g,1a,p,d6,2c6,8b,8a,b,a,g,1a</li>
+  <li>BittersweetSymphony:d=4,o=5,b=127:p,e,g,e,f,d,2f,a#,f,2a#,a,f,2a,p,e,g,e,f,d,2f,a#,f,2a#,a,f,2a</li>
+  <li>BirdySong:d=16,o=5,b=100:g,g,a,a,e,e,8g,g,g,a,a,e,e,8g,g,g,a,a,c6,c6,8b,8b,8a,8g,8f,f,f,g,g,d,d,8f,f,f,g,g,d,d,8f,f,f,g,g,a,b,8c6,8a,8g,8e,4c</li>
+  <li>BociBociTarka:d=8,o=5,b=80:c,e,c,e,4g,4g,c,e,c,e,4g,4g,c6,b,a,g,4f,4a,g,f,e,d,4c,4c,p,c,e,c,e,g,g,4g,c,e,c,e,g,g,4g,c6,b,a,g,f,f,4a,g,f,e,d,c,c,4c</li>
+  <li>CanCan:d=4,o=5,b=160:c,8d,8f,8e,8d,g,g,8g,8a,8e,8f,d,d,8d,8f,8e,8d,8c,8c6,8b,8a,8g,8f,8e,8d,8c,8g,8d,8e,c.</li>
+  <li>FrereJacques:d=4,o=5,b=120:c,d,e,c,c,d,e,c,e,f,2g,e,f,2g,8g,8a,8g,8f,e,c,8g,8a,8g,8f,e,c,d,g,2c,d,g,2c</li>
+  <li>HallOfTheMountainKing:d=8,o=5,b=120:d,e,f,g,a,f,4a,g,e,4g,g,f,4g,d,e,f,g,a,f,a,d6,c6,a,f,a,4c6</li>
+  <li>HullAPelyhes:d=8,o=5,b=80:d,d,a,a,b,b,4a,g,g,f,f,e,e,4d,a,a,g,g,f,f,4e,a,a,g,g,f,f,4e,d,d,a,a,b,b,4a,g,g,f,f,e,e,4d</li>
+  <li>JingleBells:d=2,o=5,b=350:b,b,b,p,b,b,b,p,b,d6,g,a,1b,c6,c6,1c6,b,b,1b,b,a,a,b,1a,d6</li>
+  <li>JohnBrownsBody:d=8,o=5,b=100:4d.,c,b4,d,g,a,2b,2g,4e.,f,g,a,f,e,2d,4b4,4p,4d.,c,b4,d,g,a,2b,g,p,g,g,4a,4a,4g,4f,2g</li>
+  <li>LondonBridge:d=8,o=5,b=100:a.,16b,a,g,f,g,4a,e,f,4g,f,g,4a,a.,16b,a,g,f,g,4a,4e,4a,f,d,4d</li>
+  <li>OhMyDarlingClementineNormal:d=8,o=5,b=100:a,a,4a,4e,c6,c6,4c6,4a,a,c6,4e6,4e6,d6,c6,2b,b,c6,4d6,4d6,c6,b,4c6,4a,a,c6,4b,4e,g,b,2a</li>
+  <li>OhMyDarlingClementineLower:d=8,o=5,b=100:e,e,4e,4c,a,a,4a,4e,e,a,4c6,4c6,b,a,2f,g,a,4b,4b,a,g,4a,4f,f,a,4g,4c,e,g,2f</li>
+  <li>OvertureFinale:d=8,o=5,b=150:c,d,e,d,c,d,4e,4c,2c</li>
+  <li>PoliceAcademy:d=4,o=5,b=160:g,c,8d,c,32p,c6,b,8a,8a,8a,8g,p,8g,8a,8g,8g,g,8c6,g,16p,f,e,f,e,c,8d</li>
+  <li>Toccata:d=16,o=5,b=160:a,g,1a,g,f,e,d,2c#,p,2d,2p,a,g,1a,8e.,4f,2c#,2d</li>
+  <li>ToTheDumpToTheDumpToTheDumpDumpDump:d=8,o=5,b=270:c,c,4c,c,c,4c,c,c,f,p,g,p,4a,c,c,4c,c,c,4c,a,a,g,p,e,p,4c,c,c,4c,c,c,4c,c,c,f,p,g,p,4a,f,a,1c6,a,g,f,p,a.,p,f</li>
+  <li>TwinkleTwinkle:d=4,o=5,b=160:c,c,g,g,a,a,2g,f,f,e,e,d,d,2c,g,g,f,f,e,e,2d,g,g,f,f,e,e,2d,c,c,g,g,a,a,2g,f,f,e,e,d,d,2c</li>
+  <li>VivaldiSpring:d=4,o=5,b=240:e,e,e,p,2g.,8g,8f,e,e,e,p,2g.,8g,8f,e,8f,8g,f,e,2d,2p,g,8f,8e,f,g,a,2g,p,g,8f,8e,f,g,a,2g,p,a,2g,f,e,d,2d</li>
+</ul>
+
+<p>
+Other random melodies to test the player with:
+</p>
+
+<ul>
+  <li>5thSymphony:d=4,o=6,b=100:16g5,16g5,16g5,d#5,16f5,16f5,16f5,d5,16g5,16g5,16g5,16d#5,16g#5,16g#5,16g#5,16g5,16d#,16d#,16d#,c,16g5,16g5,16g5,16d5,16g#5,16g#5,16g#5,16g5,16f,16f,16f,d</li>
+  <li>BarbieGirl:d=4,o=6,b=125:8g#,8e,8g#,8c#7,a,p,8f#,8d#,8f#,8b,g#,8f#,8e,p,8e,8c#,f#,c#,p,8f#,8e,g#,f#</li>
+  <li>Batman:d=4,o=6,b=160:8d5,8d5,8c#5,8c#5,8c5,8c5,8c#5,8c#5,8d5,8d5,8c#5,8c#5,8c5,8c5,8c#5,8c#5,8d5,8d5,8c#5,8c#5,8c5,8c5,8c#5,8c#5,16a5,16g#5,16g5,16f#5,16f5,16f#5,16g5,16g#5,2a5,p,g,g</li>
+  <li>BeverlyHillsCop:d=4,o=6,b=225:f5,p,g#5,8p,f5,8f5,a#5,32p,f5,d#5,f5,p,8p,f5,8f5,c#,32p,c,g#5,f5,c,f,8f5,d#5,8d#5,32p,c5,g5,1f5</li>
+  <li>Cantina:d=8,o=5,b=250:a,p,d6,p,a,p,d6,p,a,d6,p,a,p,g#,4a,a,g#,a,4g,f#,g,f#,4f.,d.,16p,4p.,a,p,d6,p,a,p,d6,p,a,d6,p,a,p,g#,a,p,g,p,4g.,f#,g,p,c6,4a#,4a,4g</li>
+  <li>CocaCola:d=4,o=6,b=125:8f#6,8f#6,8f#6,8f#6,g6,8f#6,e6,8e6,8a6,f#6,d6,2p</li>
+  <li>ColonelBogey:d=8,o=5,b=140:g,e,4p,p,e,f,g,e6,p,e6,p,2c6,g,e,4p,p,e,f,e,g,p,g,p,2f,f,d,4p,p,d,e,f,g,e,4p,p,e,f#,e,d,g,p,e,f#,d,p,a,g.,16f#,g,a,g,f,e,d</li>
+  <li>ConquestOfParadise:d=4,o=6,b=225:g5,2d#,d,2c,8p,2b5,c,2d,b5,1g5,p,g5,2d#,d,2c,8p,2b5,c,1d,1p,a#5,2g,f,2d#,8p,2d,d#,2f,d,1a#5,p,a#5,2g#5,a#5,2c,8p,2a#5,g#5,1g5,1p</li>
+  <li>Dallas:d=8,o=5,b=125:e,4a.,e,4e.6,a,4c#6,b,c#6,4a,4e,4a,4f#6,4e6,c#6,d6,2e.6,p,e,4a,4f#6,4e6,c#6,d6,4e6,b,c#6,4a,4e,4a,c#6,d6,4b.,a,2a</li>
+  <li>DeathMarch:d=4,o=5,b=150:4c,16p,c,8c,32p,2c,d#,8d,32p,d,8c,32p,c,8b4,32p,2c.</li>
+  <li>DukeNukem3D:d=4,o=5,b=90:16f#4,16a4,16p,16b4,8p,16f#4,16b4,16p,16c#,8p,16f#4,16c#,16p,16d,16p,16f#4,16p,8c#,16b4,16a4,16f#4,16e4,16f4,16f#4,16g4,16b4,16a4,16g4,16f#4,16a4,16p,16f#4,16a4,16p,16b4,8p,16f#4,16b4,16p,16c#,8p,16f#4,16c#,16p,16d,16p,16f#4,16p,8c#,16b4,16a4,16f#4,16e4,16f4,16f#4,16g4,16b4,16a4,16g4,16f#4,16a4</li>
+  <li>EineKleineNachtmusik:d=4,o=6,b=140:d#,8p,8a#5,d#,8p,8a#5,8d#,8a#5,8d#,8g,a#,p,g#,8p,8f,g#,8p,8f,8g#,8f,8d,8f,a#5,p,d#,d#.,8g,8f,8d#,8d#,8d,d.,8f,8g#,8d,8f,8d#,d#.,8g,8f,8d#,8d#,8d,d.,8f,8g#,8d,8d#,8d#,16d#,16d,16c,16d,8d#,8d#,16g,16f,16d#,16f,8g,8g,16a#,16g#,16g,16g#,a#,p,2a#5,2c,8a#5,8g#5,8g#5,8g#5,8g#5,8g5,8g5,8g5,8g5,8f5,8f5,8f5,8d#5,8d5,8c5,8d5,2d#5</li>
+  <li>Entertainer:d=8,o=5,b=140:d,d#,e,4c6,e,4c6,e,2c.6,c6,d6,d#6,e6,c6,d6,4e6,b,4d6,2c6,4p,d,d#,e,4c6,e,4c6,e,2c.6,p,a,g,f#,a,c6,4e6,d6,c6,a,2d6</li>
+  <li>FinalCountdown:d=16,o=5,b=125:b,a,4b,4e,4p,8p,c6,b,8c6,8b,4a,4p,8p,c6,b,4c6,4e,4p,8p,a,g,8a,8g,8f#,8a,4g.,f#,g,4a.,g,a,8b,8a,8g,8f#,4e,4c6,2b.,b,c6,b,a,1b</li>
+  <li>FinalFantasy6Victory:d=4,o=5,b=140:32d6,32p,32d6,32p,32d6,32p,d6,a#,c6,16d6,8p,16c6,2d6,a,g,a,16g,16p,c6,16c6,16p,b,16c6,16p,b,16b,16p,a,g,f#,16g,16p,1e,a,g,a,16g,16p,c6,16c6,16p,b,16c6,16p,b,16b,16p,a,g,a,16c6,16p,1d6</li>
+  <li>Flinstones:d=4,o=6,b=125:g#,c#,8p,c#7,8a#,g#,c#,8p,g#,8f#,8f,8f,8f#,8g#,c#,d#,2p,g#,c#,8p,c#7,8a#,g#,c#,8p,g#,8f#,8f,8f,8f#,8g#,c#,d#,2c#</li>
+  <li>FunkyTown:d=8,o=4,b=125:c6,c6,a#5,c6,p,g5,p,g5,c6,f6,e6,c6,2p,c6,c6,a#5,c6,p,g5,p,g5,c6,f6,e6,c6</li>
+  <li>FürElise:d=4,o=6,b=125:8e,8d#,8e,8d#,8e,8b5,8d,8c,a5,8p,8c5,8e5,8a5,b5,8p,8e5,8g#5,8b5,c,8p,8e5,8e,8d#,8e,8d#,8e,8b5,8d,8c,a5,8p,8c5,8e5,8a5,b5,8p,8e5,8c,8b5,a5</li>
+  <li>Ghostbusters:d=4,o=6,b=112:16c5,16p,16c,16c,8e,8c,8d,8a#5,16f5,16p,16f5,16p,16c5,16p,16c5,16p,16c,16c,16c,16c,8a#5,8c,16f5,16p,16f5,16p,16c5,16p,16c,16c,8e,8c,8d,8a#5,16f5,16p,16f5,16p,16c5,16p,16c5,16p,16c,16c,16c,16c,8a#5,8c,16f5,16p,16f5,16p,16c5,16p,16c,16c,8e,8c,8d,8a#5,16f5,16p,16f5,16p,16c5,16p,16c5,16p,16c,16c,16c,16c,8a#5,8c,16f5,16p,16f5,16p,8c5</li>
+  <li>Godfather:d=4,o=6,b=100:8g5,8c,8d#,8d,8c,8d#,8c,8d,8c,8g#5,8a#5,2g5,8g5,8c,8d#,8d,8c,8d#,8c,8d,8c,8g5,8f#5,2f5,8f5,8g#5,8b5,2d,8f5,8g#5,8b5,2c,8c5,8d#5,8a#5,8g#5,8g5,8a#5,8g#5,8g#5,8g5,8g5,8b5,c</li>
+  <li>IfIWereARichMan:d=8,o=5,b=160:g,f,g,f,e,p,4c,4p,e,f,g,f,g,f,e,f,g,a,a#,a,a#,a,2g.,4p,4g#,4g,4f#,4f,d#,d,c,d,4d#,4p,d#,d,c,d,4d#,4c,4g,4p</li>
+  <li>IndianaJones:d=4,o=5,b=250:e,8p,8f,8g,8p,1c6,8p.,d,8p,8e,1f,p.,g,8p,8a,8b,8p,1f6,p,a,8p,8b,2c6,2d6,2e6,e,8p,8f,8g,8p,1c6,p,d6,8p,8e6,1f.6,g,8p,8g,e.6,8p,d6,8p,8g,e.6,8p,d6,8p,8g,f.6,8p,e6,8p,8d6,2c6</li>
+  <li>JamesBond:d=4,o=5,b=320:c,8d,8d,d,2d,c,c,c,c,8d#,8d#,2d#,d,d,d,c,8d,8d,d,2d,c,c,c,c,8d#,8d#,d#,2d#,d,c#,c,c6,1b.,g,f,1g.</li>
+  <li>KnightRider:d=4,o=6,b=63:16e,32f,32e,8b,16e7,32f7,32e7,8b,16e,32f,32e,16b,16e7,d7,8p,p,16e,32f,32e,8b,16e7,32f7,32e7,8b,16e,32f,32e,16b,16e7,f7,p</li>
+  <li>LastChristmas:d=4,o=6,b=112:g,16f5,16p,8g,16f5,16p,8f,16f5,16p,8c,8g,8g,8a,f,16f5,16p,16f5,16p,8c,8g,8g,8a,16d5,16p,f,16d5,16p,8f,8e,8f,8e,d,16d5,16p,16d5,16p,16d5,16p,a,16g5,16p,8a,16g5,16p,g,8d,8a,8a,8a#,g,16g5,16p,16g5,16p,8f,8e,8f,16c5,16p,8e,16c5,16p,8f,16c5,16p,8e,16c5,16p,c,16c5,16p,16c5,16p,16c5,16p,16c5,16p,16d5,16p,8f5,8p,p,2p</li>
+  <li>LordOfTheDance:d=4,o=6,b=225:2f,d.,8c,8d,8d#,8d,8c,2a#5,d,8d,8d#,f,8d#,8d,c,f5,f5,8f5,8f5,a#5,8a#5,8a#5,8a#5,8f5,8d5,8f5,8a#5,8f5,8a#5,8d,f,8d#,8d,c,8c,8c,8c</li>
+  <li>MammaMia:d=4,o=6,b=40:32f,32d#,32f,8d#,32d#,32d#,32f,32g,32f,16d#.,32p,16f,8d#,16g#,32g#,32g#,32g#,16g,16d#.,32p,8a#,32a#,32a#,16a#,16f,16g,8g#,16g,16g,32g,16g,16d,16d#,8f,16f,8d#,16g#,32g#,32g#,32g#,32g,32d#,32f,16d#</li>
+  <li>Minuet:d=4,o=6,b=225:d,8g5,8a5,8b5,8c,d,g5,g5,e,8c,8d,8e,8f#,g,g5,g5,c,8d,8c,8b5,8a5,b5,8c,8b5,8a5,8g5,a5,8b5,8a5,8g5,8f#5,2g5</li>
+  <li>MissionImpossible:d=4,o=6,b=100:32d,32d#,32d,32d#,32d,32d#,32d,32d#,32d,32d,32d#,32e,32f,32f#,32g,16g,8p,16g,8p,16a#,16p,16c7,16p,16g,8p,16g,8p,16f,16p,16f#,16p,16g,8p,16g,8p,16a#,16p,16c7,16p,16g,8p,16g,8p,16f,16p,16f#,16p,16a#,16g,2d,32p,16a#,16g,2c#,32p,16a#,16g,2c,16p,16a#5,16c</li>
+  <li>MontyPython:d=8,o=5,b=180:d#6,d6,4c6,b,4a#,a,4g#,g,f,g,g#,4g,f,2a#,p,a#,g,p,g,g,f#,g,d#6,p,a#,a#,p,g,g#,p,g#,g#,p,a#,2c6,p,g#,f,p,f,f,e,f,d6,p,c6,c6,p,g#,g,p,g,g,p,g#,2a#,p,a#,g,p,g,g,f#,g,g6,p,d#6,d#6,p,a#,a,p,f6,f6,p,f6,2f6,p,d#6,4d6,f6,f6,e6,f6,4c6,f6,f6,e6,f6,a#,p,a,a#,p,a,2a#</li>
+  <li>Mozart:d=16,o=5,b=125:16d#,c#,c,c#,8e,8p,f#,e,d#,e,8g#,8p,a,g#,g,g#,d#6,c#6,c6,c#6,d#6,c#6,c6,c#6,4e6,8c#6,8e6,32b,32c#6,d#6,8c#6,8b,8c#6,32b,32c#6,d#6,8c#6,8b,8c#6,32b,32c#6,d#6,8c#6,8b,8a#,4g#,d#,32c#,c,c#,8e,8p,f#,e,d#,e,8g#,8p,a,g#,g,g#,d#6,c#6,c6,c#6,d#6,c#6,c6,c#6,4e6,8c#6,8e6,32b,32c#6,d#6,8c#6,8b,8c#6,32b,32c#6,d#6,8c#6,8b,8c#6,32b,32c#6,d#6,8c#6,8b,8a#,4g#</li>
+  <li>NewYear:d=8,o=5,b=125:a4,4d.,d,4d,4f#,4e.,d,4e,f#,e,4d.,d,4f#,4a,2b.,4b,4a.,f#,4f#,4d,4e.,d,4e,f#,e,4d.,b4,4b4,4a4,2d,16p</li>
+  <li>NutcrackerMarch:d=4,o=6,b=200:a#5,8p,8a#5,8a#5,8a#5,c,8p,8c,p,d,8p,8a#5,p,2c,p,a#5,8p,8a#5,8a#5,8a#5,c,8p,8c,p,d,8p,8a#5,p,2c,p,g#5,8a#5,8g#5,8p,8g5,f5,8d#5,8d5,8p,8a#5,g5,8g#5,8g5,8p,8f5,d#5,8d5,8c5,8p,8d#5,d5,8c5,8b5,8p,8f5,d#5,8d5,8c5,8p,8g5,g#5,8g5,8f5,8p,8d#5,a#5,2p,a#5,8p,8a#5,8a#5,8a#5,c,8p,8c,p,d,8p,8a#5,p,2c,p,a#5,8p,8a#5,8a#5,8a#5,c,8p,8c,p,d,8p,8a#5,p,2c</li>
+  <li>NutcrackerSuite:d=16,o=5,b=76:16g6,e6,8g6,8p,f#6,p,d#6,p,e6.,p.,d6,d6,d6,8p,c#6,c#6,c#6,8p,c6,c6,c6,8p,b,e6,c6,e6,b,4p,g,e,8g,p,f#,p,c6,p,8b,8p,g6,g6,g6,8p,f#6,f#6,f#6,8p,e6,e6,e6,8p,d#6,f#6,e6,f#6,d#6,4p.,g6,e6,g6.,32p,f#6,p,d#6,p,e6,p,d6,d6,d6,p,c#6,c#6,c#6,p,c6,c6,c6,p,b,e6,c6,e6,b,2p</li>
+  <li>OdeToJoy:d=4,o=6,b=100:a5,a5,a#5,c,c,a#5,a5,g5,f5,f5,g5,a5,a.5,8g5,2g5,a5,a5,a#5,c,c,a#5,a5,g5,f5,f5,g5,a5,g.5,8f5,2f5,g5,g5,a5,f5,g5,8a5,8a#5,a5,f5,g5,8a5,8a#5,a5,g5,f5,g5,c5,2a5,a5,a#5,c,c,a#5,a5,g5,f5,f5,g5,a5,g.5,8f5,2f5</li>
+  <li>PinkPanther:d=4,o=6,b=100:8g#5,2a5,8b5,2c,8g#5,8a5,8b5,8c,8f,8e,8a5,8c,8e,2d#,16d,16c,16a5,8g5,1a5,8g#5,2a5,8b5,2c,8g#5,8a5,8b5,8c,8f,8e,8c,8e,8a,1g#,8g#5,2a5,8b5,2c,16g#5,8a5,8b5,8c,8f,8e,8a5,8c,8e,2d#,8d,16c,16a5</li>
+  <li>PinkyAndTheBrain:d=16,o=6,b=200:b.5,p,8e.,p,d#.,p,8e.,p,g.,p,4d#.,4p,b.5,p,8e.,p,d#.,p,8e.,p,g.,p,4d#.,4p,4e,8p,8e.,p,g.,p,8a#.,p,4a#,8p,a#.,p,8b.,p,a.,p,4g,8p,4f#,4p,e.,p,8a.,p,g#.,p,8a.,p,b.,p,4g#,4p,e.,p,8a.,p,g#.,p,8a.,p,b.,p,4g#,4p,c.,p,8b.5,p,8b.5,8p,b.5,p</li>
+  <li>Popcorn:d=16,o=5,b=160:a,p,g,p,a,p,e,p,c,p,e,p,8a4,8p,a,p,g,p,a,p,e,p,c,p,e,p,8a4,8p,a,p,b,p,c6,p,b,p,c6,p,a,p,b,p,a,p,b,p,g,p,a,p,g,p,a,p,f,8a,8p,a,p,g,p,a,p,e,p,c,p,e,p,8a4,8p,a,p,g,p,a,p,e,p,c,p,e,p,8a4,8p,a,p,b,p,c6,p,b,p,c6,p,a,p,b,p,a,p,b,p,g,p,a,p,g,p,a,p,b,4c6</li>
+  <li>Popeye:d=8,o=6,b=160:a5,c,c,c,4a#5,a5,4c,2p,c,d,a#5,d,4f,d,2c,p,c,d,a#5,d,f,e,d,c,d,c,a5,f5,a5,c,d,c,4a#5,g5,2f5</li>
+  <li>Popeye2:d=4,o=5,b=140:16g.,16f.,16g.,16p,32p,16c.,16p,32p,16c.,16p,32p,16e.,16d.,16c.,16d.,16e.,16f.,g,8p,16a,16f,16a,16c6,16b,16a,16g,16a,16g,8e,16g,16g,16g,16g,8a,16b,32c6,32b,32c6,32b,32c6,32b,8c6</li>
+  <li>QuoFNigt:d=8,o=5,b=160:16a,16g,16a,16a#,c6,c6,c6,c6,c6,c6,c6,c6,4f.,4p,32f,16e,16f,16g,a,a,a,a,a,a,a,a,4d.,4p,16d,16c,16d,16e,f,f,f,c,g,g,g,c,a,f,a,c6,f6,c6,d6,a#,c6,f,a,c6,f6,c6,d6,a#,4c6,4p,4f.,f,4a4,4p,4e,4p,f,g,f,a,a#,a,f,g,f,d,e,d,c#,d,c#,a4,b4,a4,c#,d,c#,e,f,e,f,g,f,a,a#,a,f,g,f,d,e.</li>
+  <li>RichMansWorld:d=8,o=6,b=112:e,e,e,e,e,e,16e5,16a5,16c,16e,d#,d#,d#,d#,d#,d#,16f5,16a5,16c,16d#,4d,c,a5,c,4c,2a5,32a5,32c,32e,a6</li>
+  <li>ScoobyDoo:d=8,o=6,b=160:e,e,d,d,2c,d,4e,2a5,a5,4b5,4g5,4e,d,4c,d,2e,4p,e,e,d,d,2c,d,4f,2a5,a5,4b5,4g5,4e,d,2c</li>
+  <li>Simpsons:d=8,o=5,b=160:c.6,4e6,4f#6,a6,4g.6,4e6,4c6,a,f#,f#,f#,2g,p,p,f#,f#,f#,g,4a#.,c6,c6,c6,4c6</li>
+  <li>SmokeOnTheWater:d=4,o=4,b=112:c,d#,f.,c,d#,8f#,f,p,c,d#,f.,d#,c,2p,8p,c,d#,f.,c,d#,8f#,f,p,c,d#,f.,d#,c</li>
+  <li>Smurfs:d=4,o=5,b=200:2c6,f.6,8c6,d6,a#,2g,c.6,8a,f,a,2g,p,16g,16a,16a#,16b,2c6,f.6,8c6,d6,a#,2g,c.6,8a,a#,e,2f,p,16g,16a,16a#,16b,2c6,f.6,8c6,d6,a#,2g,c.6,8a,f,a,2g,p,16g,16a,16a#,16b,2c6,f.6,8c6,d6,a#,2g,c.6,8a,a#,e,2f.,1p</li>
+  <li>Spiderman:d=4,o=6,b=200:c,8d#,g.,p,f#,8d#,c.,p,c,8d#,g,8g#,g,f#,8d#,c.,p,f,8g#,c.7,p,a#,8g#,f.,p,c,8d#,g.,p,f#,8d#,c,p,8g#,2g,p,8f#,f#,8d#,f,8d#,2c</li>
+  <li>StarWars:d=8,o=6,b=180:f5,f5,f5,2a#5.,2f.,d#,d,c,2a#.,4f.,d#,d,c,2a#.,4f.,d#,d,d#,2c,4p,f5,f5,f5,2a#5.,2f.,d#,d,c,2a#.,4f.,d#,d,c,2a#.,4f.,d#,d,d#,2c</li>
+  <li>StairwayToHeaven:d=8,o=5,b=63:a4,c,e,a,b,e,c,b,c6,e,c,c6,f#,d,a4,f#,e.,16c,a4,4e,c,a4,e,g4,a4,4a4</li>
+  <li>Superman:d=4,o=6,b=127:8g5,8g5,8g5,c,8c,2g,8p,8g,8a.,16g,8f,1g,8p,8g5,8g5,8g5,c,8c,2g,8p,8g,8a.,16g,8f,8a,2g.,p,8c,8c,8c,2b.,g.,8c,8c,8c,2b.,g.,8c,8c,8c,8b,8a,8b,2c7,8c,8c,8c,8c,8c,2c</li>
+  <li>SuperMario:d=4,o=5,b=100:16e6,16e6,32p,8e6,16c6,8e6,8g6,8p,8g,8p,8c6,16p,8g,16p,8e,16p,8a,8b,16a#,8a,16g.,16e6,16g6,8a6,16f6,8g6,8e6,16c6,16d6,8b,16p,8c6,16p,8g,16p,8e,16p,8a,8b,16a#,8a,16g.,16e6,16g6,8a6,16f6,8g6,8e6,16c6,16d6,8b,8p,16g6,16f#6,16f6,16d#6,16p,16e6,16p,16g#,16a,16c6,16p,16a,16c6,16d6,8p,16g6,16f#6,16f6,16d#6,16p,16e6,16p,16c7,16p,16c7,16c7,p,16g6,16f#6,16f6,16d#6,16p,16e6,16p,16g#,16a,16c6,16p,16a,16c6,16d6,8p,16d#6,8p,16d6,8p,16c6</li>
+  <li>TakeOnMe:d=4,o=6,b=100:8p,16a#5,16a#5,16a#5,8f#5,8d#5,8g#5,8g#5,16g#5,16c,16c,16c#,16d#,16c#,16c#,16c#,8g#5,8f#5,8a#5,8a#5,16a#5,16g#5,16g#5,16a#5,16g#5,16a#5,16a#5,16a#5,8f#5,8d#5,8g#5,8g#5,16g#5,16c,16c,16c#,16d#,16c#,16c#,16c#,8g#5,8f#5,8a#5,8a#5</li>
+  <li>Tarzan:d=8,o=5,b=120:e,f,g,16c6,g,16c6,16g,16c6,g,4d6,g,g.,4c6,4p,f,g,a,16c6,a,16c6,16a,16c6,a,4d6,g,g.,4c6,4p,e,f,g,16c6,g,16c6,16g,16c6,g,4d6,g,g.,4c6,4p,f,g,a,16c6,a,16c6,16a,16c6,a,4d6,g,g.,4c6.</li>
+  <li>TeenageTurtles:d=8,o=6,b=100:g5,a5,g5,a5,g5,16a5,g.5,a5,a#5,c,a#5,c,a#5,16c,a#.5,c,d#,f,d#,f,d#,16f,d#.,f,16c,16c,16c,16c,a#5,4c,16c7,16c7,16c7</li>
+  <li>Tetris:d=4,o=5,b=160:e6,8b,8c6,8d6,16e6,16d6,8c6,8b,a,8a,8c6,e6,8d6,8c6,b,8b,8c6,d6,e6,c6,a,2a,8p,d6,8f6,a6,8g6,8f6,e6,8e6,8c6,e6,8d6,8c6,b,8b,8c6,d6,e6,c6,a,a</li>
+  <li>Thankyou:d=4,o=5,b=180:e6,e6,e6,8f6,d6,c6,d.6,p,8p,8b,c6,e6,b,8e6,a.,p,e6,e6,e6,8f6,d6,c6,d.6,p,8p,g6,a6,e6,8d6,e6,p,g6,g6,g6,8e6,d6,c6,e6,d6,p,8c6,8d6,e6,8f6,e6,d6,e6</li>
+  <li>TheATeam:d=8,o=5,b=132:4d#6,a#,2d#6,16p,g#,4a#,4d#.,p,16g,16a#,d#6,a#,f6,2d#6,16p,c#.6,16c6,16a#,g#.,2a#.</li>
+  <li>TheGoodTheBadTheUgly:d=4,o=6,b=63:32c,32f,32c,32f,c,8g#5,8a#5,f5,8p,32c,32f,32c,32f,c,8g#5,8a#5,d#</li>
+  <li>Tubular Bells:d=4,o=6,b=280:c,f,c,g,c,d#,f,c,g#,c,a#,c,g,g#,c,g,c,f,c,g,c,d#,f,c,g#,c,a#,c,g,g#,c,g,c,f,c,g,c,d#,f,c,g#,c,a#,c,g,g#,c,g,c,f,c,g,c,d#,f,c,g#,c,a#,c,g,g#</li>
+  <li>TurkishMarch:d=4,o=6,b=160:16b5,16a5,16g#5,16a5,8c,8p,16d,16c,16b5,16c,8e,8p,16f,16e,16d#,16e,16b,16a,16a#,16a,16b,16a,16a#,16a,8c7,8p,8a,8c7,8b,8a,8g,8a,8b,8a,8g,8a,8b,8a,8g,8f#,d</li>
+  <li>UnderTheSea:d=4,o=6,b=200:8d,8f,8a#,d7,d7,8a#,c7,d#7,d7,a#,8a#5,8d,8f,a#,a#,8c,a,c7,a#,p,8d,8f,8a#,d7,d7,8a#,c7,d#7,d7,a#,8a#5,8d,8f,a#,a#,8c,a,c7,16a#,16d,16a#,16d,16a#,16d,16a#</li>
+  <li>USAAnthem:d=8,o=5,b=120:e.,d,4c,4e,4g,4c6.,p,e6.,d6,4c6,4e,4f#,4g.,p,4g,4e6.,d6,4c6,2b,a,4b,c6.,16p,4c6,4g,4e,32p,4c</li>
+  <li>WeWishYouAMerryChristmas:d=8,o=5,b=140:4d,4g,g,a,g,f#,4e,4c,4e,4a,a,b,a,g,4f#,4d,4f#,4b,b,c6,b,a,4g,4e,4d,4e,4a,4f#,2g</li>
+</ul>
+
+<p>
+I picked the ones I liked from the following sources:<br>
+<a href="http://arcadetones.emuunlim.com/">http://arcadetones.emuunlim.com/</a></br>
+<a href="http://www.cellringtones.com/">http://www.cellringtones.com/</a><br>
+<a href="http://mines.lumpylumpy.com/Electronics/Computers/Software/Cpp/MFC/RingTones.RTTTL">
+http://mines.lumpylumpy.com/Electronics/Computers/Software/Cpp/MFC/RingTones.RTTTL</a>
+</p>
+
+<script>
+g = {
+  ctx: null,
+  osc: null,
+  notes: {
+    'p': 0,
+    'c': 262,
+    'c#': 278,
+    'd': 294,
+    'd#': 311,
+    'e': 330,
+    'f': 349,
+    'f#': 370,
+    'g': 392,
+    'g#': 415,
+    'a': 440,
+    'a#': 466,
+    'b': 494,
+  },
+};
+
+function stop() {
+  if (g.osc != null) {
+    g.osc.stop();
+    g.osc.disconnect(g.ctx);
+    g.osc = null;
+  }
+}
+
+// returns a list of tuples with the following structure:
+// { freq: <frequency>, dur: <duration in seconds> }
+function parserttl(rttl) {
+  if (rttl == '') {
+    alert('Enter some music first (e.g. copy paste from below).');
+    return [];
+  }
+  var parts = rttl.split(':');
+  if (parts.length != 3) {
+    alert(`Must contain exactly two colons (got ${parts.len - 1}).`)
+    return [];
+  }
+  var defdur = 4;
+  var decoct = 6;
+  var defbpm = 63;
+  for (var s of parts[1].split(',')) {
+    var ss = s.split('=');
+    if (ss.length != 2) {
+      alert(`Invalid option: ${s}.`);
+      return [];
+    }
+    var num = parseInt(ss[1]);
+    if (!num) {
+      alert(`Not a number: ${s}.`);
+      return [];
+    }
+    if (ss[0] == 'd') {
+      defdur = num;
+    } else if (ss[0] == 'o') {
+      defoct = num;
+    } else if (ss[0] == 'b') {
+      defbpm = num;
+    } else {
+      alert(`Not a valid option: ${s}.`);
+      return [];
+    }
+  }
+  var wholedur = 60 / defbpm * 4;
+  var notes = [];
+  for (var s of parts[2].split(',')) {
+    var dur = 0;
+    var note = '';
+    var oct = 0;
+    var i = 0;
+    while (i < s.length && '0' <= s[i] && s[i] <= '9') {
+      dur = dur * 10 + parseInt(s[i++] - '0');
+    }
+    if (dur == 0) dur = defdur;
+    note = s[i++];
+    if (i < s.length && (s[i] == '#' || s[i] == '_')) {
+      note += '#';
+      i++;
+    }
+    if (!(note in g.notes)) {
+      alert(`Bad note ${s}.`);
+      return [];
+    }
+    var haddot = false;
+    if (i < s.length && s[i] == '.') {
+      haddot = true;
+      i++;
+    }
+    if (i < s.length && '0' <= s[i] && s[i] <= '9') {
+      oct = parseInt(s[i++] - '0');
+    }
+    if (oct == 0) oct = defoct;
+    if (!haddot && i < s.length && s[i] == '.') {
+      haddot = true;
+      i++;
+    }
+    if (i != s.length || (oct < 4 || oct > 7)) {
+      alert(`Bad octave ${s}.`);
+      return [];
+    }
+    var durlen = wholedur / dur;
+    if (haddot) {
+      durlen += wholedur / (dur * 2);
+    }
+    notes.push({
+      freq: g.notes[note] * (1 << (oct - 4)),
+      dur: durlen,
+    });
+  }
+  return notes;
+}
+
+function start(rttl) {
+  if (g.ctx == null) {
+    g.ctx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  if (g.osc != null) {
+    stop();
+    return;
+  }
+  if (g.osc == null) {
+    g.osc = g.ctx.createOscillator();
+    g.osc.start();
+  }
+
+  var curt = g.ctx.currentTime, t = 0;
+  var notes = parserttl(rttl.replace(/\s/g, ''));
+
+  for (var note of notes) {
+    g.osc.frequency.setTargetAtTime(note.freq, curt + t, 1 / 512);
+    t += note.dur;
+    g.osc.frequency.setTargetAtTime(0, curt + t - 1 / 64, 1 / 512);
+  }
+  g.osc.stop(curt + t)
+  g.osc.connect(g.ctx.destination);
+  g.osc.onended = function() { stop(); }
+}
+
+function init() {
+  for (let li of document.getElementsByTagName('li')) {
+    li.onclick = function() {
+      start(li.innerText);
+    };
+  }
+}
+
+init();
+</script>
+
+</body>
