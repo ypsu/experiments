@@ -175,6 +175,7 @@ function loop(timestamp) {
         if (dist < 50) {
           g.bullets.splice(i--, 1);
           g.zombies.splice(j--, 1);
+          break;
         }
       }
     }
