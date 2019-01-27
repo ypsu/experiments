@@ -2,6 +2,7 @@
 <html lang=en>
 <head>
 <meta charset=utf-8>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>slideshow</title>
 </head>
 <body>
@@ -45,23 +46,24 @@ i think this a more user friendly alternative to animations.</p>
 <script>
 var curframe = 0, frames = 8, frameheight;
 function main() {
-  frames = 8;
   framesimg.width = framesimg.width;
   frameheight = framesimg.height / frames;
   framesimg.height = frameheight;
   framesimg.style.objectFit = 'none';
   framesimg.style.objectPosition = '0px 0px';
   framesimg.addEventListener('mousedown', framesclick);
-  framesimg.addEventListener('contextmenu', function(e) {
-    if (e.button == 2) e.preventDefault();
-  });
   noscriptpara.hidden = true;
   framesimg.hidden = false;
 }
 
 function framesclick(event) {
-  if (event.button == 0 && curframe > 0) curframe--;
-  if (event.button == 2 && curframe + 1 < frames) curframe++;
+  if (event.button != 0) return;
+  if (event.shiftKey) {
+    curframe += frames - 1;
+  } else {
+    curframe++;
+  }
+  curframe %= frames;
   framesimg.style.objectPosition = `0px -${curframe * frameheight}px`;
 }
 </script>
