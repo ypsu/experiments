@@ -44,9 +44,10 @@ i think this a more user friendly alternative to animations.</p>
 </body>
 
 <script>
-var curframe = 0, frames = 8, frameheight;
+var curframe = 0, frames = 8, framewidth, frameheight;
 function main() {
-  framesimg.width = framesimg.width;
+  framewidth = framesimg.width;
+  framesimg.width = framewidth;
   frameheight = framesimg.height / frames;
   framesimg.height = frameheight;
   framesimg.style.objectFit = 'none';
@@ -58,7 +59,7 @@ function main() {
 
 function framesclick(event) {
   if (event.button != 0) return;
-  if (event.shiftKey) {
+  if (event.offsetX < framewidth / 2) {
     curframe += frames - 1;
   } else {
     curframe++;
