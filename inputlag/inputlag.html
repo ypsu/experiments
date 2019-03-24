@@ -1,0 +1,39 @@
+<!doctype html>
+<head><title>lag demo</title></head>
+<body>
+"humans do not perceive 100ms lag". right. what is the largest lag with which
+you could still write out your name? drawing not supported, just wave your mouse
+and use your imagination. fun experiment: enable the cursor, set lag to 0 and
+observe the difference between the browsers's (black box) and your operating
+system's (cursor) lag. i will spare you a rant about the "100 ms delay is fine
+camp" for now.<br>
+<canvas id="c" style="border:1px solid #000; cursor:none">
+  Lacking canvas support.
+</canvas>
+<p>
+lag <input id="lagfield" type="number" value="100" autofocus> ms.
+<input id="hidefield" type="checkbox"> show cursor.
+</p>
+<script>
+var ctx = c.getContext("2d");
+function onmousemove(evt) {
+  setTimeout(function() {
+    ctx.clearRect(0, 0, c.width, c.height);
+    var r = c.getBoundingClientRect();
+    var x = evt.clientX - r.left;
+    var y = evt.clientY - r.top;
+    ctx.fillRect(x - 5, y - 5, 10, 10);
+  }, lagfield.value);
+}
+function onhide() {
+  c.style.cursor = !hidefield.checked ? 'none' : '';
+}
+function main() {
+  c.width = window.innerWidth - 50;
+  c.height = window.innerHeight - 100;
+  c.addEventListener('mousemove', onmousemove);
+  hidefield.addEventListener('change', onhide);
+}
+main();
+</script>
+</body>
