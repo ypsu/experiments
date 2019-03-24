@@ -6,7 +6,9 @@ you could still write out your name? drawing not supported, just wave your mouse
 and use your imagination. fun experiment: enable the cursor, set lag to 0 and
 observe the difference between the browsers's (black box) and your operating
 system's (cursor) lag. i will spare you a rant about the "100 ms delay is fine
-camp" for now.<br>
+camp" for now (but keep in mind that your cursor is already behind at least 30
+ms if not much more due to all the slowness in the computers and the
+monitors).<br>
 <canvas id="c" style="border:1px solid #000; cursor:none">
   Lacking canvas support.
 </canvas>
@@ -30,7 +32,7 @@ function onhide() {
 }
 function main() {
   c.width = window.innerWidth - 50;
-  c.height = window.innerHeight - 100;
+  c.height = window.innerHeight - 150;
   c.addEventListener('mousemove', onmousemove);
   hidefield.addEventListener('change', onhide);
 }
