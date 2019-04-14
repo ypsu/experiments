@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ricochet robot solver</title>
+</head><body>
+<noscript>this page needs javascript, sorry.</noscript>
+<p>
+<select id="sampleselect" onchange="loadsample();">
+  <option value="">select input</option>
+</select>
+<button id="solvebutton" disabled onclick="solveclick();">loading...</button>
+</p>
+<p>
+<textarea id="inputbox" rows="40" cols="34" oninput="unselect();"></textarea>
+</p>
+<pre id="outputbox"></pre>
+<hr>
+
+<p>this is a ricochet robots (the second version) solver written in c but
+compiled into wasm using emscripten. the solver uses a-star to find the path to
+the target. see <a href="ricochet.c">ricochet.c</a> for the source. <a
+href="ricochetbfs.c">ricochetbfs.c</a> contains a simpler, breadth first search
+version of the solver, not much slower than the a-star one. it is pretty crappy
+but it solves the sample inputs. i hard limited the solver to 17 move solutions,
+it gets very slow at that complexity anyways (~1 minute to solve the 17 move
+version - longer than i am willing to wait). the original problem description
+follows.</p>
+
+<h2>Ricochet Robots Format</h2>
+
+<h3>Type: Board</h3>
+<p>
+The board is described by a line with the string board followed by two integers
+which specify the height and width of the board. These numbers must each be 16.
+Following is then height lines of width words. Each word is one of N, W, B or C
+to describe a North wall, West wall Both north and west or the cell is Clear.
+There is assumed to be a border around the board on the South and East side.
+This is an example of an empty grid (with the exception of the 4x4 block in the
+middle).
+</p>
+<pre>
+board 16 16
+B N N N N N N N N N N N N N N N
+W C C C C C C C C C C C C C C C
+W C C C C C C C C C C C C C C C
+W C C C C C C C C C C C C C C C
+W C C C C C C C C C C C C C C C
+W C C C C C C C C C C C C C C C
+W C C C C C C C C C C C C C C C
+W C C C C C C B N W C C C C C C
+W C C C C C C W C W C C C C C C
+W C C C C C C N N C C C C C C C
+W C C C C C C C C C C C C C C C
+W C C C C C C C C C C C C C C C
+W C C C C C C C C C C C C C C C
+W C C C C C C C C C C C C C C C
+W C C C C C C C C C C C C C C C
+W C C C C C C C C C C C C C C C
+</pre>
+
+<h3>Type: Mirrors</h3>
+<p>
+The board is described by a line with the string `mirrors` followed by an
+integer which indicates the number of mirrors. There that are many following
+mirror definitions. Each definition consists of four values separated by
+whitespace.<br>
+- The x coordinate of the mirror.<br>
+- The y coordinate of the mirror.<br>
+- `\` or `/` representing the angle of the mirror.<br>
+- An integer representing which robot may pass through the mirror.<br>
+Example:
+</p>
+<pre>
+mirrors 8
+2 1 / 4
+7 4 \ 1
+14 4 / 4
+12 6 / 3
+10 8 \ 3
+6 12 / 2
+1 13 / 1
+11 14 / 2
+</pre>
+
+<h3>Type: Robots</h3>
+<p>
+The robots will be described by a line containing string robots followed by the
+number of robots which must be 5. Followed by that many lines each with an x and
+y integer. The most north west square is 0, 0.
+</p>
+<pre>
+robots 5
+0 0
+1 1
+2 3
+13 4
+8 12
+</pre>
+<p>
+The robots will map in order to the colours 0 = Black, 1 = Red, 2 = Green, 3 = Yellow, 4 = Blue.
+</p>
+
+<h3>Type: Target</h3>
+<p>
+The target will be described as a single line with the string target followed by
+the integer 0 followed by three values. The first two values are integers for
+the x and y location of the target. The last value will be an integer
+representing which robot must reach the target or the value -1 if the target is
+"colourless". While in the board game the black target can accept any robot and
+conventionally the black robot is mapped to robot 0 please note that a `0` in
+the robot indicator will *only* accept the black robot. Ensure that you put `-1`
+for the wild target. An example showing that the 3rd robot must reach the
+location 4, 5.
+</p>
+<pre>
+target 0 4 5 2
+</pre>
+
+<h3>Type: Move</h3>
+<p>
+A move is represented by 3 integers which are the robot, new x coordinate and
+new y coordinate respectively.
+An example showing the 4th robot moving to 12, 4.
+</p>
+<pre>
+3 12 4
+</pre>
+
+<h3>Puzzle</h3>
+<p>
+A puzzle is described as a board, followed by the mirrors, followed by a list of
+robots followed by a target.
+</p>
+
+<h3>Solution</h3>
+<p>
+The output is a line with the word solution followed by an integer representing
+the number of moves, followed by that many moves.
+</p>
+
+<h3>Example: 8 moves</h3>
+<pre>
+board 16 16
+B N N N B N N N N N N B N N N N
+W C C C C C C C C W C C C C C C
+W C C C C C C C C N C C C C N W
+W C C C C N C C C C C C C C C C
+W C N W C C C C C C C W C C C C
+B C C C C C C W C C N C C C C N
+W B C C C C C N C C C C B C C C
+W C C C C C C B B W C C C C C C
+W C C C C C C B B W C C C C C C
+W C C N W C C N N C C C C C C N
+W C C C C C C C B C C C C B C C
+W W C C C C C C C C C W C C C C
+W N C C C C C W C C N C C C W C
+W C C C C C C C C C C C C C N C
+B C B C C C C C C N W C C C C C
+W C C C C C W C C C C C W C C C
+mirrors 8
+2 1 / 4
+7 4 \ 1
+14 4 / 4
+12 6 / 3
+10 8 \ 3
+6 12 / 2
+1 13 / 1
+11 14 / 2
+robots 5
+0 0
+1 0
+2 0
+3 0
+4 0
+target 0 15 12 4
+
+solution 8
+move 1 1 5
+move 1 6 5
+move 1 6 0
+move 4 5 0
+move 4 5 2
+move 4 14 2
+move 4 14 12
+move 4 15 12
+</pre>
+
+<h3>Example: 10 Moves</h3>
+<pre>
+board 16 16
+B N B N N N N N N N B N N N N N
+W C C C B C C C C C C C B C C C
+W N W C C C C C C C C C C C C N
+W C C C C C C W C W C C C C C C
+W C C C C C N C C N C C C C C C
+W C C C C C C C C C N W C C N C
+B C C W C C C C C C C C C C C C
+W C C N C C C B B W C C C C C C
+W C C C C C C B B W C C C C C C
+W C C C C C C N N C C C C C W C
+B C C C W C C C C C W C C C N C
+W C C N C N W C C N C C B C C C
+W C W C C C C C C C C C C C C N
+W C N C B C C C B C C C C C C C
+W C C C C C C C C C N W C C C C
+W C C C W C C C C C C C C W C C
+robots 5
+3 15
+0 5
+13 0
+9 4
+12 10
+target 0 14 9 0
+
+solution 10
+move 0 3 11
+move 0 5 11
+move 0 5 15
+move 0 12 15
+move 0 12 11
+move 0 15 11
+move 0 15 2
+move 4 15 10
+move 0 15 9
+move 0 14 9
+</pre>
+
+<h3>Example: 11 moves with mirrors</h3>
+<pre>
+board 16 16
+B N N B N N N N N N N N N B N N
+W C C C C C C C C C C C C C C C
+W C C C C C B C C C C C W C C C
+W C C C C N C C C C C W C C C C
+W C C C C C C C C C C C C C C C
+W W C C C C C C C N W C C C C N
+W N C C C C C C C C C C C W C C
+B C C C N W C B B W C C C N C C
+W C C C C C C B B W C C C C C C
+W C W C C C C N N C C C N W C C
+W C N C C C C N W C C C C N C N
+B C C C C C C C C W C C C C C C
+W C C C W C C C C C C C C C C W
+W C C B C C C C C C C C C C N C
+W C C C C N W C C C C C C C C C
+W C C C C C C W C C W C C C C C
+mirrors 8
+2 1 / 4
+7 4 \ 1
+14 4 / 4
+12 6 / 3
+10 8 \ 3
+6 12 / 2
+1 13 / 1
+11 14 / 2
+robots 5
+6 0
+5 14
+0 15
+2 9
+13 6
+target 0 3 13 4
+
+solution 11
+move 3 15 1
+move 3 15 0
+move 4 13 0
+move 4 14 0
+move 3 15 4
+move 3 14 12
+move 2 6 15
+move 3 6 14
+move 4 14 12
+move 4 6 13
+move 4 3 13
+</pre>
+
+<h3>Example: 13 Moves</h3>
+<pre>
+board 16 16
+B N B N N N N N N N B N N N N N
+W C C C B C C C C C C C B C C C
+W N W C C C C C C C C C C C C N
+W C C C C C C W C W C C C C C C
+W C C C C C N C C N C C C C C C
+W C C C C C C C C C N W C C N C
+B C C W C C C C C C C C C C C C
+W C C N C C C B B W C C C C C C
+W C C C C C C B B W C C C C C C
+W C C C C C C N N C C C C C W C
+B C C C W C C C C C W C C C N C
+W C C N C N W C C N C C B C C C
+W C W C C C C C C C C C C C C N
+W C N C B C C C B C C C C C C C
+W C C C C C C C C C N W C C C C
+W C C C W C C C C C C C C W C C
+robots 5
+3 15
+0 5
+13 0
+9 4
+12 10
+target 0 4 9 0
+
+solution 13
+move 0 3 11
+move 0 5 11
+move 3 9 10
+move 4 10 10
+move 4 10 5
+move 4 1 5
+move 4 1 15
+move 4 3 15
+move 4 3 11
+move 0 4 11
+move 0 4 1
+move 3 4 10
+move 0 4 9
+</pre>
+
+<h3>Example: 17 Moves</h3>
+<pre>
+board 16 16
+B N B N N N N N N N B N N N N N
+W C C C B C C C C C C C B C C C
+W N W C C C C C C C C C C C C N
+W C C C C C C W C W C C C C C C
+W C C C C C N C C N C C C C C C
+W C C C C C C C C C N W C C N C
+B C C W C C C C C C C C C C C C
+W C C N C C C B B W C C C C C C
+W C C C C C C B B W C C C C C C
+W C C C C C C N N C C C C C W C
+B C C C W C C C C C W C C C N C
+W C C N C N W C C N C C B C C C
+W C W C C C C C C C C C C C C N
+W C N C B C C C B C C C C C C C
+W C C C C C C C C C N W C C C C
+W C C C W C C C C C C C C W C C
+robots 5
+3 15
+0 5
+13 0
+9 4
+1 10
+target 0 12 3 0
+
+solution 17
+move 4 0 10
+move 4 0 15
+move 0 1 15
+move 0 1 2
+move 0 0 2
+move 0 0 4
+move 3 15 4
+move 2 10 0
+move 0 14 4
+move 2 10 4
+move 0 11 4
+move 3 12 4
+move 0 11 0
+move 0 15 0
+move 0 15 1
+move 0 12 1
+move 0 12 3
+</pre>
+
+<script>
+// solve is the function from the c solver, initialized later. it takes an
+// string as a parameter, writes the output to stdout which is linked to the
+// outputbox element.
+var solve;
+var samples = {
+  sample08: `board 16 16
+B N N N B N N N N N N B N N N N
+W C C C C C C C C W C C C C C C
+W C C C C C C C C N C C C C N W
+W C C C C N C C C C C C C C C C
+W C N W C C C C C C C W C C C C
+B C C C C C C W C C N C C C C N
+W B C C C C C N C C C C B C C C
+W C C C C C C B B W C C C C C C
+W C C C C C C B B W C C C C C C
+W C C N W C C N N C C C C C C N
+W C C C C C C C B C C C C B C C
+W W C C C C C C C C C W C C C C
+W N C C C C C W C C N C C C W C
+W C C C C C C C C C C C C C N C
+B C B C C C C C C N W C C C C C
+W C C C C C W C C C C C W C C C
+mirrors 8
+2 1 / 4
+7 4 \\ 1
+14 4 / 4
+12 6 / 3
+10 8 \\ 3
+6 12 / 2
+1 13 / 1
+11 14 / 2
+robots 5
+0 0
+1 0
+2 0
+3 0
+4 0
+target 0 15 12 4`,
+  sample10: `board 16 16
+B N B N N N N N N N B N N N N N
+W C C C B C C C C C C C B C C C
+W N W C C C C C C C C C C C C N
+W C C C C C C W C W C C C C C C
+W C C C C C N C C N C C C C C C
+W C C C C C C C C C N W C C N C
+B C C W C C C C C C C C C C C C
+W C C N C C C B B W C C C C C C
+W C C C C C C B B W C C C C C C
+W C C C C C C N N C C C C C W C
+B C C C W C C C C C W C C C N C
+W C C N C N W C C N C C B C C C
+W C W C C C C C C C C C C C C N
+W C N C B C C C B C C C C C C C
+W C C C C C C C C C N W C C C C
+W C C C W C C C C C C C C W C C
+robots 5
+3 15
+0 5
+13 0
+9 4
+12 10
+target 0 14 9 0`,
+  sample11: `board 16 16
+B N N B N N N N N N N N N B N N
+W C C C C C C C C C C C C C C C
+W C C C C C B C C C C C W C C C
+W C C C C N C C C C C W C C C C
+W C C C C C C C C C C C C C C C
+W W C C C C C C C N W C C C C N
+W N C C C C C C C C C C C W C C
+B C C C N W C B B W C C C N C C
+W C C C C C C B B W C C C C C C
+W C W C C C C N N C C C N W C C
+W C N C C C C N W C C C C N C N
+B C C C C C C C C W C C C C C C
+W C C C W C C C C C C C C C C W
+W C C B C C C C C C C C C C N C
+W C C C C N W C C C C C C C C C
+W C C C C C C W C C W C C C C C
+mirrors 8
+2 1 / 4
+7 4 \\ 1
+14 4 / 4
+12 6 / 3
+10 8 \\ 3
+6 12 / 2
+1 13 / 1
+11 14 / 2
+robots 5
+6 0
+5 14
+0 15
+2 9
+13 6
+target 0 3 13 4`,
+  sample13: `board 16 16
+B N B N N N N N N N B N N N N N
+W C C C B C C C C C C C B C C C
+W N W C C C C C C C C C C C C N
+W C C C C C C W C W C C C C C C
+W C C C C C N C C N C C C C C C
+W C C C C C C C C C N W C C N C
+B C C W C C C C C C C C C C C C
+W C C N C C C B B W C C C C C C
+W C C C C C C B B W C C C C C C
+W C C C C C C N N C C C C C W C
+B C C C W C C C C C W C C C N C
+W C C N C N W C C N C C B C C C
+W C W C C C C C C C C C C C C N
+W C N C B C C C B C C C C C C C
+W C C C C C C C C C N W C C C C
+W C C C W C C C C C C C C W C C
+robots 5
+3 15
+0 5
+13 0
+9 4
+12 10
+target 0 4 9 0`,
+  sample17: `board 16 16
+B N B N N N N N N N B N N N N N
+W C C C B C C C C C C C B C C C
+W N W C C C C C C C C C C C C N
+W C C C C C C W C W C C C C C C
+W C C C C C N C C N C C C C C C
+W C C C C C C C C C N W C C N C
+B C C W C C C C C C C C C C C C
+W C C N C C C B B W C C C C C C
+W C C C C C C B B W C C C C C C
+W C C C C C C N N C C C C C W C
+B C C C W C C C C C W C C C N C
+W C C N C N W C C N C C B C C C
+W C W C C C C C C C C C C C C N
+W C N C B C C C B C C C C C C C
+W C C C C C C C C C N W C C C C
+W C C C W C C C C C C C C W C C
+robots 5
+3 15
+0 5
+13 0
+9 4
+1 10
+target 0 12 3 0`,
+};
+
+function loadsample() {
+  if (samples[sampleselect.value]) {
+    inputbox.value = samples[sampleselect.value];
+  }
+}
+
+function init() {
+  for (var key in samples) {
+    var opt = document.createElement('option');
+    opt.text = key;
+    sampleselect.add(opt);
+  }
+}
+
+function unselect() {
+  sampleselect.selectedIndex = 0;
+}
+
+function solveclick() {
+  outputbox.innerText = '';
+  solve(inputbox.value);
+}
+
+var Module = {
+  onRuntimeInitialized: function() {
+    solvebutton.innerText = 'solve';
+    solvebutton.disabled = false;
+    solve = Module.cwrap('solve', null, ['string']);
+  },
+  print: function(text) {
+    outputbox.innerText += text + '\n';
+  },
+};
+
+init();
+</script>
+<script async type="text/javascript" src="ricochet.js"></script>
+</body></html>

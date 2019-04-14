@@ -1,0 +1,13 @@
+#!/bin/bash
+set -e
+gcc -O2 -static -o ricochet ricochet.c
+if ! test -x ~/d/emsdk/emsdk_env.sh; then
+  echo 'emsdk not found.'
+  exit 1
+fi
+emcc -O2 -o ricochet.js \
+  -s ENVIRONMENT=web \
+  -s ALLOW_MEMORY_GROWTH=1 \
+  -s EXPORTED_FUNCTIONS='["_solve"]' \
+  -s EXTRA_EXPORTED_RUNTIME_METHODS='["cwrap"]' \
+  ricochet.c

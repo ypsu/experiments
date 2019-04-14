@@ -1,0 +1,33 @@
+board 16 16
+B N N N B N N N N N N B N N N N
+W C C C C C C C C W C C C C C C
+W C C C C C C C C N C C C C N W
+W C C C C N C C C C C C C C C C
+W C N W C C C C C C C W C C C C
+B C C C C C C W C C N C C C C N
+W B C C C C C N C C C C B C C C
+W C C C C C C B B W C C C C C C
+W C C C C C C B B W C C C C C C
+W C C N W C C N N C C C C C C N
+W C C C C C C C B C C C C B C C
+W W C C C C C C C C C W C C C C
+W N C C C C C W C C N C C C W C
+W C C C C C C C C C C C C C N C
+B C B C C C C C C N W C C C C C
+W C C C C C W C C C C C W C C C
+mirrors 8
+2 1 / 4
+7 4 \ 1
+14 4 / 4
+12 6 / 3
+10 8 \ 3
+6 12 / 2
+1 13 / 1
+11 14 / 2
+robots 5
+0 0
+1 0
+2 0
+3 0
+4 0
+target 0 15 12 4
