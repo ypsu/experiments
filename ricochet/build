@@ -5,6 +5,7 @@ if ! test -x ~/d/emsdk/emsdk_env.sh; then
   echo 'emsdk not found.'
   exit 1
 fi
+source ~/d/emsdk/emsdk_env.sh >/dev/null
 emcc -O2 -o ricochet.js \
   -s ENVIRONMENT=web \
   -s ALLOW_MEMORY_GROWTH=1 \
