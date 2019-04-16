@@ -15,8 +15,7 @@ void checkfunc(bool ok, const char *s, const char *file, int line) {
   exit(1);
 }
 
-enum { queuelimit = 50000000 };
-enum { hashlimit = queuelimit * 3 + 1 };
+enum { hashlimit = 50000000 * 3 + 1 };
 enum { moveslimit = 50 };
 
 enum {
@@ -55,6 +54,9 @@ struct board {
   uint8_t robotpos[5];
   uint8_t targetpos;
   int targetid;
+
+  // the size of the queue that this solver preallocated.
+  int queuelimit;
 
   struct state *q;
   int qb[moveslimit], qe;
@@ -227,10 +229,25 @@ void solve(char *inputbuf) {
   }
 
   // allocate all the memory for the data structures.
-  board.q = calloc(queuelimit, sizeof(board.q[0]));
-  check(board.q != NULL);
   board.visitedhash = calloc(hashlimit, sizeof(board.visitedhash[0]));
-  check(board.visitedhash != NULL);
+  if (board.visitedhash == NULL) {
+    puts("error: not enough ram for running the solver, giving up.");
+    return;
+  }
+  board.queuelimit = 50000000;
+  board.q = calloc(board.queuelimit, sizeof(board.q[0]));
+  if (board.q == NULL) {
+    puts("warning: not much ram available, running the small scale solver.");
+    board.queuelimit /= 10;
+    board.q = calloc(board.queuelimit, sizeof(board.q[0]));
+    board.visitedhash = calloc(hashlimit, sizeof(board.visitedhash[0]));
+    if (board.q == NULL) {
+      free(board.q);
+      free(board.visitedhash);
+      puts("error: not enough ram for that either, giving up.");
+      return;
+    }
+  }
 
   // run the a*. note that this solution does not use a priority queue but
   // rather has a separate queue for each distance bucket. each bucket's queue
@@ -296,7 +313,7 @@ void solve(char *inputbuf) {
         }
         if (newpos == cs.pos[robot]) continue;
         // add the new state to the queue.
-        if (board.qe == queuelimit) {
+        if (board.qe == board.queuelimit) {
           printf("problem too hard for this solver, quitting.\n");
           printf("gave up at %d dist.\n", cs.dist);
           exit(1);
