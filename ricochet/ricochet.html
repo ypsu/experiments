@@ -363,6 +363,58 @@ move 0 12 1
 move 0 12 3
 </pre>
 
+<h3>Example: 22 Moves (credit: Michael Fogleman)</h3>
+<pre>
+board 16 16
+B N N N B N N N N N B N N N N N
+W C C C C C W C C C C C C C B C
+W C C C C C N C C C C W C C C C
+W N W C C C C C C C C N C C C C
+W C C C C B C C C C C C C C C N
+W C C W C C C C C C C C C C C C
+W C N C C C C C C C C C C C W C
+B C C C C C C B B W N W C N C C
+W C C C C C C B B W C C C C C C
+W C C N W C C N N C C C C C B C
+W C C C C C C C C C C W C C C C
+W W C C C C C C C C C N C C C N
+W N C C C C C W C N W C C C C C
+W C C C C C N C C C C C C C C C
+B C B C C C C C C C C C C C W C
+W C C C C C W C C C C W C N C C
+robots 5
+7 7
+12 1
+1 15
+12 0
+15 0
+target 0 9 12 4
+
+solution 22
+move 4 15 3
+move 4 2 3
+move 4 2 0
+move 4 3 0
+move 4 3 8
+move 4 0 8
+move 4 0 13
+move 1 12 15
+move 1 15 15
+move 1 15 11
+move 4 15 13
+move 4 15 12
+move 4 10 12
+move 4 10 15
+move 3 12 15
+move 3 15 15
+move 3 15 12
+move 3 10 12
+move 4 6 15
+move 3 10 15
+move 4 9 15
+move 4 9 12
+</pre>
+
 <script>
 // solve is the function from the c solver, initialized later. it takes an
 // string as a parameter, writes the output to stdout which is linked to the
@@ -507,6 +559,30 @@ robots 5
 9 4
 1 10
 target 0 12 3 0`,
+  sample22: `board 16 16
+B N N N B N N N N N B N N N N N
+W C C C C C W C C C C C C C B C
+W C C C C C N C C C C W C C C C
+W N W C C C C C C C C N C C C C
+W C C C C B C C C C C C C C C N
+W C C W C C C C C C C C C C C C
+W C N C C C C C C C C C C C W C
+B C C C C C C B B W N W C N C C
+W C C C C C C B B W C C C C C C
+W C C N W C C N N C C C C C B C
+W C C C C C C C C C C W C C C C
+W W C C C C C C C C C N C C C N
+W N C C C C C W C N W C C C C C
+W C C C C C N C C C C C C C C C
+B C B C C C C C C C C C C C W C
+W C C C C C W C C C C W C N C C
+robots 5
+7 7
+12 1
+1 15
+12 0
+15 0
+target 0 9 12 4`,
 };
 
 function loadsample() {
