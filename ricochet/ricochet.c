@@ -17,7 +17,7 @@ void checkfunc(bool ok, const char *s, const char *file, int line) {
 
 enum { queuelimit = 50000000 };
 enum { hashlimit = queuelimit * 3 + 1 };
-enum { moveslimit = 18 };
+enum { moveslimit = 50 };
 
 enum {
   wallright = 1,
