@@ -307,8 +307,9 @@ void solve(char *inputbuf) {
         int distleft = 999;
         for (int rob = 0; rob < 5; rob++) {
           if (board.targetid != -1 && board.targetid != rob) continue;
-          if (board.dist[rob][newpos] < distleft) {
-            distleft = board.dist[rob][newpos];
+          int rd = board.dist[rob][ns.pos[rob]];
+          if (rd < distleft) {
+            distleft = rd;
           }
         }
         ns.estimateddist = ns.dist + distleft;
