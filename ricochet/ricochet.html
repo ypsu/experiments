@@ -453,6 +453,41 @@ move 0 2 13
 move 0 2 14
 </pre>
 
+<h3>Example: No stopping on mirrors (an edge case)</h3>
+<pre>
+board 16 16
+B N N N N N N N N N N N N N N N
+W C C C C C C C C C C C C C C C
+W C C C C C C C C C C C C C C C
+W C C C C C C C C C C C C C C C
+W C C C C C C C C C C C C C C C
+W C C C C C C C C C C C C C C C
+W C C C C C C C C C C C C C C C
+W C C C C C C C C C C C C C C C
+W C C C C C C C C C C C C C C C
+W C C C C C C C C C C C C C C C
+W C C C C C C C C C C C C C C C
+W C C C C C C C C C C C C C C C
+W C C C C C C C C C C C C C C C
+W C C C C C C C C C C C C C C C
+W C C C C C C C C C C C C C C C
+W C C C C C C C C C C C C C C C
+mirrors 1
+15 15 / 0
+robots 5
+15 0
+0 0
+0 1
+0 2
+0 3
+target 0 0 15 0
+
+solution 3
+move 0 1 0
+move 0 1 15
+move 0 0 15
+</pre>
+
 <script>
 // solve is the function from the c solver, initialized later. it takes an
 // string as a parameter, writes the output to stdout which is linked to the
@@ -649,6 +684,32 @@ robots 5
 0 2
 0 3
 target 0 2 14 0`,
+  onmirror: `board 16 16
+B N N N N N N N N N N N N N N N
+W C C C C C C C C C C C C C C C
+W C C C C C C C C C C C C C C C
+W C C C C C C C C C C C C C C C
+W C C C C C C C C C C C C C C C
+W C C C C C C C C C C C C C C C
+W C C C C C C C C C C C C C C C
+W C C C C C C C C C C C C C C C
+W C C C C C C C C C C C C C C C
+W C C C C C C C C C C C C C C C
+W C C C C C C C C C C C C C C C
+W C C C C C C C C C C C C C C C
+W C C C C C C C C C C C C C C C
+W C C C C C C C C C C C C C C C
+W C C C C C C C C C C C C C C C
+W C C C C C C C C C C C C C C C
+mirrors 1
+15 15 / 0
+robots 5
+15 0
+0 0
+0 1
+0 2
+0 3
+target 0 0 15 0`,
 };
 
 function loadsample() {

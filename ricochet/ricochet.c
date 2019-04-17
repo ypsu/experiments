@@ -313,6 +313,7 @@ void solve(char *inputbuf) {
           }
         }
         if (newpos == cs.pos[robot]) continue;
+        if ((board.wall[newpos] & wallmirror) != 0) continue;
         // add the new state to the queue.
         if (board.qe == board.queuelimit) {
           printf("problem too hard for this solver, quitting.\n");
