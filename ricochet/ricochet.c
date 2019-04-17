@@ -284,6 +284,7 @@ void solve(char *inputbuf) {
       board.wall[cs.pos[robot]] |= wallrobot;
     }
     for (int robot = 0; robot < 5; robot++) {
+      board.wall[cs.pos[robot]] &= ~wallrobot;
       for (int dir = 0; dir < 4; dir++) {
         // move the robot in the direction while possible.
         int curdir = dir;
@@ -370,6 +371,7 @@ void solve(char *inputbuf) {
           }
         }
       }
+      board.wall[cs.pos[robot]] |= wallrobot;
     }
     for (int robot = 0; robot < 5; robot++) {
       board.wall[cs.pos[robot]] &= ~wallrobot;
