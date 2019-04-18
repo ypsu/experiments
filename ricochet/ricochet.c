@@ -240,7 +240,6 @@ void solve(char *inputbuf) {
     puts("warning: not much ram available, running the small scale solver.");
     board.queuelimit /= 10;
     board.q = calloc(board.queuelimit, sizeof(board.q[0]));
-    board.visitedhash = calloc(hashlimit, sizeof(board.visitedhash[0]));
     if (board.q == NULL) {
       free(board.q);
       free(board.visitedhash);
