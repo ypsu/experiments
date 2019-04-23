@@ -298,8 +298,11 @@ void solve(char *inputbuf) {
             }
           }
           if (board.dist[robot][newpos] != 255) continue;
-          board.dist[robot][newpos] = board.dist[robot][pos] + 1;
-          q[qe++] = newpos;
+          if ((board.wall[newpos] & wallmirror) == 0) {
+            // only add non-mirror positions since we cannot stop on a mirror.
+            board.dist[robot][newpos] = board.dist[robot][pos] + 1;
+            q[qe++] = newpos;
+          }
         }
       }
     }
