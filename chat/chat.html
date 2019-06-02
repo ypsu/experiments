@@ -1,0 +1,208 @@
+<!doctype html>
+<head>
+  <title>webrtc chat</title>
+  <meta charset='utf-8'>
+</head>
+<p>
+this is a webrtc chat demo that uses my own little signaling server to establish
+the connection. afterwards the chat is peer to peer, does not go through a
+central server. simply open up this page from multiple browsers (even from
+different networks) and chat away (use enter to send the message). the first
+person opening the page will become the server and the chat will go on until
+that server is online (it is multiplexing the messages). once the server is
+gone, chat is offline, clients must refresh the page so that a new server is
+elected.
+</p>
+<p>
+note that the error handling is non-existent in this demo. that would make it
+way too long for demo purposes.
+</p>
+<p>
+details about my signaling server can be found at
+<a href='https://github.com/ypsu/notech/blob/a21d/webserve.c#L146-L207'>
+https://github.com/ypsu/notech/blob/a21d/webserve.c#L146-L207</a>.
+</p>
+<hr/>
+<p id='statbox'>initializing</p>
+<pre id='chatbox'></pre>
+<input type='text' id='inputbox' autofocus onkeydown='handleinput(event);'>
+<script>
+g = {
+  sigserver: 'https://notech.ie',
+
+  username: '',
+
+  rtcconfig: {
+    iceServers: [{
+      urls: 'stun:stun.l.google.com:19302',
+    }]
+  },
+
+  isserver: false,
+
+  // an array of connections and channels. in case of a client the size is
+  // always 1, in case of a server they can contain multiple elements. both
+  // arrays contain exactly the same number of elements at all times.
+  connection: [],
+  channel: [],
+
+  // this is an xhr for all the other queries.
+  xhr: null,
+
+  // number of peers that have disconnected already.
+  disconnected: 0,
+};
+
+// convert continuation passing style into direct style:
+// await eventpromise(thing, 'click') will wait for a single click on thing.
+function eventpromise(thing, type) {
+  return new Promise(function (resolve, _) {
+    var handler = function (event) {
+      resolve(event);
+      thing.removeEventListener(type, handler);
+    };
+    thing.addEventListener(type, handler);
+  });
+}
+
+function handleinput(event) {
+  if (event.keyCode != 13) return;
+  var msg = g.username + ': ' + inputbox.value + '\n';
+  inputbox.value = '';
+  // distribute msg along the clients.
+  chatbox.innerText += msg;
+  for (var ch of g.channel) {
+    ch.send(msg);
+  }
+}
+
+// append the message to chatbox and if we are the server, distribute among the
+// clients.
+function processmessage(event) {
+  chatbox.innerText += event.data;
+  if (g.isserver) {
+    for (var ch of g.channel) {
+      if (ch != event.target) ch.send(event.data);
+    }
+  }
+}
+
+function handlefailure(event) {
+  if (event.target.iceConnectionState != 'disconnected') return;
+  if (!g.isserver) {
+    var msg = "<b>server down, end of chat. refresh to go at it again.</b>";
+    chatbox.innerHTML += msg;
+    inputbox.value = '';
+    inputbox.disabled = true;
+  } else {
+    var ev = {
+      data: `${event.target.username} disconnected.\n`
+    };
+    processmessage(ev);
+    g.disconnected++;
+    // update the status message with an ugly hack.
+    var prevcntarr = statbox.innerText.match(/, ([0-9]+) peers,/);
+    if (!prevcntarr) return;
+    var cnt = Number(prevcntarr[1]) - 1;
+    statbox.innerText = statbox.innerText.replace(prevcntarr[1], cnt);
+  }
+}
+
+async function main() {
+  // check for a pending chatoffer signal.
+  g.xhr = new XMLHttpRequest();
+  g.xhr.open('GET', `${g.sigserver}/sigquery/chatoffer`);
+  g.xhr.send(null);
+  g.xhr.onerror = function () {
+    statbox.innerText = 'error with signaling server';
+    inputbox.disabled = true;
+  }
+  await eventpromise(g.xhr, 'load');
+  if (g.xhr.status == 204) {
+    g.isserver = true;
+    g.username = 'user0';
+    var nextpeerid = 1;
+    // make sure chatanswer signal is empty (it could get into a bad, non-empty
+    // state after a badly timed refresh).
+    g.xhr = new XMLHttpRequest();
+    g.xhr.open('GET', `${g.sigserver}/sigquery/chatanswer`);
+    g.xhr.send();
+    await eventpromise(g.xhr, 'load');
+    while (true) {
+      var pcnt = nextpeerid - 1 - g.disconnected;
+      statbox.innerText = `server mode, ${pcnt} peers, generating sdp offer.`;
+      var conn = new RTCPeerConnection(g.rtcconfig);
+      var channel = conn.createDataChannel('mydatachannel');
+      conn.setLocalDescription(await conn.createOffer());
+      while ((await eventpromise(conn, 'icecandidate')).candidate) {}
+      statbox.innerText = `server mode, ${pcnt} peers, uploading sdp offer.`;
+      g.xhr = new XMLHttpRequest();
+      g.xhr.open('POST', `${g.sigserver}/sigset/chatoffer`);
+      g.xhr.send(conn.localDescription.sdp);
+      await eventpromise(g.xhr, 'load');
+      if (g.xhr.status != 200) {
+        statbox.innerText = `error, sigserver returned ${g.xhr.status}.`;
+        return;
+      }
+      statbox.innerText = `server mode, ${pcnt} peers, waiting for a peer.`;
+      g.xhr = new XMLHttpRequest();
+      g.xhr.open('GET', `${g.sigserver}/sigget/chatanswer`);
+      g.xhr.send();
+      await eventpromise(g.xhr, 'load');
+      if (g.xhr.status != 200) {
+        statusbox.innerText = `error, sigserver returned ${g.xhr.status}.`;
+        return;
+      }
+      statbox.innerText = `server mode, ${pcnt} peers, connecting to a peer.`;
+      conn.setRemoteDescription({
+        type: 'answer',
+        sdp: g.xhr.response,
+      });
+      await eventpromise(channel, 'open');
+      statbox.innerText = 'server mode, connected.';
+      // the first message towards the clients is the username.
+      conn.username = `user${nextpeerid}`;
+      channel.send(conn.username);
+      // the second message is the full history so far.
+      if (chatbox.innerText != '') channel.send(chatbox.innerText);
+      channel.onmessage = processmessage;
+      conn.oniceconnectionstatechange = handlefailure;
+      g.connection.push(conn);
+      g.channel.push(channel);
+      nextpeerid++;
+    }
+  } else if (g.xhr.status == 200) {
+    statbox.innerText = 'client mode, generating sdp answer.';
+    var conn = new RTCPeerConnection(g.rtcconfig);
+    var chanpromise = eventpromise(conn, 'datachannel');
+    await conn.setRemoteDescription({
+      type: 'offer',
+      sdp: g.xhr.response,
+    });
+    conn.setLocalDescription(await conn.createAnswer());
+    while ((await eventpromise(conn, 'icecandidate')).candidate) {}
+    statbox.innerText = 'client mode, uploading sdp answer.';
+    g.xhr = new XMLHttpRequest();
+    g.xhr.open('POST', `${g.sigserver}/sigset/chatanswer`);
+    g.xhr.send(conn.localDescription.sdp);
+    statbox.innerText = 'client mode, waiting for the channel.';
+    var channel = (await chanpromise).channel;
+    statbox.innerText = 'client mode, waiting handshake.';
+    // the first message towards the clients is the username.
+    g.username = (await eventpromise(channel, 'message')).data;
+    statbox.innerText = 'client mode, connected.';
+    channel.onmessage = processmessage;
+    conn.oniceconnectionstatechange = handlefailure;
+    window.onbeforeunload = function() {
+      conn.close();
+    }
+    g.connection.push(conn);
+    g.channel.push(channel);
+  } else {
+    statbox.innerText = `error: sigserver returned ${g.xhr.status}.`;
+    return;
+  }
+}
+
+main();
+</script>
