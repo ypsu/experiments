@@ -1,0 +1,43 @@
+Tracking malloc for linux
+
+Tracks the backtraces of each malloc, and can print the cumulatively allocated
+memory in bytes for each distinct stacktrace. It is very hackish to allow doing
+superficial analysis with little setup. Currently this is a silly linear
+allocator with huge memory requirements rather than a wrapper above libc
+malloc/free but this could be simply changed if needed.
+
+Note: This isn't a debug malloc. If your application is broken (e.g. it has
+buffer overflows, double frees, etc.), then the output of this is unreliable if
+it works at all.
+
+The code is ~250 LOC, new features should be easily addable.
+
+
+Usage:
+
+1. Build your application as you used to but make sure that at the linking step
+you have -rdynamic set.
+
+2. Make and copy libtracking_malloc.so next to it. This is not needed but then
+adjust the next step accordingly.
+
+3. LD_LIBRARY_PATH=. LD_PRELOAD=libtracking_malloc.so ./your_application
+
+4. gdb -p your_applications_pid
+
+5. There's a hook in free to dump all the state into /tmp/alloc.txt. Issue this
+in gdb: print free(-1)
+
+6. To see the sorted list of allocations, enter this in a shell:
+sort -k2 -rn /tmp/alloc.txt | vim -c "set wrap" -c "set number" -
+
+
+Example output of test.c in the above file:
+
+total: 2883 bytes
+usage: 1234 bytes;  ./libtracking_malloc.so(malloc+0x16e) [0x7fe76b1f5fad]  ./test(main+0x12) [0x4008e8]  /usr/lib/libc.so.6(__libc_start_main+0xf0) [0x7fe76ae72040]  ./test() [0x400809]
+usage: 5 bytes;  ./libtracking_malloc.so(malloc+0x16e) [0x7fe76b1f5fad]  /usr/lib/libc.so.6(__strdup+0x1a) [0x7fe76aed39ca]  ./test(main+0x1c) [0x4008f2]  /usr/lib/libc.so.6(__libc_start_main+0xf0) [0x7fe76ae72040]  ./test() [0x400809]
+
+Note that some allocations made from libdl are not properly counted because they
+often allocate from the backtrace code itself, so to avoid infinite recursion I
+avoid tracking them.
