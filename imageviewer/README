@@ -1,0 +1,22 @@
+This is a simple image viewer for HD screens. The application will
+display all JPEG pictures in the current directory. This application
+preloads 7 images forward and 2 backward. This allows fast image
+switching so when you press the right key, the next image appears
+immediately without waiting (unless you are pressing it too fast).
+
+The application properly rotates the image file based on the JPEG's exif
+information. Then the application resizes the image so that it fits to
+the screen size.
+
+The usage is simple:
+	Right arrow - next image
+	Left arrow - previous image
+	Escape - exit
+
+
+This application also comes with a selector application. This terminal
+application shows the list of subdirectories in the current directory
+from which you can select one via Up/Down and when you press the Enter
+key it starts the image viewer in that subdirectory.
+
+All of this software is for Linux.
