@@ -1,0 +1,50 @@
+This is a very basic movie selector for HD screens. Select a movie via
+the up-down keys, press enter and the video player is started.
+
+It looks like this on the screen (if the window manager is properly set
+up):
+
+┌──────────────────────────────────────────────┬────────────────────────────┐
+│                                              │                            │
+│                                              │                            │
+│                                              │                            │
+│           [ movie list ]                     │                            │
+│                                              │                            │
+│                                              │                            │
+│                                              │                            │
+│                                              │                            │
+├──────────────────────────────────────────────┤     [ movie poster ]       │
+│                                              │                            │
+│                                              │                            │
+│                                              │                            │
+│                                              │                            │
+│    [ description of the current movie ]      │                            │
+│                                              │                            │
+│                                              │                            │
+│                                              │                            │
+│                                              │                            │
+└──────────────────────────────────────────────┴────────────────────────────┘
+
+In order this to work first you need to start the display-poster
+application. After this the selector app can be started. This app needs
+to be started in the directory where your movies are at. You can try to
+start it in the sample directory structure.
+
+Each movie has a subdirectory. Let's say a movie's subdirectory is
+called movie1. The the following files need to be found in it:
+
+movie1/title.txt: the name in the list
+       desc.txt: the description in the bottom
+       poster.bmp: the picture on the right (720x1080 or smaller)
+       movie.mkv/avi/mp4/flv: the movie to play
+       opts.txt: override default options [optional]
+
+If movie.mkv/avi/mp4/flv is missing, the program recurses into the
+directory. This is handy for series. You can return to the parent via
+Escape. If any other non-optional file is missing, the movie doesn't
+appear in the list.
+
+The selector is currently configured to hungarian. The locale overrides
+must be disabled in selector.c in order to have the locale taken from
+the environment. The locale is used for determining the alphabetical
+order of the list items.
