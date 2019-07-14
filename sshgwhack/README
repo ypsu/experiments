@@ -1,0 +1,74 @@
+This implements the -L feature of SSH. The -L option might be disabled by
+careful configuration on the server thus here is this hacky workaround for it.
+
+The solution is Linux only and consists of two binaries: loc for the local side
+and rem for the remote side.
+
+When loc is started it opens the ssh connection simply by forking and starting
+the ssh command but the stdin/stdout redirected (these will be used for
+communicating the data). After the ssh connection is established it'll open up a
+listening port on which the connections will be forwarded to the host:port from
+the remote side.
+
+
+Example:
+
+$ ./loc -p 2222 -a "myproxy.server.com 80" -c "cd .myhacks" -c "./rem" ssh server.com
+
+
+Explanation:
+
+-p 2222
+	this select the local port to listen on
+
+-a "myproxy.server.com 80"
+	this selects the address to which to forward the connections on the
+	remote side
+
+-c "cd .myhacks"
+	you can execute some remote commands before starting act as a proxy
+
+-c "./rem"
+	you must start rem on the remote side like this
+
+ssh server.com
+	the rest of the parameters is the ssh invocation you use to connect to
+	your server
+
+
+Basically loc starts "ssh server.com" and writes
+	cd .myhacks
+	./rem
+on its standard input then starts multiplexing the incoming connections.
+
+In order for this to work, this application expects that ssh won't query for
+username and password. You can easily set this up several ways (easiest one
+being setting up ControlPath and ControlMaster and making another ssh connection
+to your server before starting the proxy).
+
+
+The protocol between loc and rem is the following:
+At first a sanity handshake is made: loc sends 4 bytes containing the string
+SDLH and rem also sends the 4 byte string of HLDS.
+After the sanity handshake loc sends a 64 byte long string containing the
+host and port to connect to. The host and port is separated by single space.
+All other characters in the 64 bytes must be zero.
+
+After the handshake the connection multiplexing starts. The structure of the
+messages:
+	struct {
+		int16_t fd;
+		int16_t msg_size;
+		char data[]; // msg_size bytes long
+	};
+(assume no padding)
+
+If loc sends a message with an unknown fd rem makes a new connection and the
+given fd will be representing this channel. In the first message for a new
+connection msg_size must be zero. In other cases msg_size of 0 means that the
+other side should close the socket. msg_size must be non-negative. fd can be
+negative in which case msg_size must be zero and this message is used as a
+keepalive message.
+
+This design of protocol has some race conditions at closing time but they should
+be quite rare thus I don't really care about them.
