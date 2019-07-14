@@ -1,0 +1,7 @@
+All pictures here are grayscale hitmaps for the various models. Each pixel can
+have 4 possible values:
+
+  0: no hit
+ 64: legs
+128: body
+192: head

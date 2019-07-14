@@ -1,0 +1,14 @@
+Things which would be nice to do:
+
+* Replace .desc files with generated .c and .h files. Then we need less files to
+  load at startup.
+* Implement doors: Then the game can paced better and we can make artifically
+  larger on small map via key hunting. It also opens the way to interesting
+  challenges: for example a timed door where you have to kill monsters very
+  quickly to proceed otherwise the player has to restart.
+* Add nice animations to the guns.
+* Use larger fonts instead of the small ones we have currently.
+* Use multiple small maps: this way we need less resources.
+* Make the game configurable, especially it's keybinding. Reading this from a
+  config is fine.
+* Implement a menu for the game.
