@@ -1,0 +1,7 @@
+This is a multiplayer reflex game for Raspberry Pi inspired by GunBlood:
+www.officegamespot.com/gunblood.htm
+
+This can be played by more players on the same machine but you'll need as many
+mouses as players you have (up to 6 players).
+
+Issue a make and run the game in the framebuffer.

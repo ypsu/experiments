@@ -1,0 +1,6 @@
+0 man_healthy.png 32 60 0 0
+1 man_kneeling.png 61 61 33 39
+2 man_sitting.png 30 48 0 72
+3 man_laying.png 130 42 99 105
+4 man_dead_front.png 132 33 103 121
+5 man_dead_back.png 57 31 -106 124
