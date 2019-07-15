@@ -1,5 +1,8 @@
-This implements the -L feature of SSH. The -L option might be disabled by
-careful configuration on the server thus here is this hacky workaround for it.
+# Workaround for disabled ssh gateway ports or port forwarding
+
+This basically implements the -L feature of SSH using only the stdin/stdout
+streams of ssh. The -L option might be disabled by careful configuration on the
+server thus here is this hacky workaround for it.
 
 The solution is Linux only and consists of two binaries: loc for the local side
 and rem for the remote side.
