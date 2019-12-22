@@ -1,0 +1,71 @@
+testmissing {
+  a !f0
+}
+testconstant {
+  f0 {
+    result 1
+  }
+  a !f0
+  b !f0 !f0 +
+}
+testdouble {
+  f1 {
+    result args.0 args.0 +
+  }
+  a 1 !f1
+}
+testsum {
+  f4 {
+    result args.0 args.1 args.2 args.3 + + +
+  }
+  a 1 2 3 4 !f4
+}
+testcontext {
+  f0 {
+    result b
+  }
+  a {
+    b 1
+    c !f0
+    d !f0 !f0 +
+  }
+}
+testexistingargs {
+  f0 {
+    args []
+    result 0
+  }
+  a !f0
+}
+testnoresult {
+  f0 {
+  }
+  a !f0
+}
+testfuncref {
+  myadd {
+    result args.0 args.1 +
+  }
+  f2 this 'myadd' !lookup2
+  a 1 2 !f2
+}
+testinherit {
+  t1 {
+    myadd2 {
+      result args.0 args.1 +
+    }
+  }
+  t2 t1 {
+    a 1 2 !myadd2
+  }
+}
+testoutofbounds {
+  myadd1 {
+    result args.0 args.1 +
+  }
+  r 1 !myadd1
+}
+testdiffargc {
+  mysub1 numsub2
+  r 1 !mysub1
+}

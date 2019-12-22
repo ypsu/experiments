@@ -1,0 +1,68 @@
+{
+  testbacktick {
+  }
+  testcustom {
+    a `3error.rpt testcustom.a: something went bad.`
+  }
+  testcustominlist {
+    a [
+      1
+      `3error.rpt testcustominlist.a.1: myerror`
+      2
+    ]
+  }
+  testcustominlisttuple {
+    a [
+      1
+      {
+        b `3error.rpt testcustominlisttuple.a.1.b: othererror`
+      }
+      2
+    ]
+  }
+  testerrorinlist {
+    a [
+      [
+        {
+          b `3error.rpt testerrorinlist.a.0.0.b: myerror.`
+        }
+      ]
+    ]
+    c `3error.rpt testerrorinlist.a.0.0.b: myerror.`
+  }
+  testexpand {
+    a {
+      b 1
+      c 2
+      d 3
+    }
+    b {
+      b 1
+      c 'apple'
+      d `3error.rpt testexpand.b.d: 'apple' for arg 2 is not a number.`
+    }
+  }
+  testnewline {
+  }
+  testnotnumber {
+    a `3error.rpt testnotnumber.a: 'apple' for arg 1 is not a number.`
+  }
+  testpropagation {
+    a `3error.rpt testpropagation.a: 'apple' for arg 1 is not a number.`
+    b `3error.rpt testpropagation.b: 'pear' for arg 1 is not a number.`
+    c `3error.rpt testpropagation.a: 'apple' for arg 1 is not a number.`
+  }
+  testremotepropagation {
+    a {
+      b `3error.rpt testremotepropagation.a.b: 'apple' for arg 1 is not a number.`
+    }
+    c {
+      d `3error.rpt testremotepropagation.a.b: 'apple' for arg 1 is not a number.`
+    }
+  }
+  testspaces {
+    a b {
+      foo `3error.rpt testspaces.a b.foo: myerror`
+    }
+  }
+}

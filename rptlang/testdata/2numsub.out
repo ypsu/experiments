@@ -1,0 +1,45 @@
+{
+  test0 {
+    r `2numsub.rpt test0.r: numsub0 not found.`
+  }
+  test1 {
+    r `2numsub.rpt test1.r: numsub1 not found.`
+  }
+  test2 {
+    r -1
+  }
+  test3 {
+    r `2numsub.rpt test3.r: numsub3 not found.`
+  }
+  testerror {
+    r `2numsub.rpt testerror.r: error1`
+  }
+  testfunc {
+    r `2numsub.rpt testfunc.r: numsub1 not found.`
+  }
+  testfunc2 {
+    r 4
+  }
+  testlist {
+    r `2numsub.rpt testlist.r: list for arg 2 is not a number.`
+  }
+  testoperator {
+    a 2
+    b 3
+    c 13
+    d 1
+  }
+  teststring {
+    r `2numsub.rpt teststring.r: 'hello' for arg 2 is not a number.`
+  }
+  testtuple {
+    empty {
+    }
+    r `2numsub.rpt testtuple.r: tuple for arg 2 is not a number.`
+  }
+  testunderflow {
+    negtwo63 -9223372036854775808
+    negtwo64 `2numsub.rpt testunderflow.negtwo64: result overflowed.`
+    two62 4611686018427387904
+  }
+}

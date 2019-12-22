@@ -1,0 +1,116 @@
+{
+  testbadref {
+    a {
+      x 1
+    }
+    b `2lookup.rpt testbadref.b: x not found.`
+  }
+  testbothexpr {
+    a 9
+  }
+  testchain {
+    a {
+      b {
+        c {
+          d 1
+        }
+      }
+    }
+    x 1
+  }
+  testdot {
+    a 1
+  }
+  testdotlookup {
+    a {
+    }
+    c 1
+    x 1
+  }
+  testdotref {
+    a 1
+    b '.x'
+  }
+  testerror1 {
+    a `2lookup.rpt testerror1.a: error1`
+    b `2lookup.rpt testerror1.a: error1`
+  }
+  testerror2 {
+    a {
+      x `2lookup.rpt testerror2.a.x: error2`
+    }
+    b `2lookup.rpt testerror2.a.x: error2`
+  }
+  testerror3 {
+    a {
+      x 1
+    }
+    b `2lookup.rpt testerror3.b: error3`
+  }
+  testexprref {
+    a 3
+    b 'x'
+  }
+  testinline {
+    a 1
+  }
+  testinlineerror {
+    a `2lookup.rpt testinlineerror.a.x: error`
+  }
+  testinlineexpr {
+    a 3
+  }
+  testinlineref {
+    a 1
+    b 1
+  }
+  testinsideref {
+    a {
+      c 'x'
+      x 1
+    }
+    b 1
+  }
+  testlist {
+    a 7
+  }
+  testopen {
+    a 1
+    b {
+      a 2
+      c {
+        d {
+          a 4
+        }
+      }
+    }
+    x `2lookup.rpt testopen.x: :c.a not found.`
+    y 2
+    z 4
+  }
+  testref {
+    a {
+      x 1
+    }
+    b 1
+    c 'x'
+  }
+  testsimple {
+    a {
+      x 1
+    }
+    b 1
+  }
+  teststring {
+    a {
+      x 1
+    }
+    b 1
+  }
+  teststringexpr {
+    7 {
+      x 1
+    }
+    b 1
+  }
+}

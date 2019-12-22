@@ -1,0 +1,10 @@
+#!/bin/bash
+
+if test rpt -nt rpt.c; then
+  exit 0
+fi
+CC="${CC:-$(which musl-clang 2>/dev/null)}"
+CC="${CC:-$(which musl-gcc 2>/dev/null)}"
+CC="${CC:-$(which clang 2>/dev/null)}"
+CC="${CC:-$(which gcc 2>/dev/null)}"
+"$CC" -Dbuildthetool -static -g -Wall -Wextra -std=c99 -o rpt rpt.c

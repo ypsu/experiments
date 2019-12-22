@@ -1,0 +1,63 @@
+{
+  test0 {
+    r `2nummul.rpt test0.r: nummul0 not found.`
+  }
+  test1 {
+    r `2nummul.rpt test1.r: nummul1 not found.`
+  }
+  test2 {
+    r 2
+  }
+  test3 {
+    r 6
+  }
+  test4 {
+    r 24
+  }
+  test5 {
+    r 120
+  }
+  test6 {
+    r 720
+  }
+  test7 {
+    r 5040
+  }
+  test8 {
+    r 40320
+  }
+  test9 {
+    r 362880
+  }
+  testerror {
+    r `2nummul.rpt testerror.r: error1`
+  }
+  testfunc {
+    r `2nummul.rpt testfunc.r: nummul1 not found.`
+  }
+  testfunc3 {
+    r 720
+  }
+  testlist {
+    r `2nummul.rpt testlist.r: list for arg 3 is not a number.`
+  }
+  testoperator {
+    a 6
+    b 30
+    c 210
+    d 0
+  }
+  testoverflow {
+    negtwo63 -9223372036854775808
+    two62 4611686018427387904
+    two63 `2nummul.rpt testoverflow.two63: result overflowed.`
+  }
+  teststring {
+    r `2nummul.rpt teststring.r: 'hello' for arg 3 is not a number.`
+  }
+  testtuple {
+    empty {
+    }
+    r `2nummul.rpt testtuple.r: tuple for arg 3 is not a number.`
+  }
+}

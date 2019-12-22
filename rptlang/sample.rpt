@@ -1,0 +1,6 @@
+b 1
+a 2
+
+# add depth limit and detect this case:
+# x y 1 +
+# y x 1 +

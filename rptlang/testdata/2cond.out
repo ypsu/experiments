@@ -1,0 +1,26 @@
+{
+  testargerror {
+    r `2cond.rpt testargerror.r: myerror.`
+  }
+  testcalculatedarg {
+    r 1
+  }
+  testcalculatedopt {
+    r 'true'
+  }
+  testfalse {
+    r 'false'
+  }
+  testnotwo {
+    r `2cond.rpt testnotwo.r: cond2 not found.`
+  }
+  testoutofbounds {
+    r `2cond.rpt testoutofbounds.r: cond must be 0 or 1. it is 2.`
+  }
+  teststring {
+    r `2cond.rpt teststring.r: 'a' for arg 1 is not a number.`
+  }
+  testtrue {
+    r 'true'
+  }
+}

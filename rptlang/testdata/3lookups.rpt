@@ -1,0 +1,229 @@
+testcurrentcontext {
+  a 1
+  b a
+  c {
+    a 2
+    d a
+  }
+}
+testupcontext {
+  a 1
+  b a
+  c {
+    a 2
+    d b
+  }
+}
+testdowncontext {
+  a 1
+  b c.d
+  c {
+    a 2
+    d a
+  }
+}
+testdownupcontext {
+  a 1
+  b a
+  c d.f
+  d {
+    a 2
+    e b
+    f a
+    g c e +
+  }
+  h d.g
+}
+testnotfound {
+  a b
+  c {
+    d a
+  }
+  e {
+    f g
+  }
+  h e.f
+}
+testdeepref {
+  a {
+    b {
+      c {
+        g 3
+        d {
+          e {
+            f g
+          }
+        }
+      }
+    }
+  }
+  h a.b.c.d.e.f
+}
+testlist {
+  a [ 1 ; 2 ; [ 5 ; { f 6 } ] ; 4 ]
+  b a.1
+  c a.2.1.f
+  d a.4
+  e a.apple
+}
+testcyclic {
+  a {
+    x x
+  }
+  b {
+    x x 1 +
+  }
+  c {
+    x y
+    y x
+  }
+  d {
+    x y 1 +
+    y x 1 +
+  }
+  e {
+    x y
+    y z
+    z x
+  }
+  f { x g.x }
+  g { x f.x }
+}
+testcyclicexpand {
+  a a { }
+  b c { }
+  c b { }
+}
+testinfinitetuple {
+  noprint a {
+    x b.x 1 +
+    b a { }
+  }
+  b a.x
+}
+testbadexpansion {
+  a 3
+  b a {
+    c 5
+  }
+}
+testbadexpansion2 {
+  t1 {
+    a 3
+  }
+  t2 t1 {
+    a {
+      c 5
+    }
+  }
+  t3 t1 {
+    empty { }
+    a empty {
+      c 5
+    }
+  }
+}
+testopensimple {
+  a 1
+  b { }
+  c a.b
+  d b.a
+  e a:b
+  f b:a
+}
+testopenchain {
+  a 1
+  b {
+    a 2
+    c {
+      d {
+        a 4
+      }
+    }
+  }
+  x b.c.d:c.a
+  y b.c.d:c:a
+  z b.c.d:a
+}
+testopenref {
+  a 1
+  b {
+    a 2
+    c {
+    }
+  }
+  d b.c
+  e d:a
+}
+testopenlist {
+  a [ 1 ]
+  b {
+  }
+  c b:0
+  d a.0
+  e a:0
+}
+testthis {
+  a {
+    this 1
+    b 2
+    c this
+    d this.b
+    e this.this
+    f this:g
+  }
+  g a.d
+  h this.this
+}
+testglobal {
+  global 1
+  a global.main.testglobal.global
+  b this.global
+  c global.global.main.testglobal.global
+}
+testup {
+  a 1
+  b {
+    a 2
+    x 5
+    c {
+      a 3
+      up 4
+      x 6
+      d a
+      e up
+      f up.a
+      g up.up.a
+      h up.up.up.a
+      i up.up.up.up.main.testup.a
+      j up.up.up.up.up
+      k this.up
+      y up:x
+    }
+  }
+}
+testupoverride {
+  a 1
+  b {
+    a up.a 2 +
+  }
+  #c b.a
+}
+testcontinuation {
+  a 1
+  b {
+    a 2
+    c {
+      d 3
+    }
+  }
+  e b .a
+  f b :a
+  g b.c :a
+  h 'b.c' :a
+  i { d { a 3 } } .d.a
+  j { d { a 3 } } :a
+  k [ 4 ; 5 ; 6 ] .1
+  l b .d
+  o b .c .d
+}

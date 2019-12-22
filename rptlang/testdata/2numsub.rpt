@@ -1,0 +1,42 @@
+test0 {
+  r !numsub0
+}
+test1 {
+  r 1 !numsub1
+}
+test2 {
+  r 1 2 !numsub2
+}
+test3 {
+  r 1 2 3 !numsub3
+}
+testfunc {
+  r 1 2 !numsub2 !numsub1
+}
+testfunc2 {
+  r 3 4 + 1 2 + !numsub2
+}
+teststring {
+  r 1 'hello' !numsub2
+}
+testerror {
+  r 1 `error1` !numsub2
+}
+testlist {
+  r 1 [ ] !numsub2
+}
+testtuple {
+  empty { }
+  r 1 empty !numsub2
+}
+testunderflow {
+  two62 4611686018427387904
+  negtwo63 0 two62 !numsub2 two62 !numsub2
+  negtwo64 0 two62 !numsub2 two62 !numsub2 two62 !numsub2
+}
+testoperator {
+  a 5 3 -
+  b 5 3 1 - -
+  c 11 1 2 3 4 - - - -
+  d 11 1 - 2 - 3 - 4 -
+}

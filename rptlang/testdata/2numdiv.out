@@ -1,0 +1,44 @@
+{
+  test1 {
+    r `2numdiv.rpt test1.r: numdiv1 not found.`
+  }
+  test2 {
+    r 5
+  }
+  test2r {
+    r 5
+  }
+  test3 {
+    r `2numdiv.rpt test3.r: numdiv3 not found.`
+  }
+  testerror {
+    r `2numdiv.rpt testerror.r: error1`
+  }
+  testfunc {
+    r 4
+  }
+  testlist {
+    r `2numdiv.rpt testlist.r: list for arg 2 is not a number.`
+  }
+  testoperator {
+    a 5
+    b 1
+    c 4
+  }
+  teststring {
+    r `2numdiv.rpt teststring.r: 'hello' for arg 2 is not a number.`
+  }
+  testtuple {
+    empty {
+    }
+    r `2numdiv.rpt testtuple.r: tuple for arg 2 is not a number.`
+  }
+  testunderflow {
+    neg -9223372036854775808
+    nochange -9223372036854775808
+    pos `2numdiv.rpt testunderflow.pos: result overflowed.`
+  }
+  testzero {
+    r `2numdiv.rpt testzero.r: division by zero.`
+  }
+}

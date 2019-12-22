@@ -1,0 +1,9 @@
+testless1 {
+  r 0 1 !numless2
+}
+testless2 {
+  r 1 0 !numless2
+}
+testless3 {
+  r 0 0 !numless2
+}

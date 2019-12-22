@@ -1,0 +1,111 @@
+testsimple {
+  a {
+    x 1
+  }
+  b a 'x' !lookup2
+}
+testbadref {
+  a {
+    x 1
+  }
+  b a x !lookup2
+}
+testref {
+  a {
+    x 1
+  }
+  b a c !lookup2
+  c 'x'
+}
+testinsideref {
+  a {
+    x 1
+    c 'x'
+  }
+  b a a.c !lookup2
+}
+testerror1 {
+  a `error1`
+  b a 'x' !lookup2
+}
+testerror2 {
+  a {
+    x `error2`
+  }
+  b a 'x' !lookup2
+}
+testerror3 {
+  a {
+    x 1
+  }
+  b a `error3` !lookup2
+}
+testinline {
+  a { x 1 } 'x' !lookup2
+}
+testinlineerror {
+  a { x `error` } 'x' !lookup2
+}
+testinlineexpr {
+  a { x 1 2 + } 'x' !lookup2
+}
+testexprref {
+  a { x 1 2 + } b !lookup2
+  b 'x'
+}
+testinlineref {
+  a { x b } 'x' !lookup2
+  b 1
+}
+testlist {
+  a [ 7 ] '.0' !lookup2
+}
+testbothexpr {
+  a { 3 4 5 + } 1 2 + !lookup2
+}
+teststring {
+  a { x 1 }
+  b 'a' 'x' !lookup2
+}
+teststringexpr {
+  7 { x 1 }
+  b 3 4 + 'x' !lookup2
+}
+testdot {
+  a { x 1 } '.x' !lookup2
+}
+testdotref {
+  a { x 1 } b !lookup2
+  b '.x'
+}
+testdotlookup {
+  x 1
+  a {
+  }
+  # todo: fix this case.
+  c a 'x' !lookup2
+}
+testchain {
+  a {
+    b {
+      c {
+        d 1
+      }
+    }
+  }
+  x 'a' 'b' !lookup2 'c' !lookup2 'd' !lookup2
+}
+testopen {
+  a 1
+  b {
+    a 2
+    c {
+      d {
+        a 4
+      }
+    }
+  }
+  x b.c.d ':c.a' !lookup2
+  y b.c.d ':c:a' !lookup2
+  z b.c.d ':a' !lookup2
+}

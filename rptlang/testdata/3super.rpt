@@ -1,0 +1,227 @@
+testnoparent {
+  t1 { r1 super.r1 }
+}
+
+testrefchain {
+  t1 {
+    r1 1
+  }
+  t2 t1 {
+    r1 2
+    r2 super.r1
+  }
+  t3 t2 {
+    r2 4
+    r3 super.r2
+  }
+  t4 t3 {
+    r3 8
+    r4 super.r3
+  }
+}
+
+testsuperchain {
+  t1 { x 1 }
+  t2 t1 { x super.x }
+  t3 t2 { x super.x }
+  t4 t3 { x super.x }
+  t5 t4 { x super.x }
+  y t4.x
+}
+
+testfunctionchain {
+  t1 { x 1 }
+  t2 t1 { x super.x 2 + }
+  t3 t2 { x super.x 4 + }
+  t4 t3 { x super.x 8 + }
+  t5 t4 { x super.x 16 + }
+  y t4
+}
+
+testexpansion {
+  t1 {
+    a { }
+    b a { x super.x 1 + }
+  }
+  t2 t1 {
+    a {
+      x 2
+      y 4
+    }
+  }
+}
+
+testbothrefs {
+  t1 {
+    x 1
+  }
+  t2 t1 {
+    x 2
+    y x super.x +
+  }
+}
+
+testlist {
+  t1 {
+    x 1
+  }
+  t2 t1 {
+    x 2
+    y [ x ; super.x ; x super.x + ; super.x x + ]
+  }
+}
+
+# todo: uncomment.
+#testsuperlist {
+#  t1 {
+#    x [ 1 ]
+#  }
+#  t2 t1 {
+#    x [ 2 ]
+#    y super.x x +++
+#  }
+#}
+
+testsupertuple {
+  t1 {
+    a 1
+    foo {
+      b 2
+      c a
+    }
+  }
+  t2 t1 {
+    a 8
+    foo {
+      d 4
+    }
+    bar foo
+    baz super.foo
+  }
+}
+
+testsuperexpansion {
+  t1 {
+    a 1
+    foo {
+      b 2
+      c a
+    }
+  }
+  t2 t1 {
+    a 8
+    foo {
+      d 4
+    }
+    bar foo { }
+    baz super.foo { }
+  }
+}
+
+testsupername {
+  t1 {
+    'super' 1
+  }
+  t2 t1 {
+    x super.super
+  }
+}
+
+testbad {
+  t1 { x 1 }
+  t2 t1 { x 2 }
+  t3 t2 {
+    r1 super.super.x
+    r2 super:x
+    r3 superx
+    r4 super
+    r5 super.super.x 1 +
+    r6 super:x 1 +
+    r7 superx 1 +
+    r8 super 1 +
+    # todo: remove comment
+    #r9 super.x.y
+  }
+}
+
+testlongref {
+  t1 {
+    a {
+      b {
+        c 1
+      }
+    }
+  }
+  t2 t1 {
+    a {
+      b {
+        c 2
+        d super.c
+      }
+      e super.b
+      f super.b.c
+    }
+    g super.a
+    h super.a.b
+    i super.a.b.c
+  }
+}
+
+testlongerror {
+  t1 {
+    a `error`
+  }
+  t2 t1 {
+    b super.a.b.c
+  }
+}
+
+testlongvar {
+  t1 {
+    a 1
+  }
+  t2 t1 {
+    a {
+      b 2
+    }
+    b super.a.b
+  }
+}
+
+testlongvar2 {
+  t1 {
+    a {
+      b 1
+    }
+  }
+  t2 t1 {
+    a 2
+    b super.a.b
+  }
+}
+
+testlonglist {
+  t1 {
+    a [ 1 ; 2 ; 3 ]
+  }
+  t2 t1 {
+    a [ 4 ; 5 ; 6 ]
+    b super.a.1
+    c a.1
+    d super.a.1 a.1 +
+  }
+}
+
+testopenlookup {
+  t1 {
+    a 1
+    b {
+    }
+  }
+  t2 t1 {
+    a 2
+    b 3
+    c super.b.a
+    d super.b:a
+  }
+}

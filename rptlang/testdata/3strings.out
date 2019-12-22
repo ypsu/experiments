@@ -1,0 +1,38 @@
+{
+  testdqsimple {
+    a 'hello world'
+  }
+  testdqwithbackslash {
+    a 'backslash: \'
+  }
+  testdqwithdq {
+    a 'double quote char is ".'
+  }
+  testdqwithhex {
+    a 'hello world'
+  }
+  testdqwithnewline {
+    a hello\nworld"
+  }
+  testdqwithoctal {
+    a hello\033world"
+  }
+  testdqwithsq {
+    a 'hello 'world''
+  }
+  testdqwithtab {
+    a hello\tworld"
+  }
+  testnotnumber {
+    a '123 456'
+  }
+  testnumber {
+    a 123
+  }
+  testsqmultiline {
+    a hello\nworld"
+  }
+  testsqsimple {
+    a 'hello "world"'
+  }
+}

@@ -1,0 +1,42 @@
+{
+  test1 {
+    r `2nummod.rpt test1.r: nummod1 not found.`
+  }
+  test2 {
+    r 0
+  }
+  test2r {
+    r 1
+  }
+  test3 {
+    r `2nummod.rpt test3.r: nummod3 not found.`
+  }
+  testerror {
+    r `2nummod.rpt testerror.r: error1`
+  }
+  testfunc {
+    r 0
+  }
+  testlist {
+    r `2nummod.rpt testlist.r: list for arg 2 is not a number.`
+  }
+  testoperator {
+    a 2
+  }
+  teststring {
+    r `2nummod.rpt teststring.r: 'hello' for arg 2 is not a number.`
+  }
+  testtuple {
+    empty {
+    }
+    r `2nummod.rpt testtuple.r: tuple for arg 2 is not a number.`
+  }
+  testunderflow {
+    neg -9223372036854775808
+    nochange 0
+    pos 0
+  }
+  testzero {
+    r `2nummod.rpt testzero.r: division by zero.`
+  }
+}

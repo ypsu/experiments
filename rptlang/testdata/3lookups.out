@@ -1,0 +1,253 @@
+{
+  testbadexpansion {
+    a 3
+    b `3lookups.rpt testbadexpansion.b: parent is not a tuple.`
+  }
+  testbadexpansion2 {
+    t1 {
+      a 3
+    }
+    t2 {
+      a `3lookups.rpt testbadexpansion2.t2.a: parent is not a tuple.`
+    }
+    t3 {
+      a {
+        c 5
+      }
+      empty {
+      }
+    }
+  }
+  testcontinuation {
+    a 1
+    b {
+      a 2
+      c {
+        d 3
+      }
+    }
+    e 2
+    f 2
+    g 2
+    h 2
+    i 3
+    j 1
+    k 5
+    l `3lookups.rpt testcontinuation.l: .d not found.`
+    o 3
+  }
+  testcurrentcontext {
+    a 1
+    b 1
+    c {
+      a 2
+      d 2
+    }
+  }
+  testcyclic {
+    a {
+      x `3lookups.rpt testcyclic.a.x: cyclic reference.`
+    }
+    b {
+      x `3lookups.rpt testcyclic.b.x: cyclic reference.`
+    }
+    c {
+      x `3lookups.rpt testcyclic.c.x: cyclic reference.`
+      y `3lookups.rpt testcyclic.c.x: cyclic reference.`
+    }
+    d {
+      x `3lookups.rpt testcyclic.d.x: cyclic reference.`
+      y `3lookups.rpt testcyclic.d.x: cyclic reference.`
+    }
+    e {
+      x `3lookups.rpt testcyclic.e.x: cyclic reference.`
+      y `3lookups.rpt testcyclic.e.x: cyclic reference.`
+      z `3lookups.rpt testcyclic.e.x: cyclic reference.`
+    }
+    f {
+      x `3lookups.rpt testcyclic.f.x: cyclic reference.`
+    }
+    g {
+      x `3lookups.rpt testcyclic.f.x: cyclic reference.`
+    }
+  }
+  testcyclicexpand {
+    a `3lookups.rpt testcyclicexpand.a: cyclic reference.`
+    b `3lookups.rpt testcyclicexpand.b: cyclic reference.`
+    c `3lookups.rpt testcyclicexpand.b: cyclic reference.`
+  }
+  testdeepref {
+    a {
+      b {
+        c {
+          d {
+            e {
+              f 3
+            }
+          }
+          g 3
+        }
+      }
+    }
+    h 3
+  }
+  testdowncontext {
+    a 1
+    b 2
+    c {
+      a 2
+      d 2
+    }
+  }
+  testdownupcontext {
+    a 1
+    b 1
+    c 2
+    d {
+      a 2
+      e 1
+      f 2
+      g 3
+    }
+    h 3
+  }
+  testglobal {
+    a 1
+    b 1
+    c `3lookups.rpt testglobal.c: global.global not found.`
+    global 1
+  }
+  testinfinitetuple {
+    b `3lookups.rpt testinfinitetuple.a.b.b.b.b.b.b.b.b.b.b.b.b.b.b.b.b.b.b.b.b.b.b.b.b.b.b.b.b.b.b.b.b.b.b.b.b.b.b.b.b...: eval depth too large.`
+  }
+  testlist {
+    a [
+      1
+      2
+      [
+        5
+        {
+          f 6
+        }
+      ]
+      4
+    ]
+    b 2
+    c 6
+    d `3lookups.rpt testlist.d: index 4 is out of range.`
+    e `3lookups.rpt testlist.e: apple is not a number.`
+  }
+  testnotfound {
+    a `3lookups.rpt testnotfound.a: b not found.`
+    c {
+      d `3lookups.rpt testnotfound.a: b not found.`
+    }
+    e {
+      f `3lookups.rpt testnotfound.e.f: g not found.`
+    }
+    h `3lookups.rpt testnotfound.e.f: g not found.`
+  }
+  testopenchain {
+    a 1
+    b {
+      a 2
+      c {
+        d {
+          a 4
+        }
+      }
+    }
+    x `3lookups.rpt testopenchain.x: b.c.d:c.a not found.`
+    y 2
+    z 4
+  }
+  testopenlist {
+    a [
+      1
+    ]
+    b {
+    }
+    c `3lookups.rpt testopenlist.c: b:0 not found.`
+    d 1
+    e `3lookups.rpt testopenlist.e: a:0 not found.`
+  }
+  testopenref {
+    a 1
+    b {
+      a 2
+      c {
+      }
+    }
+    d {
+    }
+    e 2
+  }
+  testopensimple {
+    a 1
+    b {
+    }
+    c `3lookups.rpt testopensimple.c: a.b is not a lookup in a tuple.`
+    d `3lookups.rpt testopensimple.d: b.a not found.`
+    e {
+    }
+    f 1
+  }
+  testthis {
+    a {
+      b 2
+      c {
+        b 2
+        c ... (cyclic reference to testthis.a)
+        d 2
+        e 1
+        f 2
+        this 1
+      }
+      d 2
+      e 1
+      f 2
+      this 1
+    }
+    g 2
+    h `3lookups.rpt testthis.h: this.this not found.`
+  }
+  testup {
+    a 1
+    b {
+      a 2
+      c {
+        a 3
+        d 3
+        e {
+          a 2
+          c ... (cyclic reference to testup.b.c)
+          x 5
+        }
+        f 2
+        g 1
+        h `3lookups.rpt testup.b.c.h: up.up.up.a not found.`
+        i 1
+        j `3lookups.rpt testup.b.c.j: up references go outside global.`
+        k 4
+        up 4
+        x 6
+        y 5
+      }
+      x 5
+    }
+  }
+  testupcontext {
+    a 1
+    b 1
+    c {
+      a 2
+      d 1
+    }
+  }
+  testupoverride {
+    a 1
+    b {
+      a 3
+    }
+  }
+}

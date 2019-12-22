@@ -1,0 +1,94 @@
+testnotnumber {
+  a 'apple' 1 +
+}
+testpropagation {
+  a 'apple' 1 +
+  b 'pear' a +
+  c a 'pear' +
+}
+testremotepropagation {
+  a {
+    b 'apple' 1 +
+  }
+  c {
+    d a.b
+  }
+}
+testexpand {
+  a {
+    b 1
+    c 2
+    d b c +
+  }
+  b a {
+    c 'apple'
+  }
+}
+testcustom {
+  a `something went bad.`
+}
+testcustominlist {
+  a [
+    1
+    `myerror`
+    2
+  ]
+}
+testcustominlisttuple {
+  a [
+    1
+    {
+      b `othererror`
+    }
+    2
+  ]
+}
+testspaces {
+  'a b' {
+    # todo: check on this when errors print the context.
+    foo `myerror`
+  }
+}
+testnewline {
+  # todo: uncomment when supported.
+  # a "hello\nworld." !error1
+}
+testbacktick {
+  # todo: uncomment when supported.
+  # a "str with the ` symbol." !error1
+}
+testerrorinlist {
+  a [ [ { b `myerror.` } ] ]
+  c a.0.0.b
+}
+# todo: move the below stuff to 2error and 2errorf.
+#testerrorf {
+#  # todo: uncomment when supported.
+#  a 13
+#  b 'foo'
+#  # c 'a:%3d foo:%4s' a b !errorf3
+#}
+#testerrorfnotnumber {
+#  # todo: uncomment when supported.
+#  a 13
+#  b 'foo'
+#  # c 'a:%3d foo:%4d' a b !errorf3
+#}
+#testerrorferror {
+#  # todo: uncomment when supported.
+#  a `error`
+#  b 'foo'
+#  # c 'a:%3d foo:%4s' a b !errorf3
+#}
+#testerrorftoofew {
+#  # todo: uncomment when supported.
+#  a 13
+#  # c 'a:%3d foo:%4s' a !errorf3
+#}
+#testerrorftoomany {
+#  # todo: uncomment when supported.
+#  a 1
+#  b 2
+#  c 3
+#  # d 'a:%3d foo:%4s' a b c !errorf3
+#}

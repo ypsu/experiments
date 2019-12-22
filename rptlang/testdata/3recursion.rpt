@@ -1,0 +1,16 @@
+testdepthtest {
+  godepth1 {
+    depth args.0
+    result depth 1 !numless2 0 depth depth -1 + !godepth1 + !cond3
+  }
+  depth100 100 !godepth1
+  depth100k 100000 !godepth1
+}
+testfib {
+  fib1 {
+    n args.0
+    recursiveresult n -1 + !testfib.fib1 n -2 + !testfib.fib1 +
+    result n 2 !numless2 1 recursiveresult !cond3
+  }
+  r 10 !fib1
+}

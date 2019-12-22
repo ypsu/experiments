@@ -1,0 +1,64 @@
+{
+  test0 {
+    r `2numadd.rpt test0.r: numadd0 not found.`
+  }
+  test1 {
+    r `2numadd.rpt test1.r: numadd1 not found.`
+  }
+  test2 {
+    r 3
+  }
+  test3 {
+    r 6
+  }
+  test4 {
+    r 10
+  }
+  test5 {
+    r 15
+  }
+  test6 {
+    r 21
+  }
+  test7 {
+    r 28
+  }
+  test8 {
+    r 36
+  }
+  test9 {
+    r 45
+  }
+  testerror {
+    r `2numadd.rpt testerror.r: error1`
+  }
+  testfunc {
+    r `2numadd.rpt testfunc.r: numadd1 not found.`
+  }
+  testfunc3 {
+    r 21
+  }
+  testlist {
+    r `2numadd.rpt testlist.r: list for arg 3 is not a number.`
+  }
+  testoverflow {
+    two62 4611686018427387904
+    two63 `2numadd.rpt testoverflow.two63: result overflowed.`
+    two64 `2numadd.rpt testoverflow.two63: result overflowed.`
+    two65 `2numadd.rpt testoverflow.two63: result overflowed.`
+  }
+  teststring {
+    r `2numadd.rpt teststring.r: 'hello' for arg 3 is not a number.`
+  }
+  testtuple {
+    empty {
+    }
+    r `2numadd.rpt testtuple.r: tuple for arg 3 is not a number.`
+  }
+  testunderflow {
+    two62 -4611686018427387904
+    two63 -9223372036854775808
+    two64 `2numadd.rpt testunderflow.two64: result overflowed.`
+    two65 `2numadd.rpt testunderflow.two64: result overflowed.`
+  }
+}

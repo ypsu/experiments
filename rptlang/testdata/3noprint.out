@@ -1,0 +1,59 @@
+{
+  testdeepnoprint {
+    a {
+      b 2
+      d 4
+    }
+  }
+  testnestednoprint {
+  }
+  testnoprintaccess {
+    d 2
+  }
+  testnoprintexpand {
+    d {
+      c 3
+    }
+  }
+  testnoprintexpr {
+    a 1
+    c 3
+  }
+  testnoprintfield {
+    noprint 1
+  }
+  testnoprintkeep {
+    a {
+      c 3
+    }
+    b {
+      c 5
+    }
+  }
+  testnoprintlist {
+  }
+  testnoprintnum {
+    a 1
+    c 3
+  }
+  testnoprintreference {
+    d {
+      c 4
+    }
+  }
+  testnoprintremove {
+    a {
+      c 3
+    }
+    b {
+      b 4
+      c 5
+    }
+  }
+  testnoprinttuple {
+  }
+  testtwonoprints {
+    a 1
+    d 4
+  }
+}

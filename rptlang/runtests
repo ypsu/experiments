@@ -1,0 +1,74 @@
+#!/bin/bash
+
+tmpfileout=/tmp/rpttestout
+tmpfileerr=/tmp/rpttesterr
+rpt="$(pwd)/rpt"
+regenmode=0
+while getopts w opt; do
+  case "$opt" in
+    w)
+      regenmode=1
+      ;;
+    *)
+      echo "runtests [-w] [test]"
+      exit 1
+  esac
+done
+shift $((OPTIND - 1))
+testtarget="$1"
+
+# compare eval's output to the testdata.
+cmpevaloutput() {
+  infile="$1"
+  outfile="${infile%.rpt}.out"
+  { "$rpt" -l eval $infile; } >$tmpfileout 2>$tmpfileerr
+  if test "$?" -ne 0; then
+    echo "fail, nonzero return value"
+    if test -n "$testtarget"; then
+      cat $tmpfileerr
+    fi
+    return 1
+  fi
+  if test $regenmode == 0; then
+    if cmp -s $outfile $tmpfileerr; then
+      echo "fail, diff in stderr"
+      if test -n "$testtarget"; then
+        cat $tmpfileerr
+      fi
+      return 1
+    fi
+    if ! cmp -s $outfile $tmpfileout; then
+      echo "fail"
+      if test -n "$testtarget"; then
+        colordiff -U5 -F '^  test' $outfile $tmpfileout
+      fi
+      return 1
+    fi
+  else
+    cp $tmpfileout $outfile
+  fi
+  echo ok
+  return 0
+}
+
+cd testdata
+if test -n "$testtarget"; then
+  files="$testtarget.rpt"
+else
+  files="[123]*.rpt"
+fi
+failure=
+for t in $files; do
+  echo -n "${t%.rpt} ... "
+  if ! cmpevaloutput $t ; then
+    if test -z "$failure"; then
+      failure="${t%.rpt}"
+    fi
+  fi
+done
+echo
+if test -n "$failure"; then
+  echo "test $failure failed."
+  exit 1
+fi
+echo "all tests passed."

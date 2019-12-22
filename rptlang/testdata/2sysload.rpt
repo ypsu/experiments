@@ -1,0 +1,15 @@
+testnotfound {
+  a 'x' !sysload1
+}
+testhello {
+  a 'hello.data' !sysload1
+}
+testdup {
+  a 'hello.data' !sysload1
+  b 'hello.data' !sysload1
+}
+testhellonames {
+  a 'hellonames.data' !sysload1
+}
+# todo: add test with directory traversal.
+# todo: add a computed test.

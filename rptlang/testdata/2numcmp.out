@@ -1,0 +1,11 @@
+{
+  testless1 {
+    r 1
+  }
+  testless2 {
+    r 0
+  }
+  testless3 {
+    r 0
+  }
+}

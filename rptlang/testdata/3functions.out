@@ -1,0 +1,75 @@
+{
+  testconstant {
+    a 1
+    b 2
+    f0 {
+      result 1
+    }
+  }
+  testcontext {
+    a {
+      b 1
+      c 1
+      d 2
+    }
+    f0 {
+      result `3functions.rpt testcontext.f0.result: b not found.`
+    }
+  }
+  testdouble {
+    a 2
+    f1 {
+      result `3functions.rpt testdouble.f1.result: args.0 not found.`
+    }
+  }
+  testexistingargs {
+    a `3functions.rpt testexistingargs.a: function f0 already has args.`
+    f0 {
+      args [
+      ]
+      result 0
+    }
+  }
+  testfuncref {
+    a 3
+    f2 {
+      result `3functions.rpt testfuncref.myadd.result: args.0 not found.`
+    }
+    myadd {
+      result `3functions.rpt testfuncref.myadd.result: args.0 not found.`
+    }
+  }
+  testinherit {
+    t1 {
+      myadd2 {
+        result `3functions.rpt testinherit.t1.myadd2.result: args.0 not found.`
+      }
+    }
+    t2 {
+      a 3
+      myadd2 {
+        result `3functions.rpt testinherit.t2.myadd2.result: args.0 not found.`
+      }
+    }
+  }
+  testmissing {
+    a `3functions.rpt testmissing.a: f0 not found.`
+  }
+  testnoresult {
+    a `3functions.rpt testnoresult.a: result not found in function f0.`
+    f0 {
+    }
+  }
+  testoutofbounds {
+    myadd1 {
+      result `3functions.rpt testoutofbounds.myadd1.result: args.0 not found.`
+    }
+    r `3functions.rpt testoutofbounds.r.?: index 1 is out of range.`
+  }
+  testsum {
+    a 10
+    f4 {
+      result `3functions.rpt testsum.f4.result: args.0 not found.`
+    }
+  }
+}

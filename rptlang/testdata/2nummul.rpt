@@ -1,0 +1,60 @@
+test0 {
+  r !nummul0
+}
+test1 {
+  r 1 !nummul1
+}
+test2 {
+  r 1 2 !nummul2
+}
+test3 {
+  r 1 2 3 !nummul3
+}
+test4 {
+  r 1 2 3 4 !nummul4
+}
+test5 {
+  r 1 2 3 4 5 !nummul5
+}
+test6 {
+  r 1 2 3 4 5 6 !nummul6
+}
+test7 {
+  r 1 2 3 4 5 6 7 !nummul7
+}
+test8 {
+  r 1 2 3 4 5 6 7 8 !nummul8
+}
+test9 {
+  r 1 2 3 4 5 6 7 8 9 !nummul9
+}
+testfunc {
+  r 1 2 !nummul2 !nummul1
+}
+testfunc3 {
+  r 1 2 !nummul2 3 4 !nummul2 5 6 !nummul2 !nummul3
+}
+teststring {
+  r 1 2 'hello' 4 5 6 7 8 9 !nummul9
+}
+testerror {
+  r 1 `error1` 3 4 `error2` 6 7 8 9 !nummul9
+}
+testlist {
+  r 1 2 [ ] 4 5 6 7 8 9 !nummul9
+}
+testtuple {
+  empty { }
+  r 1 2 empty 4 5 6 7 8 9 !nummul9
+}
+testoverflow {
+  two62 4611686018427387904
+  two63 two62 2 !nummul2
+  negtwo63 two62 -2 !nummul2
+}
+testoperator {
+  a 2 3 *
+  b 2 3 5 * *
+  c 2 3 5 7 * * *
+  d 2 3 0 7 * * *
+}

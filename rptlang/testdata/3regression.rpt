@@ -1,0 +1,13 @@
+testemptytuple {
+  a {
+    b {
+      c 3
+    }
+  }
+  d a {
+    b {} { }
+  }
+}
+testemptylist {
+  a [] .0
+}

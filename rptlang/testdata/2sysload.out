@@ -1,0 +1,15 @@
+{
+  testdup {
+    a hello world\n"
+    b hello world\n"
+  }
+  testhello {
+    a hello world\n"
+  }
+  testhellonames {
+    a hello james\nhello john\nhello bob\n"
+  }
+  testnotfound {
+    a `2sysload.rpt testnotfound.a: could not resolve x: No such file or directory.`
+  }
+}

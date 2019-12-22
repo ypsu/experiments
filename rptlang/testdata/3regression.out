@@ -1,0 +1,16 @@
+{
+  testemptylist {
+    a `3regression.rpt testemptylist.a: index 0 is out of range.`
+  }
+  testemptytuple {
+    a {
+      b {
+        c 3
+      }
+    }
+    d {
+      b {
+      }
+    }
+  }
+}

@@ -1,0 +1,61 @@
+test0 {
+  r !numadd0
+}
+test1 {
+  r 1 !numadd1
+}
+test2 {
+  r 1 2 !numadd2
+}
+test3 {
+  r 1 2 3 !numadd3
+}
+test4 {
+  r 1 2 3 4 !numadd4
+}
+test5 {
+  r 1 2 3 4 5 !numadd5
+}
+test6 {
+  r 1 2 3 4 5 6 !numadd6
+}
+test7 {
+  r 1 2 3 4 5 6 7 !numadd7
+}
+test8 {
+  r 1 2 3 4 5 6 7 8 !numadd8
+}
+test9 {
+  r 1 2 3 4 5 6 7 8 9 !numadd9
+}
+testfunc {
+  r 1 2 !numadd2 !numadd1
+}
+testfunc3 {
+  r 1 2 !numadd2 3 4 !numadd2 5 6 !numadd2 !numadd3
+}
+teststring {
+  r 1 2 'hello' 4 5 6 7 8 9 !numadd9
+}
+testerror {
+  r 1 `error1` 3 4 `error2` 6 7 8 9 !numadd9
+}
+testlist {
+  r 1 2 [ ] 4 5 6 7 8 9 !numadd9
+}
+testtuple {
+  empty { }
+  r 1 2 empty 4 5 6 7 8 9 !numadd9
+}
+testoverflow {
+  two62 4611686018427387904
+  two63 two62 two62 !numadd2
+  two64 two63 two63 !numadd2
+  two65 two64 two64 !numadd2
+}
+testunderflow {
+  two62 -4611686018427387904
+  two63 two62 two62 !numadd2
+  two64 two63 two63 !numadd2
+  two65 two64 two64 !numadd2
+}

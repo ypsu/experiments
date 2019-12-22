@@ -1,0 +1,81 @@
+testnoprintnum {
+  a 1
+  noprint b 2
+  c 3
+}
+testnoprintexpr {
+  a 1
+  noprint b 2 3 +
+  c 3
+}
+testtwonoprints {
+  a 1
+  noprint b 3
+  noprint c 4
+  d 4
+}
+testdeepnoprint {
+  a {
+    b 2
+    noprint c 3
+    d 4
+  }
+}
+testnoprintlist {
+  noprint a [ 1 ; 2 ; 3 ]
+}
+testnoprinttuple {
+  noprint a { b 2 }
+}
+testnestednoprint {
+  noprint a {
+    noprint b 2
+    c 3
+  }
+}
+testnoprintreference {
+  noprint a {
+    noprint b 3
+    c 4
+  }
+  d a
+}
+testnoprintaccess {
+  noprint a {
+    noprint b 2
+    c 3
+  }
+  d a.b
+}
+testnoprintexpand {
+  noprint a {
+    noprint b 2
+    c 3
+  }
+  d a { }
+}
+testnoprintremove {
+  a {
+    noprint b 2
+    c 3
+  }
+  b a {
+    b 4
+    c 5
+  }
+}
+testnoprintkeep {
+  a {
+    noprint b 2
+    c 3
+  }
+  b a {
+    noprint b 4
+    c 5
+  }
+}
+testnoprintfield {
+  'noprint' 1
+}
+noprint testtoplevelnoprint {
+}

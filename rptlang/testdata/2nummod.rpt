@@ -1,0 +1,39 @@
+test1 {
+  r 1 !nummod1
+}
+test2 {
+  r 15 3 !nummod2
+}
+test2r {
+  r 16 3 !nummod2
+}
+test3 {
+  r 1 2 3 !nummod3
+}
+testfunc {
+  r 3 3 3 3 !numadd4 1 2 + !nummod2
+}
+teststring {
+  r 1 'hello' !nummod2
+}
+testerror {
+  r 1 `error1` !nummod2
+}
+testlist {
+  r 1 [ ] !nummod2
+}
+testtuple {
+  empty { }
+  r 1 empty !nummod2
+}
+testzero {
+  r 1 0 !nummod2
+}
+testunderflow {
+  neg -9223372036854775808
+  nochange neg 1 !nummod2
+  pos neg -1 !nummod2
+}
+testoperator {
+  a 17 3 %
+}

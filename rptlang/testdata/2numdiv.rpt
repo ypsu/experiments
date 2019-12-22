@@ -1,0 +1,41 @@
+test1 {
+  r 1 !numdiv1
+}
+test2 {
+  r 15 3 !numdiv2
+}
+test2r {
+  r 16 3 !numdiv2
+}
+test3 {
+  r 1 2 3 !numdiv3
+}
+testfunc {
+  r 3 3 3 3 !numadd4 1 2 + !numdiv2
+}
+teststring {
+  r 1 'hello' !numdiv2
+}
+testerror {
+  r 1 `error1` !numdiv2
+}
+testlist {
+  r 1 [ ] !numdiv2
+}
+testtuple {
+  empty { }
+  r 1 empty !numdiv2
+}
+testzero {
+  r 1 0 !numdiv2
+}
+testunderflow {
+  neg -9223372036854775808
+  nochange neg 1 !numdiv2
+  pos neg -1 !numdiv2
+}
+testoperator {
+  a 15 3 /
+  b 15 3 / 5 /
+  c 20 15 3 / /
+}

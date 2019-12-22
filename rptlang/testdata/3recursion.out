@@ -1,0 +1,18 @@
+{
+  testdepthtest {
+    depth100 5050
+    depth100k `3recursion.rpt testdepthtest.depth100k.?.?.?.?.?.?.?.?.?.?.?.?.?.?.?.?.?.?.?.?.?.?.?.?.?.?.?.?.?.?.?.?.?.?.?.?.?.?...: eval depth too large.`
+    godepth1 {
+      depth `3recursion.rpt testdepthtest.godepth1.depth: args.0 not found.`
+      result `3recursion.rpt testdepthtest.godepth1.depth: args.0 not found.`
+    }
+  }
+  testfib {
+    fib1 {
+      n `3recursion.rpt testfib.fib1.n: args.0 not found.`
+      recursiveresult `3recursion.rpt testfib.fib1.n: args.0 not found.`
+      result `3recursion.rpt testfib.fib1.n: args.0 not found.`
+    }
+    r 89
+  }
+}

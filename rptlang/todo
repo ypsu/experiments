@@ -1,0 +1,199 @@
+allow implementing "tools" like cuelang allows. example:
+  package kube
+
+  import "encoding/yaml"
+
+  command create: {
+      task kube: {
+          kind:   "exec"
+          cmd:    "kubectl create --dry-run -f -"
+          stdin:  yaml.MarshalStream(objects)
+          stdout: string
+      }
+      task display: {
+          kind: "print"
+          text: task.kube.stdout
+      }
+  }
+(the graph unification idea is really good :( )
+
+make the recommended indentation 2 spaces because practicality.
+
+maybe rename "list" to "array"? then the prefixes are:
+
+  - a: array (l would be confusing, i think)
+  - d: date type (only civil time stuff)
+  - n: num
+  - s: string
+  - t: tuple
+
+types:
+
+  maybe i should make types first class? instead of
+
+    foo {
+      bar 4
+    }
+
+  i have this
+
+    tuple foo {
+      string bar 5
+    }
+
+  the benefit is that i can easily create custom types (job, alloc, services).
+  types are a small hint to the reader about the field. on the other hand they
+  are not really needed but then i have to add a "type" field into the tuple
+  itself which looks odd.
+
+semicolon:
+
+  newest crazy idea: add a mandatory ";" operator. this will clearly mark the
+  end of a statement. there won't be confusion anymore around multiline stuff.
+  and parsers can be safer knowing that they don't accidentally start reading
+  expression as a variable.
+
+    foo1 bar ;
+    foo2 {} ;
+    foo3 bar {} ;
+    foo4 bar {
+      crix 3 ;
+    } ; foo5 { crix 6 } .crix foo4.crix + ;
+
+--
+
+catch limiterror while parsing
+sanitize error messages
+tuple check parsing
+tuple check evaluation
+template tuple parsing
+template tuple error if evaluated
+tuple types
+parse numbers
+add missing conversions to the double quote stuff
+vars
+vars only for fields in main.vars
+add todos from code to here
+implement directory traversal for sysload
+add test for calling a builtin with different argcount
+listmake
+numadd + doc
+numsub - doc
+nummul * doc
+numdiv / doc
+nummod % doc
+numnot ~
+numshl <<
+numshr >>
+numlt <
+numleq <=
+numeq ==
+numgeq >=
+numgt >
+numneq !=
+numand &
+numor |
+numxor ^
+numpow
+logicnot !
+logicand &&
+logicor ||
+strcat ++
+strlt str<
+strleq str<=
+streq str==
+strgeq str>=
+strgt str=
+strneq str!=
+listcat +++
+strisempty
+strisnonempty
+numiszero
+numisnonzero
+listisempty
+listisnonempty
+tupisempty
+tupisnonempty
+strlen
+numlen
+nummin
+nummax
+numcmp
+strcmp
+isstr
+islist
+istuple
+isnumber
+istemplate
+iserror
+strfmt
+strsplice
+strtolower
+strtoupper
+strhash
+strlen
+strftime
+strptime
+alt
+strpathjoin
+strbasename
+strfiledir
+strfilename
+tuphaskey
+tuplookup
+tuplookupkey
+listcontains
+listhead
+listtail
+listjoin
+listreduce
+listmap
+listfilter
+listflatten
+listsort
+listuniq
+listmin
+listmax
+strord
+strchar
+listsplit
+listsplice
+listindex
+listreverse
+listzip # [1,2] ['a','b'] -> [[1,'a'],[2,'b']]
+listunzip
+sysabort
+syslog
+sysimport
+systime
+sysglob
+sysenv
+syscwd
+sysisdir
+sysifile
+tuptype
+tupcontext
+tuptypecontext
+tupname
+tuptypename
+tupitems
+tupkeys
+tupvalues
+tuptypeditems
+tuptypedkeys
+tuptypedvalues
+torpt
+tojson
+tobase64
+totuple
+tovalue
+tolist
+strmatch
+strfind (returns matches*(mg+1) elems)
+strreplace
+tupmerge
+tupoverride
+tupexpand
+write documentation
+
+functions: each one involves code, tests, docs.

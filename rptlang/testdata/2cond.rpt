@@ -1,0 +1,24 @@
+testnotwo {
+  r 0 1 !cond2
+}
+testoutofbounds {
+  r 2 0 1 !cond3
+}
+teststring {
+  r 'a' 0 1 !cond3
+}
+testfalse {
+  r 0 'true' 'false' !cond3
+}
+testtrue {
+  r 1 'true' 'false' !cond3
+}
+testargerror {
+  r 0 0 `myerror.` !cond3
+}
+testcalculatedopt {
+  r 0 1 + 'true' 'false' !cond3
+}
+testcalculatedarg {
+  r 1 0 1 + 'false' !cond3
+}
