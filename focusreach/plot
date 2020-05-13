@@ -1,0 +1,22 @@
+#!/usr/bin/gnuplot
+
+set terminal png size 640,360
+set output "plot.png"
+set title "focus reach"
+set xdata time
+set format x "'%y %b %d"
+set xlabel "date"
+set ylabel "millimeters"
+set datafile separator ";"
+set timefmt "%Y-%m-%d %H:%M"
+set key outside
+set xtics strptime("%Y-%m-%d", "2020-05-04"), 3600*24*7
+set autoscale xfixmin
+set autoscale xfixmax
+plot "data" using 1:2 notitle pt 7, \
+     250 title "-4D", \
+     235 title "-4.25D", \
+     222 title "-4.5D", \
+     210 title "-4.75D", \
+     200 title "-5D", \
+     190 title "-5.25D"
