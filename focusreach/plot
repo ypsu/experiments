@@ -13,7 +13,7 @@ set key outside
 set xtics strptime("%Y-%m-%d", "2020-05-04"), 3600*24*7
 set autoscale xfixmin
 set autoscale xfixmax
-plot "data" using 1:2 notitle pt 7, \
+plot "data" using 1:2 notitle pt 7 ps 5, \
      250 title "-4D", \
      235 title "-4.25D", \
      222 title "-4.5D", \
