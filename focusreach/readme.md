@@ -2,7 +2,7 @@
 
 my myopia keeps worsening.
 hence i decided to track it.
-i use a standard self-retracting metal tape measure instead.
+for measurements i use a standard self-retracting metal tape measure.
 i taped a small piece of paper between the tape and the button.
 i wrote a few letters onto the paper.
 it's like a mini, 1 row snellen chart.
