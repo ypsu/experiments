@@ -1,0 +1,31 @@
+#!/usr/bin/awk -f
+# calculates interval average.
+
+BEGIN {
+  FS = " *; *"
+  interval = 3600 * 24;
+  # sum and avg are the running counters for the average calculation.
+  sum = 0
+  cnt = 0
+}
+
+{
+  if (NF != 6) {
+    printf("invalid number of fields on line %d\n", NR) > "/dev/stderr"
+    exit(1)
+  }
+  gsub(/[: -]/, " ", $1)
+  ts = mktime($1 " 00")
+  curinterval = int(ts / interval)
+  if (curinterval != lastinterval) {
+    if (cnt != 0) {
+      timestr = strftime("%F %H:%M", (lastinterval + 1) * interval)
+      printf("%s; %d\n", timestr, sum / cnt)
+    }
+    lastinterval = curinterval
+    sum = 0
+    cnt = 0
+  }
+  sum += $2
+  cnt++
+}
