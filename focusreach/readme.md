@@ -50,3 +50,12 @@ here is my progress over time:
 ![graph of the data](plot.png)
 
 i generate the above graph using the plot utility from this repo.
+
+for reference here are my autorefactor results from optometrists.
+this data is not included in the above graph.
+i don't really know my previous data so i omitted it rather than guessing it.
+
+```
+2019-Feb-01 sph:-4.75,-4.75 pd:33,33
+2019-Mar-20 started wearing -4.25D lenses
+```
