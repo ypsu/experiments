@@ -32,6 +32,7 @@ environmental tags:
 - sunglight: directly under the sun.
 - lit: in an artificially lit room.
 - tired: felt tired as i was doing the measurement.
+- dry: my eyes felt very dry just before or during the measurement.
 
 activity tags:
 

@@ -25,6 +25,6 @@ set y2tics (\
   "-4.75D" 210, \
   "-5.00D" 200, \
   "-5.25D" 190)
-plot "<./avg <data" using 1:2 with lines smooth acsplines lw 5 title "last day's average", \
+plot "<./avg <data" using 1:2 with lines smooth acsplines lw 5 title "last week's average", \
      "data" using 1:2 pt 7 ps 1 title "measurements", \
      235 notitle, 222 notitle, 210 notitle, 200 notitle

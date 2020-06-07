@@ -3,7 +3,7 @@
 
 BEGIN {
   FS = " *; *"
-  interval = 3600 * 24;
+  interval = 3600 * 24 * 7;
   # sum and avg are the running counters for the average calculation.
   sum = 0
   cnt = 0
