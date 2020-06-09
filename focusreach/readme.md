@@ -39,9 +39,11 @@ activity tags:
 - sleep: right after some sleep or nap.
 - nearwork: right after some near work without glasses (reading or writing).
 - glassfree: walked around without glasses, almost blindly.
-- reduced: used reduced glasses before.
+- reduced: used reduced glasses with the computer.
 - distance: i wore my distance glasses.
 - exercise: i did some eye exercises.
+- outdoor: i was outside.
+- work: i worked on computer.
 
 not sure if i'll ever use those tags for anything,
 but there's no harm in collecting them.

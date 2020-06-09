@@ -143,3 +143,11 @@
 2020-06-06 22:16; 204; 204; 191; lit,reduced;
 2020-06-07 06:33; 211; 200; 198; lit,sleep;
 2020-06-07 11:49; 217; 214; 197; bright,distance,tired;
+2020-06-07 12:36; 205; 214; 200; bright,nearwork,tired,dry;
+2020-06-07 18:54; 210; 216; 185; bright,outdoor,distance,dry;
+2020-06-07 22:33; 208; 203; 203; lit,nearwork;
+2020-06-08 06:13; 206; 208; 202; lit,sleep;
+2020-06-08 13:06; 214; 212; 198; distance,bright,outdoor,dry;
+2020-06-08 21:30; 204; 201; 195; lit,tired;
+2020-06-09 08:31; 213; 211; 205; bright,sleep;
+2020-06-09 11:56; 226; 225; 214; distance,work,bright; it's a bit cloudy outside so no sunlight. i also noticed that if my target is well lit, i can focus on it from a bit larger distance. and the focus remains even if i slowly move the target back to a less lit place. so i cheated a little bit like that for this measurement. the other change is that i switched back to using my normal glasses for computer work.
