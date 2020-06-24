@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>musibo</title>
+<style>
+div.header {
+  position: sticky;
+  top: 0;
+  background-color: white;
+}
+</style>
+</head><body>
+
+<div class=header>
+<p>
+<button onclick=playnext(-1)>prev</button>
+<audio id=haudio controls onended=playnext(1)></audio>
+<button onclick=playnext(1)>next</button>
+<p>
+
+<p>
+<input id=hsearch placeholder="comma separated search" onchange=filter() autofocus>
+<input type=checkbox id=hshuffle onchange=filter()>
+<label for=hshuffle>shuffle</label>
+</p>
+<hr>
+</div>
+
+<p id=herror hidden></p>
+
+<div id=hfiles>
+loading data (needs javascript)
+</div>
+
+<script>
+const g = {
+  files: [],
+  filteredfiles: [],
+};
+
+const filter = () => {
+  let retxt = '';
+  const splitre = /[\x00-\x2e\x7b-\x7f]+/;
+  for (let part of hsearch.value.split(',')) {
+    part = part.trim();
+    if (part.length == 0) continue;
+    if (retxt.length != 0) retxt += '|';
+    for (let subpart of part.split(splitre)) {
+      if (subpart.length == 0) continue;
+      retxt += `(?=.*${subpart})`;
+    }
+  }
+  const re = new RegExp(retxt, 'i');
+  let html = '';
+  let files = [];
+  for (let file of g.files) {
+    if (file.match(re)) files.push(file);
+  }
+  if (hshuffle.checked) {
+    for (let i = files.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      const x = files[i];
+      files[i] = files[j];
+      files[j] = x;
+    }
+  }
+  g.filteredfiles = files;
+  let cnt = 0;
+  for (const file of files) {
+    html += '<input type=radio name=hfileradio';
+    html += ` id=hfileradio${cnt} value=${cnt} onchange=playnext(0)>`;
+    html += `<label for=hfileradio${cnt}>${htmlize(file)}</label><br>\n`;
+    cnt++;
+  }
+  hfiles.innerHTML = html;
+  if (files.length > 0) {
+    hfileradio0.checked = true;
+    haudio.src = files[0];
+  }
+};
+
+const playnext = delta => {
+  const selected = document.querySelector('input[name=hfileradio]:checked');
+  let id = parseInt(selected.value);
+  id = (id + delta + g.filteredfiles.length) % g.filteredfiles.length;
+  document.getElementById(`hfileradio${id}`).checked = true;
+  haudio.src = g.filteredfiles[id];
+  haudio.play();
+};
+
+const main = async () => {
+  haudio.onerror = handleerror;
+  window.onerror = handleerror;
+  window.onunhandledrejection = handleerror;
+  const dataresp = await fetch('musibo.data');
+  if (dataresp.status != 200) {
+    herror.innerText = `error ${dataresp.status}`;
+    herror.hidden = false;
+    return;
+  }
+  const databody = await dataresp.text();
+  let files = [];
+  for (let line of databody.trim().split('\n')) {
+    line = line.trim();
+    if (line.startsWith('#')) continue;
+    if (line.length == 0) continue;
+    g.files.push(line);
+  }
+  g.files.sort();
+  filter();
+};
+
+const handleerror = ev => {
+  herror.innerText = 'error occurred: ';
+  if (ev.reason) {
+    if (ev.reason.stack) {
+      herror.innerText += ev.reason.stack;
+    } else if (ev.reason.details) {
+      herror.innerText += ' ' + ev.reason.details;
+    } else if (ev.reason.result) {
+      herror.innerText += ' ' + ev.reason.result.error.message;
+    } else {
+      herror.innerText += ev.reason;
+    }
+  } else {
+    herror.innerText += ev;
+  }
+  herror.hidden = false;
+};
+
+const htmlize = str => {
+  return str.replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;')
+      .replace(
+          /\b(http(s)?:\/\/)?([a-z0-9]+(\.[a-z0-9]+)+)\/(([a-zA-Z0-9_=#%\/?:.;&+-]*)\b)?/g,
+          '<a href=\'http$2://$3/$6\'>$&</a>');
+};
+
+main();
+</script>
+
+</body></html>
