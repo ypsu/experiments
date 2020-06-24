@@ -4,15 +4,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>musibo</title>
 <style>
-div.header {
-  position: sticky;
-  top: 0;
-  background-color: white;
+#hfiles {
+  overflow-y: scroll;
 }
 </style>
-</head><body>
+</head><body onresize=resize()>
 
-<div class=header>
 <p>
 <button onclick=playnext(-1)>prev</button>
 <audio id=haudio controls onended=playnext(1)></audio>
@@ -25,7 +22,6 @@ div.header {
 <label for=hshuffle>shuffle</label>
 </p>
 <hr>
-</div>
 
 <p id=herror hidden></p>
 
@@ -84,15 +80,22 @@ const playnext = delta => {
   const selected = document.querySelector('input[name=hfileradio]:checked');
   let id = parseInt(selected.value);
   id = (id + delta + g.filteredfiles.length) % g.filteredfiles.length;
-  document.getElementById(`hfileradio${id}`).checked = true;
+  const newelem = document.getElementById(`hfileradio${id}`);
+  newelem.checked = true;
+  newelem.scrollIntoView({block:"nearest"});
   haudio.src = g.filteredfiles[id];
   haudio.play();
+};
+
+const resize = () => {
+  hfiles.style.height = `${window.innerHeight - hfiles.offsetTop - 10}px`;
 };
 
 const main = async () => {
   haudio.onerror = handleerror;
   window.onerror = handleerror;
   window.onunhandledrejection = handleerror;
+  resize();
   const dataresp = await fetch('musibo.data');
   if (dataresp.status != 200) {
     herror.innerText = `error ${dataresp.status}`;
