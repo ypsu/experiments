@@ -1,0 +1,11 @@
+#!/usr/bin/awk -f
+
+{
+  if (NF < 6) {
+    printf("too few fields on line %d\n", NR) > "/dev/stderr"
+    exit(1)
+  }
+  $1 = gensub(/(..)(..)/, FILENAME "-\\1-\\2", "g", $1)
+  $2 = gensub(/(..)(..)/, "\\1:\\2", "g", $2)
+  printf("%s/%s %s\n", $1, $2, $3)
+}

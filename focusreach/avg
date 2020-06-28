@@ -2,7 +2,6 @@
 # calculates interval average.
 
 BEGIN {
-  FS = " *; *"
   interval = 3600 * 24 * 7;
   # sum and avg are the running counters for the average calculation.
   sum = 0
@@ -10,22 +9,22 @@ BEGIN {
 }
 
 {
-  if (NF != 6) {
-    printf("invalid number of fields on line %d\n", NR) > "/dev/stderr"
+  if (NF < 6) {
+    printf("too few fields on line %d\n", NR) > "/dev/stderr"
     exit(1)
   }
-  gsub(/[: -]/, " ", $1)
-  ts = mktime($1 " 00")
+  tm = gensub(/(..)(..)(..)(..)/, FILENAME " \\1 \\2 \\3 \\4 00", "g", $1 $2)
+  ts = mktime(tm)
   curinterval = int(ts / interval)
   if (curinterval != lastinterval) {
     if (cnt != 0) {
-      timestr = strftime("%F %H:%M", (lastinterval + 1) * interval)
-      printf("%s; %d\n", timestr, sum / cnt)
+      timestr = strftime("%F/%H:%M", (lastinterval + 1) * interval)
+      printf("%s %d\n", timestr, sum / cnt)
     }
     lastinterval = curinterval
     sum = 0
     cnt = 0
   }
-  sum += $2
+  sum += $3
   cnt++
 }

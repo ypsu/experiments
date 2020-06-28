@@ -13,39 +13,40 @@ this is how the measurement looks like from my eyes:
 
 ![measuring the focus reach](measure.jpg)
 
-then i put that into the data file.
-it's a semicolon separated list separated list of tokens.
+then i put that into a data file.
+it's a space separated list separated list of tokens,
+followed by an optional freeform comment.
 the columns are the following:
 
 ```
-datetime; central; left; right; tags; comment
+mmdd hhmm central left right flags comment
 ```
 
+mmdd hhmm is the time (the year number is in the filename).
 central, left, right are distances in millimeters.
 that's how far i see without glasses.
-tags are comma separated words.
-they describe either the environment of the measurement,
+flags is a list of characters.
+each character describes either the environment of the measurement,
 or the activity i did before the measurement.
-environmental tags:
+environmental flags:
 
-- bright: indoors but with lots of natural light.
-- sunglight: directly under the sun.
-- lit: in an artificially lit room.
-- tired: felt tired as i was doing the measurement.
-- dry: my eyes felt very dry just before or during the measurement.
+- b as in bright: indoors but with lots of natural light.
+- u as in sunglight: directly under the sun.
+- l as in lit: in an artificially lit room.
+- t as in tired tired: felt tired as i was doing the measurement.
+- y as in dry: my eyes felt very dry just before or during the measurement.
 
 activity tags:
 
-- sleep: right after some sleep or nap.
-- nearwork: right after some near work without glasses (reading or writing).
-- glassfree: walked around without glasses, almost blindly.
-- reduced: used reduced glasses with the computer.
-- distance: i wore my distance glasses.
-- exercise: i did some eye exercises.
-- outdoor: i was outside.
-- work: i worked on computer.
+- s as in sleep: right after some sleep or nap.
+- n as in no glasses: used no glasses at all.
+- r as in reduced: used reduced glasses.
+- d as in distance: i wore my distance glasses.
+- e as in exercise: i did some eye exercises.
+- o as in outdoor: i was outside.
+- w as in work: i did closeup work (e.g. computer, reading, writing).
 
-not sure if i'll ever use those tags for anything,
+not sure if i'll ever analyze those flags,
 but there's no harm in collecting them.
 
 here is my progress over time:
