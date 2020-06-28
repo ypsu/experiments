@@ -1,6 +1,6 @@
 #!/usr/bin/gnuplot
 
-set terminal png size 640,360
+set terminal png size 1280,720
 set output "plot.png"
 set title "focus reach"
 set format x "%Y-%b-%d"
@@ -13,8 +13,6 @@ tfmt = "%Y-%m-%d %H:%M"
 set timefmt tfmt
 stats "data" using (strptime(tfmt, strcol(1))) name "x" nooutput
 set xdata time
-ticinterval = ((x_max - x_min) / 4)
-set xtics ticinterval
 set autoscale xfixmin
 set autoscale xfixmax
 set y2tics (\
@@ -25,6 +23,7 @@ set y2tics (\
   "-4.75D" 210, \
   "-5.00D" 200, \
   "-5.25D" 190)
+set link y2
 plot "<./avg <data" using 1:2 with lines smooth acsplines lw 5 title "last week's average", \
      "data" using 1:2 pt 7 ps 1 title "measurements", \
      235 notitle, 222 notitle, 210 notitle, 200 notitle
