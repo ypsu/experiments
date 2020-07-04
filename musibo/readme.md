@@ -5,7 +5,7 @@ i wrote this for myself out of frustration,
 because youtube, spotify and other websites are full of ads,
 and it's very hard to get them to play what i want them to play.
 those stupid ads can take one out of the mood very quickly,
-especially a moody kid when you are trying to children songs.
+especially a moody kid when you are trying to play children songs.
 
 i have speakers in the living room,
 i want to be able to connect a computer or smartphone to it,
@@ -18,7 +18,7 @@ lets you filter to the stuff you are in the mood,
 optionally shuffle things,
 and just plays your selection without interruption.
 
-you need third things:
+you need three things:
 first, generate the list of music files you care about.
 second, host musibo.html and those music files with a http server.
 third, set up your router to point the url "music" to your http computer.
