@@ -1,9 +1,8 @@
-# My experiments
+# experiments
 
-Sometimes I do some random stuff out of curiosity or fun but then I never touch
-that stuff again. But I have hard time deleting some of these things so I've
-decided to just dump them here. You won't find much interesting things here,
+sometimes i do some random stuff out of curiosity or fun
+but then i never touch that stuff again.
+but i have hard time deleting some of these things
+so i've decided to just dump them here.
+you won't find much interesting things here,
 mostly half-assed, non-functional pieces of bits. :)
-
-I've actually used to put these on my "blog" but then deleted that because I
-rarely updated it anyways.
