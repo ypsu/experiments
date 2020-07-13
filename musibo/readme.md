@@ -33,7 +33,7 @@ find >musibo.data \
   abba \
   beatles \
   kidsongs \
-  -iname '*.mp3' -o -iname '*.flac'
+  -iname '*.mp3' -o -iname '*.flac' -o -iname '*.opus' -o -iname '*.m4a'
 exec bindcap thttpd -d . -p 80 -l /dev/stdout -D
 ```
 
