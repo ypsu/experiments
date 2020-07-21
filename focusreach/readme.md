@@ -19,35 +19,12 @@ followed by an optional freeform comment.
 the columns are the following:
 
 ```
-mmdd hhmm central left right flags comment
+mmdd hhmm central left right comment
 ```
 
 mmdd hhmm is the time (the year number is in the filename).
 central, left, right are distances in millimeters.
 that's how far i see without glasses.
-flags is a list of characters.
-each character describes either the environment of the measurement,
-or the activity i did before the measurement.
-environmental flags:
-
-- b as in bright: indoors but with lots of natural light.
-- u as in sunglight: directly under the sun.
-- l as in lit: in an artificially lit room.
-- t as in tired tired: felt tired as i was doing the measurement.
-- y as in dry: my eyes felt very dry just before or during the measurement.
-
-activity tags:
-
-- s as in sleep: right after some sleep or nap.
-- n as in no glasses: used no glasses at all.
-- r as in reduced: used reduced glasses.
-- d as in distance: i wore my distance glasses.
-- e as in exercise: i did some eye exercises.
-- o as in outdoor: i was outside.
-- w as in work: i did closeup work (e.g. computer, reading, writing).
-
-not sure if i'll ever analyze those flags,
-but there's no harm in collecting them.
 
 here is my progress over time:
 

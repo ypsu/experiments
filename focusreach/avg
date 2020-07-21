@@ -9,7 +9,7 @@ BEGIN {
 }
 
 {
-  if (NF < 6) {
+  if (NF < 5) {
     printf("too few fields on line %d\n", NR) > "/dev/stderr"
     exit(1)
   }
