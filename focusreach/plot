@@ -10,7 +10,6 @@ set y2label "diopters"
 set key below
 tfmt = "%Y-%m-%d/%H:%M"
 set timefmt tfmt
-stats "data" using (strptime(tfmt, strcol(1))) name "x" nooutput
 set xdata time
 set autoscale xfixmin
 set autoscale xfixmax
