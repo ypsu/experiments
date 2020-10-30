@@ -2,7 +2,7 @@
 # calculates interval average.
 
 BEGIN {
-  interval = 3600 * 24 * 7;
+  interval = 3600 * 24 * 30;
   # sum and avg are the running counters for the average calculation.
   sum = 0
   cnt = 0
