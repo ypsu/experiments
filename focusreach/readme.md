@@ -22,7 +22,7 @@ the columns are the following:
 yyyymmdd-hhmm central left right comment
 ```
 
-yyyymmdd hhmm is the time
+yyyymmdd hhmm is the time;
 central, left, right are distances in millimeters.
 that's how far i see without glasses.
 
