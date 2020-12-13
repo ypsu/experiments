@@ -19,10 +19,10 @@ followed by an optional freeform comment.
 the columns are the following:
 
 ```
-mmdd hhmm central left right comment
+yyyymmdd-hhmm central left right comment
 ```
 
-mmdd hhmm is the time (the year number is in the filename).
+yyyymmdd hhmm is the time
 central, left, right are distances in millimeters.
 that's how far i see without glasses.
 
