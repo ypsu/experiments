@@ -9,22 +9,22 @@ BEGIN {
 }
 
 {
-  if (NF < 5) {
+  if (NF < 4) {
     printf("too few fields on line %d\n", NR) > "/dev/stderr"
     exit(1)
   }
-  tm = gensub(/(..)(..)(..)(..)/, FILENAME " \\1 \\2 \\3 \\4 00", "g", $1 $2)
+  tm = gensub(/^(20..)(..)(..)-(..)(..)/, "\\1 \\2 \\3 \\4 \\5 00", "g", $1)
   ts = mktime(tm)
   curinterval = int(ts / interval)
   if (curinterval != lastinterval) {
     if (cnt != 0) {
-      timestr = strftime("%F/%H:%M", (lastinterval + 1) * interval)
+      timestr = strftime("%Y%m%d-%H%M", (lastinterval + 1) * interval)
       printf("%s %d\n", timestr, sum / cnt)
     }
     lastinterval = curinterval
     sum = 0
     cnt = 0
   }
-  sum += $3
+  sum += $2
   cnt++
 }
