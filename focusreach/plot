@@ -3,7 +3,7 @@
 set terminal pngcairo size 1280,720 font "Noto Sans"
 set output "plot.png"
 set title "focus reach"
-set format x "%Y-%b-%d"
+set format x "%Y-%b"
 set xlabel "date"
 set ylabel "millimeters"
 set y2label "diopters"
