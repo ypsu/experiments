@@ -19,8 +19,8 @@ way too long for demo purposes.
 </p>
 <p>
 details about my signaling server can be found at
-<a href='https://github.com/ypsu/notech/blob/a21d/webserve.c#L146-L207'>
-https://github.com/ypsu/notech/blob/a21d/webserve.c#L146-L207</a>.
+<a href='https://github.com/ypsu/blog/blob/master/sig/sig.go'>
+https://github.com/ypsu/blog/blob/master/sig/sig.go</a>.
 </p>
 <hr/>
 <p id='statbox'>initializing</p>
@@ -111,21 +111,21 @@ function handlefailure(event) {
 async function main() {
   // check for a pending chatoffer signal.
   g.xhr = new XMLHttpRequest();
-  g.xhr.open('GET', `${g.sigserver}/sigquery/chatoffer`);
+  g.xhr.open('GET', `${g.sigserver}/sig?op=get&name=chatoffer`);
   g.xhr.send(null);
   g.xhr.onerror = function () {
     statbox.innerText = 'error with signaling server';
     inputbox.disabled = true;
   }
   await eventpromise(g.xhr, 'load');
-  if (g.xhr.status == 204) {
+  if (g.xhr.status == 412) {
     g.isserver = true;
     g.username = 'user0';
     var nextpeerid = 1;
     // make sure chatanswer signal is empty (it could get into a bad, non-empty
     // state after a badly timed refresh).
     g.xhr = new XMLHttpRequest();
-    g.xhr.open('GET', `${g.sigserver}/sigquery/chatanswer`);
+    g.xhr.open('GET', `${g.sigserver}/sig?op=get&name=chatanswer`);
     g.xhr.send();
     await eventpromise(g.xhr, 'load');
     while (true) {
@@ -137,8 +137,10 @@ async function main() {
       while ((await eventpromise(conn, 'icecandidate')).candidate) {}
       statbox.innerText = `server mode, ${pcnt} peers, uploading sdp offer.`;
       g.xhr = new XMLHttpRequest();
-      g.xhr.open('POST', `${g.sigserver}/sigset/chatoffer`);
-      g.xhr.send(conn.localDescription.sdp);
+      let encvalue = encodeURIComponent(conn.localDescription.sdp)
+      let query = `${g.sigserver}/sig?op=put&name=chatoffer&value=${encvalue}`
+      g.xhr.open('GET', query);
+      g.xhr.send();
       await eventpromise(g.xhr, 'load');
       if (g.xhr.status != 200) {
         statbox.innerText = `error, sigserver returned ${g.xhr.status}.`;
@@ -146,7 +148,7 @@ async function main() {
       }
       statbox.innerText = `server mode, ${pcnt} peers, waiting for a peer.`;
       g.xhr = new XMLHttpRequest();
-      g.xhr.open('GET', `${g.sigserver}/sigget/chatanswer`);
+      g.xhr.open('GET', `${g.sigserver}/sig?op=get&name=chatanswer&blocking=1`);
       g.xhr.send();
       await eventpromise(g.xhr, 'load');
       if (g.xhr.status != 200) {
@@ -183,8 +185,10 @@ async function main() {
     while ((await eventpromise(conn, 'icecandidate')).candidate) {}
     statbox.innerText = 'client mode, uploading sdp answer.';
     g.xhr = new XMLHttpRequest();
-    g.xhr.open('POST', `${g.sigserver}/sigset/chatanswer`);
-    g.xhr.send(conn.localDescription.sdp);
+    let encvalue = encodeURIComponent(conn.localDescription.sdp);
+    let query = `${g.sigserver}/sig?op=put&name=chatanswer&value=${encvalue}`;
+    g.xhr.open('GET', query);
+    g.xhr.send()
     statbox.innerText = 'client mode, waiting for the channel.';
     var channel = (await chanpromise).channel;
     statbox.innerText = 'client mode, waiting handshake.';
