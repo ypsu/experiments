@@ -1,0 +1,333 @@
+simple
+  inputdata
+    20211014.143001.123 10 name alice
+    20211014.143001.124 11 name bob note "hello note" avail "unavailable"
+    20211014.143001.125 10 contact "plz don't contact"
+    20211014.143001.126 11 avail "every evening"
+    20211014.143001.127 10 addcookie 13 "test agent"
+    20211014.143001.128 10 addcookie 17 "test agent 2"
+    20211014.143001.128 10 rmcookie 13
+    20211014.143001.128 10 addcookie 31 "test agent 3"
+  inputquery /
+  outputhtml
+    <!doctype html><html lang=en>
+    <head>
+      <title>ppladder</title>
+      <meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'>
+      <style>
+        body {
+          max-width: 50em;
+          font-family: sans-serif;
+        }
+        table {
+          border-collapse: collapse;
+        }
+        td, th {
+          border: 1px solid lightgray;
+          padding: 0.2em 0.5em;
+          cursor: default
+        }
+        tr:hover {
+          background: #eee;
+        }
+        tbody, #hinactive > ul {
+          font-size: 200%;
+        }
+        .cmyrow {
+          background: #ffe;
+        }
+        .cwinrow {
+          background: #dfd;
+        }
+        .clossrow {
+          background: #fdd;
+        }
+      </style>
+    </head>
+    <body>
+    
+    <p>Please <a href=/login>login</a> or <a href=/register>register</a>.
+    </p>
+    
+    <table>
+      <thead><tr>
+        <th>rank</th>
+        <th>name</th>
+        <th>wins</th>
+        <th>losses</th>
+      </tr></thead>
+      <tbody>
+      
+      </tbody>
+    </table>
+    
+    
+    <p><button id=hinactivebtn onclick='hinactive.hidden=false;hinactivebtn.hidden=true'>Show inactive/new players</button></p>
+    
+    <span id=hinactive hidden>
+      <p><b>Inactive/new players:</b></p>
+      <ul>
+        
+        <li><a href=u/alice>alice</a></li>
+        <li><a href=u/bob>bob</a></li>
+      </ul>
+    </span>
+    
+    
+    <p>This is a ping pong ladder for the ping pong table in our street:</p>
+    
+    <p>todo: insert picture</p>
+    
+    <p><b>Ladder rules:</b></p>
+    
+    <ul>
+      <li>Register on the site to participate in the ladder.
+        Anybody can join who can easily and regularly access the above ping ping table.</li>
+      <li>Accept any challenge in a reasonable timeframe (within a few days)
+        or record a loss to avoid gating progression for others.</li>
+      <li>Challenge others and collect wins to climb up to the ladder.
+        You have to organize challenge matches yourselves in private
+        using the contact information on the profile pages.</li>
+      <li>Only the most recent win/loss against an opponent counts.
+        You must win against different people to increase your win count.</li>
+      <li>A match is one ping pong match: whoever reaches 11 score first, wins.</li>
+      <li>The loser must report the loss of the match.
+        Go to the winner's profile to report the loss.</li>
+      <li>Wait about a week before a rematch.</li>
+      <li>The match must happen on the ping pong table in our street.</li>
+      <li>The ladder only tracks matches from the past year
+        so make sure to do an occasional rematch to maintain position.</li>
+      <li>Honor system applies to the ladder
+        but contact ppladder at gmail.com for assistance.</li>
+    </ul>
+    
+    <p><b>Ping pong rules:</b></p>
+    
+    <ul>
+      <li>Aim: Hit the ball over the net onto your opponent's side. A point is won
+        by you if your opponent is unable to return the ball to your side of the
+        table (e.g. they miss the ball, they hit the ball but it misses your side of
+        the table, or the ball hits the net), or if they hit the ball before it
+        bounces on their side of the table.</li>
+      <li>Scoring: The winner of a game is the first to 11 points. There must be a
+        gap of at least two points between opponents at the end of the game though,
+        so if the score is 10-10, the game goes in to extra play until one of the
+        players has gained a lead of 2 points. The point goes to the player who
+        successfully ends a rally, regardless of who has served.</li>
+      <li>Serving: A player takes 2 serves before the ball switches to the
+        opponent to serve, except during periods of extra play where it changes each
+        time.</li>
+      <li>Notes: The ball must first bounce on your side and then in your opponents.
+        Your opponent must allow the ball to hit their side of the table before
+        trying to return this.
+        The ball must pass cleanly over the net - if it 'clips' the net and goes
+        over, it is a 'let' and the serve is retaken. If it hits the net and doesn’t
+        go over, the point goes to the other player/team. There are no second
+        serves.</li>
+    </ul>
+    
+    <p><b>Ping pong counters:</b></p>
+    
+    <ul>
+      <li>Score counting can be done in head, but there are online tools to make this easier.</li>
+      <li>A simple <a href=/counter>counter</a> on this site.</li>
+      <li>An advanced counter here: <a href=https://scorecount.com/table-tennis-ping-pong/ rel=noreferrer>https://scorecount.com/table-tennis-ping-pong/</a>.</li>
+    </ul>
+    
+    </body></html>
+  inputquery /foo
+  outputhtml
+    404 not found
+  inputquery /register
+  outputhtml
+    <!doctype html><html lang=en>
+    <head>
+      <title>Register</title>
+      <meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'>
+      <style>
+        body {
+          max-width: 50em;
+          font-family: sans-serif;
+        }
+        input[type=text], input[type=password] {
+          width: 100%;
+        }
+        #herror {
+          color: red;
+        }
+        .cfield {
+          width: auto;
+        }
+        .cvalue {
+          width: 100%;
+        }
+      </style>
+    </head>
+    <body>
+    
+    <h2>Register a new user</h2>
+    
+    <form action=/register method=post>
+    <table>
+      <tr><td class=cfield><b>username</b></td>
+        <td class=cvalue><input id=huser name=user type=text onchange=checkerrors() oninput=checkerrors() autofocus></td></tr>
+      <tr><td colspan=2>
+          At least 3 but at most 12 characters with lowercase English letters.
+      </td></tr>
+      <tr><td><b>password</b></td>
+        <td><input id=hpassword name=password type=password maxlength=100 onchange=checkerrors() oninput=checkerrors()></td></tr>
+      <tr><td colspan=2>
+          If you ever lose your password,
+          send an email to ppladder at gmail.com and we'll reset it for you.
+      </td></tr>
+      <tr><td><b>pin code</b></td>
+        <td><input id=hpin name=pin type=text onchange=checkerrors() oninput=checkerrors()></td></tr>
+      <tr><td colspan=2>
+          The pin code for the registration is written on the ping pong table's bottom side.
+          You have to crawl under it to see it.
+      </td></tr>
+      <tr><td><b>availability</b></td>
+        <td><input id=havail name=avail type=text onchange=checkerrors() oninput=checkerrors()></td></tr>
+      <tr><td colspan=2>
+          This availability field describes your time preferences for the matches.
+          E.g. anytime on a weekend, workday evenings.
+      </td></tr>
+      <tr><td><b>contact</b></td>
+        <td><input id=hcontact name=contact type=text onchange=checkerrors() oninput=checkerrors()></td></tr>
+      <tr><td colspan=2>
+          This contact field describes the preferred method for the challengers contacting you for match appointments.
+          Can be email, phone number, or your postal address where people can issue challenges the old fashioned way
+          or all of them if you are reachable through multiple means.
+          This contact information is shown only for registered users.
+          Tip: use <a href=https://anonaddy.com rel=noreferrer>https://anonaddy.com</a>,
+          <a href=https://simplelogin.io rel=noreferrer>https://simplelogin.io</a>,
+          or <a href=https://relay.firefox.com/>https://relay.firefox.com/</a>
+          for anonymous email forwarding.
+      </td></tr>
+      <tr><td><b>note</b></td>
+        <td><input id=hnote name=note type=text onchange=checkerrors() oninput=checkerrors()></td></tr>
+      <tr><td colspan=2>
+          Some introduction or a personal motto to share.
+          Optional.
+      </td></tr>
+    </table>
+    
+    <p>
+      <input id=hcookie type=checkbox onchange=checkerrors() oninput=checkerrors()>
+      <label for=hcookie>I agree to using browser cookies to remember my login.</label>
+    </p>
+    
+    <p><input type=submit id=hregbtn disabled value=Register>
+    <span id=herror>This page needs javascript to work.</span></p>
+    </form>
+    
+    <p>All of the above fields (including the username) can be changed after the registration.</p>
+    
+    <p><a href=/>Back to frontpage</a></p>
+    
+    <script>
+      let userset = new Set("alice,bob".split(','));
+    
+      const checkerrors = () => {
+        hregbtn.disabled = true;
+        if (huser.value.length < 3) {
+          herror.innerText = 'Username must have at least 3 English letters.';
+          return;
+        }
+        if (huser.value.length > 12) {
+          herror.innerText = 'Username must have at most 12 English letters.';
+          return;
+        }
+        if (!/^[a-z]{3,12}$/.test(huser.value)) {
+          herror.innerText = 'Username must be of lowercase English letters.';
+          return;
+        }
+        if (userset.has(huser.value)) {
+          herror.innerText = 'Username already taken.';
+          return;
+        }
+        if (hpassword.value.length == 0) {
+          herror.innerText = 'Set a password.';
+          return;
+        }
+        if (hpin.value.length == 0) {
+          herror.innerText = 'Enter the secret pin code.';
+          return;
+        }
+        if (havail.value.length == 0) {
+          herror.innerText = 'Include details about your availability.';
+          return;
+        }
+        if (havail.value.length > 1000) {
+          herror.innerText = 'Keep your availability details short.';
+          return;
+        }
+        if (hcontact.value.length == 0) {
+          herror.innerText = 'Include details about your reachability.';
+          return;
+        }
+        if (hcontact.value.length > 1000) {
+          herror.innerText = 'Keep your contact details short.';
+          return;
+        }
+        if (hnote.value.length > 1000) {
+          herror.innerText = 'Keep your note short.';
+          return;
+        }
+        if (!hcookie.checked) {
+          herror.innerText = 'You must agree to the cookie policy.';
+          return;
+        }
+        hregbtn.disabled = false;
+        herror.innerText = '';
+      }
+    
+      checkerrors();
+    </script>
+    
+    </body></html>
+  outputstate
+    user 10 alice contact "plz don't contact"
+    user 10 cookie 17 20211014.143001.128 "test agent 2"
+    user 10 cookie 31 20211014.143001.128 "test agent 3"
+    user 11 bob avail "every evening" note "hello note"
+badregistration
+  inputquery /register user=aa&password=ppp&pin=1234&avail=aaa&contact=ccc
+  outputhtml
+    400 invalid username
+  inputquery /register user=aaa&password=&pin=1234&avail=aaa&contact=ccc
+  outputhtml
+    400 missing password
+  inputquery /register user=aaa&password=ppp&pin=1234&avail=&contact=ccc
+  outputhtml
+    400 missing availability
+  inputquery /register user=aaa&password=ppp&pin=1234&avail=aaa&contact=
+  outputhtml
+    400 missing contact
+  outputstate
+newuser
+  inputquery /register user=alice&password=pw&pin=1234&avail=avail&contact=contact
+  outputdata
+    19700101.000000.000 10 name alice avail "avail" contact "contact" pwhash 0194fdc2fa2ffcc041d3ff12045b73c8.1a1a71029e324e3a861403d988d5114561eabcfbda843417b8a3011092eb131e addcookie WrcH8KP0U ""
+  outputhtml
+    <!doctype html><html lang=en>
+    <head>
+      <title>Status</title>
+      <meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'>
+      <style>
+        body {
+          max-width: 50em;
+          font-family: sans-serif;
+        }
+      </style>
+    </head>
+    <body>
+    
+    <p>Registration successful.</p>
+    
+    <p><a href=/>Back to frontpage</a></p>
+    
+    </body></html>
+  outputstate
+    user 10 alice pwhash 0194fdc2fa2ffcc041d3ff12045b73c8.1a1a71029e324e3a861403d988d5114561eabcfbda843417b8a3011092eb131e avail "avail" contact "contact"
+    user 10 cookie WrcH8KP0U 19700101.000000.000 ""

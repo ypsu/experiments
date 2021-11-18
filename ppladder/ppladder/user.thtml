@@ -1,0 +1,117 @@
+<!doctype html><html lang=en>
+<head>
+  <title>u/{{.Profile.Name}}</title>
+  <meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'>
+  <style>
+    body {
+      max-width: 50em;
+      font-family: sans-serif;
+    }
+    form {
+      display: flex;
+    }
+    #hcomment {
+      width: 100%;
+      flex-grow: 1;
+    }
+    .cfield {
+      width: 12em;
+    }
+    .cvalue {
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+
+<h2>{{.Profile.Name}}'s {{if eq .CurrentUser .Profile.Name}}(your){{end}} profile</h2>
+
+<table>
+  <tr><td class=cfield><b>wins</b></td>
+    <td class=cvalue>{{.Profile.Wins}} ({{.Profile.Winlist}})</td>
+  <tr><td><b>losses</b></td>
+    <td>{{.Profile.Losses}} ({{.Profile.Losslist}})</td>
+  <tr><td><b>availability</b></td>
+    <td>{{.Profile.Availability}}</td></tr>
+  <tr><td><b>contact</b></td>
+    <td>
+      {{if eq .CurrentUser ""}}
+      <em>Visible only for logged in users.</em>
+      {{else}}
+      {{.Profile.Contact}}
+      {{end}}
+    </td></tr>
+  <tr><td><b>note</b></td>
+    <td>{{.Profile.Note}}</td></tr>
+</table>
+
+{{if eq .CurrentUser .Profile.Name}}
+<hr>
+<p><a href=/edit>Edit profile</a></p>
+<p><a href=/logout>Log out</a></p>
+{{if ge (len .Profile.Cookies) 2}}
+  <p>Login sessions:</p>
+  <table>
+    <tr><th class=cfield>Login date</th><th>User agent</th></tr>
+    {{range .Profile.Cookies}}
+    <tr>
+      <td><script>document.write(new Date({{.Time}}).toLocaleString('sv'))</script></td>
+      <td>{{.Agent}}</td>
+    </tr>
+    {{- end}}
+  </table>
+  <p><a href='/logout?all'>Log out all sessions</a></p>
+{{end}}
+{{end}}
+
+{{if and (ne .CurrentUser "") (ne .CurrentUser .Profile.Name)}}
+<hr>
+  {{if .CanReport}}
+    <form action=/lost method=post>
+      <input name=winnerid value={{.Profile.ID}} hidden>
+      <input name=comment maxlength=200 id=hcomment placeholder='score or commentary'>
+      <input type=submit value='Report loss'>
+    </form>
+  {{else}}
+    <p>Loss reporting temporarily disabled: already reported a loss recently.</p>
+  {{end}}
+{{end}}
+
+<p><b>Match history</b></p>
+
+<ul>
+<script>let timefmt = new Intl.DateTimeFormat("sv");</script>
+{{range .History}}
+  <li>On <script>document.write(timefmt.format(new Date({{.Time}})));</script>
+  {{.Type}} against {{.Opponent}}{{if ne .Note ""}}, {{.Loser}}'s comment: <br><em>{{.Note}}</em></li>{{end}}
+{{end}}
+</ul>
+
+<p><a href=/>Back to frontpage</a></p>
+
+{{if .IsAdmin}}
+  <p><button id=hadminbtn onclick='hadminbtn.disabled=true;hadmin.hidden=false'>Show admin controls</button></p>
+  <span id=hadmin hidden>
+  <p>
+  <form action=/admin method=post>
+    <input name=userid value={{.Profile.ID}} hidden>
+    <input name=op value=pwreset hidden>
+    <input type=submit value='Reset password'>
+  </form>
+  </p><p>
+  <form action=/admin method=post>
+    <input name=userid value={{.Profile.ID}} hidden>
+    <input name=op value=deactivate hidden>
+    <input type=submit value='Deactivate account'>
+  </form>
+  </p><p>
+  <form action=/admin method=post>
+    <input name=userid value={{.Profile.ID}} hidden>
+    <input name=op value=ratelimitreset hidden>
+    <input type=submit value='Reset global ratelimit'>
+  </form>
+  </p>
+  </span>
+{{end}}
+
+</body></html>

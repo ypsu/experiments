@@ -1,0 +1,146 @@
+<!doctype html><html lang=en>
+<head>
+  <title>Register</title>
+  <meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'>
+  <style>
+    body {
+      max-width: 50em;
+      font-family: sans-serif;
+    }
+    input[type=text], input[type=password] {
+      width: 100%;
+    }
+    #herror {
+      color: red;
+    }
+    .cfield {
+      width: auto;
+    }
+    .cvalue {
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+
+<h2>Register a new user</h2>
+
+<form action=/register method=post>
+<table>
+  <tr><td class=cfield><b>username</b></td>
+    <td class=cvalue><input id=huser name=user type=text onchange=checkerrors() oninput=checkerrors() autofocus></td></tr>
+  <tr><td colspan=2>
+      At least 3 but at most 12 characters with lowercase English letters.
+  </td></tr>
+  <tr><td><b>password</b></td>
+    <td><input id=hpassword name=password type=password maxlength=100 onchange=checkerrors() oninput=checkerrors()></td></tr>
+  <tr><td colspan=2>
+      If you ever lose your password,
+      send an email to {{.Projectname}} at gmail.com and we'll reset it for you.
+  </td></tr>
+  <tr><td><b>pin code</b></td>
+    <td><input id=hpin name=pin type=text onchange=checkerrors() oninput=checkerrors()></td></tr>
+  <tr><td colspan=2>
+      The pin code for the registration is written on the ping pong table's bottom side.
+      You have to crawl under it to see it.
+  </td></tr>
+  <tr><td><b>availability</b></td>
+    <td><input id=havail name=avail type=text onchange=checkerrors() oninput=checkerrors()></td></tr>
+  <tr><td colspan=2>
+      This availability field describes your time preferences for the matches.
+      E.g. anytime on a weekend, workday evenings.
+  </td></tr>
+  <tr><td><b>contact</b></td>
+    <td><input id=hcontact name=contact type=text onchange=checkerrors() oninput=checkerrors()></td></tr>
+  <tr><td colspan=2>
+      This contact field describes the preferred method for the challengers contacting you for match appointments.
+      Can be email, phone number, or your postal address where people can issue challenges the old fashioned way
+      or all of them if you are reachable through multiple means.
+      This contact information is shown only for registered users.
+      Tip: use <a href=https://anonaddy.com rel=noreferrer>https://anonaddy.com</a>,
+      <a href=https://simplelogin.io rel=noreferrer>https://simplelogin.io</a>,
+      or <a href=https://relay.firefox.com/>https://relay.firefox.com/</a>
+      for anonymous email forwarding.
+  </td></tr>
+  <tr><td><b>note</b></td>
+    <td><input id=hnote name=note type=text onchange=checkerrors() oninput=checkerrors()></td></tr>
+  <tr><td colspan=2>
+      Some introduction or a personal motto to share.
+      Optional.
+  </td></tr>
+</table>
+
+<p>
+  <input id=hcookie type=checkbox onchange=checkerrors() oninput=checkerrors()>
+  <label for=hcookie>I agree to using browser cookies to remember my login.</label>
+</p>
+
+<p><input type=submit id=hregbtn disabled value=Register>
+<span id=herror>This page needs javascript to work.</span></p>
+</form>
+
+<p>All of the above fields (including the username) can be changed after the registration.</p>
+
+<p><a href=/>Back to frontpage</a></p>
+
+<script>
+  let userset = new Set({{.Usernames}}.split(','));
+
+  const checkerrors = () => {
+    hregbtn.disabled = true;
+    if (huser.value.length < 3) {
+      herror.innerText = 'Username must have at least 3 English letters.';
+      return;
+    }
+    if (huser.value.length > 12) {
+      herror.innerText = 'Username must have at most 12 English letters.';
+      return;
+    }
+    if (!/^[a-z]{3,12}$/.test(huser.value)) {
+      herror.innerText = 'Username must be of lowercase English letters.';
+      return;
+    }
+    if (userset.has(huser.value)) {
+      herror.innerText = 'Username already taken.';
+      return;
+    }
+    if (hpassword.value.length == 0) {
+      herror.innerText = 'Set a password.';
+      return;
+    }
+    if (hpin.value.length == 0) {
+      herror.innerText = 'Enter the secret pin code.';
+      return;
+    }
+    if (havail.value.length == 0) {
+      herror.innerText = 'Include details about your availability.';
+      return;
+    }
+    if (havail.value.length > 1000) {
+      herror.innerText = 'Keep your availability details short.';
+      return;
+    }
+    if (hcontact.value.length == 0) {
+      herror.innerText = 'Include details about your reachability.';
+      return;
+    }
+    if (hcontact.value.length > 1000) {
+      herror.innerText = 'Keep your contact details short.';
+      return;
+    }
+    if (hnote.value.length > 1000) {
+      herror.innerText = 'Keep your note short.';
+      return;
+    }
+    if (!hcookie.checked) {
+      herror.innerText = 'You must agree to the cookie policy.';
+      return;
+    }
+    hregbtn.disabled = false;
+    herror.innerText = '';
+  }
+
+  checkerrors();
+</script>
+
+</body></html>

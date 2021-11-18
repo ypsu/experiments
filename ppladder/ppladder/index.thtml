@@ -1,0 +1,132 @@
+<!doctype html><html lang=en>
+<head>
+  <title>{{.Projectname}}</title>
+  <meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'>
+  <style>
+    body {
+      max-width: 50em;
+      font-family: sans-serif;
+    }
+    table {
+      border-collapse: collapse;
+    }
+    td, th {
+      border: 1px solid lightgray;
+      padding: 0.2em 0.5em;
+      cursor: default
+    }
+    tr:hover {
+      background: #eee;
+    }
+    tbody, #hinactive > ul {
+      font-size: 200%;
+    }
+    .cmyrow {
+      background: #ffe;
+    }
+    .cwinrow {
+      background: #dfd;
+    }
+    .clossrow {
+      background: #fdd;
+    }
+  </style>
+</head>
+<body>
+
+<p>{{if eq .User ""}}Please <a href=/login>login</a> or <a href=/register>register</a>.
+{{else}}Hello <a href=u/{{.User}}>{{.User}}</a>!{{end}}</p>
+
+<table>
+  <thead><tr>
+    <th>rank</th>
+    <th>name</th>
+    <th>wins</th>
+    <th>losses</th>
+  </tr></thead>
+  <tbody>
+  {{range .Ranklist}}
+  <tr class={{.Class}}>
+    <td>{{.Rank}}</td>
+    <td><a href=u/{{.Name}}>{{.Name}}</a></td>
+    <td>{{.Wins}}</td>
+    <td>{{.Losses}}</td>
+  </tr>
+  {{- end}}
+  </tbody>
+</table>
+
+{{if gt (len .Inactive) 0}}
+<p><button id=hinactivebtn onclick='hinactive.hidden=false;hinactivebtn.hidden=true'>Show inactive/new players</button></p>
+
+<span id=hinactive hidden>
+  <p><b>Inactive/new players:</b></p>
+  <ul>
+    {{range .Inactive}}
+    <li><a href=u/{{.}}>{{.}}</a></li>
+    {{- end}}
+  </ul>
+</span>
+{{end}}
+
+<p>This is a ping pong ladder for the ping pong table {{.Address}}:</p>
+
+<p>todo: insert picture</p>
+
+<p><b>Ladder rules:</b></p>
+
+<ul>
+  <li>Register on the site to participate in the ladder.
+    Anybody can join who can easily and regularly access the above ping ping table.</li>
+  <li>Accept any challenge in a reasonable timeframe (within a few days)
+    or record a loss to avoid gating progression for others.</li>
+  <li>Challenge others and collect wins to climb up to the ladder.
+    You have to organize challenge matches yourselves in private
+    using the contact information on the profile pages.</li>
+  <li>Only the most recent win/loss against an opponent counts.
+    You must win against different people to increase your win count.</li>
+  <li>A match is one ping pong match: whoever reaches 11 score first, wins.</li>
+  <li>The loser must report the loss of the match.
+    Go to the winner's profile to report the loss.</li>
+  <li>Wait about a week before a rematch.</li>
+  <li>The match must happen on the ping pong table {{.Address}}.</li>
+  <li>The ladder only tracks matches from the past year
+    so make sure to do an occasional rematch to maintain position.</li>
+  <li>Honor system applies to the ladder
+    but contact {{.Projectname}} at gmail.com for assistance.</li>
+</ul>
+
+<p><b>Ping pong rules:</b></p>
+
+<ul>
+  <li>Aim: Hit the ball over the net onto your opponent's side. A point is won
+    by you if your opponent is unable to return the ball to your side of the
+    table (e.g. they miss the ball, they hit the ball but it misses your side of
+    the table, or the ball hits the net), or if they hit the ball before it
+    bounces on their side of the table.</li>
+  <li>Scoring: The winner of a game is the first to 11 points. There must be a
+    gap of at least two points between opponents at the end of the game though,
+    so if the score is 10-10, the game goes in to extra play until one of the
+    players has gained a lead of 2 points. The point goes to the player who
+    successfully ends a rally, regardless of who has served.</li>
+  <li>Serving: A player takes 2 serves before the ball switches to the
+    opponent to serve, except during periods of extra play where it changes each
+    time.</li>
+  <li>Notes: The ball must first bounce on your side and then in your opponents.
+    Your opponent must allow the ball to hit their side of the table before
+    trying to return this.
+    The ball must pass cleanly over the net - if it 'clips' the net and goes
+    over, it is a 'let' and the serve is retaken. If it hits the net and doesn’t
+    go over, the point goes to the other player/team. There are no second
+    serves.</li>
+</ul>
+
+<p><b>Ping pong counters:</b></p>
+
+<ul>
+  <li>Score counting can be done in head, but there are online tools to make this easier.</li>
+  <li>A simple <a href=/counter>counter</a> on this site.</li>
+  <li>An advanced counter here: <a href=https://scorecount.com/table-tennis-ping-pong/ rel=noreferrer>https://scorecount.com/table-tennis-ping-pong/</a>.</li>
+</ul>
+
+</body></html>

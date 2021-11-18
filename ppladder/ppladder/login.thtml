@@ -1,0 +1,45 @@
+<!doctype html><html lang=en>
+<head>
+  <title>Login</title>
+  <meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'>
+  <style>
+    body {
+      max-width: 50em;
+      font-family: sans-serif;
+    }
+    input[type=text], input[type=password] {
+      width: 100%;
+    }
+    #herror {
+      color: red;
+    }
+    .cfield {
+      width: auto;
+    }
+    .cvalue {
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+
+<h2>Login</h2>
+
+<p id=herror>{{.Error}}</p>
+
+<form action=/login method=post>
+<table>
+  <tr><td class=cfield><b>username</b></td>
+    <td class=cvalue><input id=huser name=user type=text autofocus></td></tr>
+  <tr><td><b>password</b></td>
+    <td><input id=hpassword name=password type=password></td></tr>
+</table>
+
+<p><input type=submit id=hloginbtn value=Login>
+</form>
+
+<p>Send an email to {{.Projectname}} at gmail.com to reset a password.</p>
+<p><a href=/register>Register a new user</a></p>
+<p><a href=/>Back to frontpage</a></p>
+
+</body></html>

@@ -1,0 +1,18 @@
+<!doctype html><html lang=en>
+<head>
+  <title>Status</title>
+  <meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'>
+  <style>
+    body {
+      max-width: 50em;
+      font-family: sans-serif;
+    }
+  </style>
+</head>
+<body>
+
+<p>{{.Message}}</p>
+
+<p><a href=/>Back to frontpage</a></p>
+
+</body></html>

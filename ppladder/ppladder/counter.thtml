@@ -1,0 +1,97 @@
+<!doctype html><html lang=en>
+<head>
+  <title>Counter</title>
+  <meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'>
+  <style>
+    body {
+      font-family: sans-serif;
+    }
+    @keyframes greenfade {
+      0% { background-color: green }
+      100% { background-color: white }
+    }
+    @keyframes redfade {
+      0% { background-color: red }
+      100% { background-color: white }
+    }
+    .clarge {
+      cursor: default;
+      font-size: 12vw;
+      margin: 0 0;
+      user-select: none;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+
+<p class=clarge onclick=addscore(0,1) id=htheyp>They: <span id=hthey></span></p>
+
+<hr>
+
+<p class=clarge onclick=addscore(1,1) id=hyoup>You: <span id=hyou></span></p>
+
+<hr>
+
+<p>
+<button onclick='ballstart^=1;render();'>Switch server</button>
+<button onclick='score=[0,0];render();'>Reset</button>
+<button onclick=addscore(0,-1)>Subtract they</button>
+<button onclick=addscore(1,-1)>Subtract you</button>
+</p>
+<p>Click on a side to add score.</p>
+<p><a href=/>Back to frontpage</a></p>
+
+<script>
+let ballstart = 1;
+let score = [0, 0];
+let render = _ => {
+  hthey.innerText = score[0];
+  hyou.innerText = score[1];
+  let mx = Math.max(score[0], score[1]);
+  let mn = Math.min(score[0], score[1]);
+  if (mx >= 11 && mx - mn >= 2) {
+    if (score[0] > score[1]) hthey.innerText += ' [won]';
+    if (score[0] < score[1]) hyou.innerText += ' [won]';
+    return;
+  }
+  let ballpos = 0;
+  if (mx < 11) {
+    ballpos = ballstart ^ (Math.floor((score[0] + score[1]) / 2) % 2);
+  } else {
+    ballpos = ballstart - (score[0] + score[1] - 11) % 2;
+  }
+  if (ballpos == 0) {
+    hthey.innerText += ' [srv]';
+  } else {
+    hyou.innerText += ' [srv]';
+  }
+};
+
+let lastclick = 0;
+let addscore = (side, amount) => {
+  if (amount < 0 && score[side] == 0) return;
+  let now = Date.now();
+  if (now - lastclick < 250) {
+    return;
+  }
+  lastclick = now;
+  let mx = Math.max(score[0], score[1]);
+  let mn = Math.min(score[0], score[1]);
+  if (amount > 0 && mx >= 11 && mx - mn >= 2) return;
+  let el;
+  if (side == 0) el = htheyp;
+  if (side == 1) el = hyoup;
+  score[side] += amount;
+  if (score[side] < 0) score[side] = 0;
+  el.style.animation = 'none';
+  el.offsetHeight;
+  if (amount > 0) el.style.animation = 'greenfade 2s';
+  if (amount < 0) el.style.animation = 'redfade 2s';
+  render();
+};
+
+render();
+</script>
+
+</body></html>
