@@ -6,7 +6,7 @@ function winstate() {
       hchallenge.hidden = true;
       hcorrectmsg.hidden = true;
       window.onkeydown = null;
-      fetch('http://localhost:21359/reward', {method: 'POST'});
+      fetch('/reward', {method: 'POST'});
     }
   };
 }
@@ -51,8 +51,8 @@ let typing = {
 let starcounting = {
   stars: [],
   guess: [],
-  places: 6,
-  starlimit: 6,
+  places: 7,
+  starlimit: 7,
 
   init: _ => {
     for (let i = 0; i < starcounting.places; i++) {
@@ -83,21 +83,21 @@ let starcounting = {
     for (let i = 0; i < sc.places; i++) {
       if (i < sc.guess.length) {
         if (sc.guess[i] == sc.stars[i]) {
-          h += `<span class=matchingletter>${sc.guess[i]}</span> `;
+          h += `<span class=matchingletter>${sc.guess[i]}</span>  `;
         } else {
-          h += `${sc.guess[i]} `;
+          h += `${sc.guess[i]}  `;
         }
       } else {
-        h += '_ ';
+        h += '_  ';
       }
     }
     h += '\n';
     for (let r = 1; r <= sc.starlimit; r++) {
       for (let c = 0; c < sc.places; c++) {
         if (sc.stars[c] >= r) {
-          h += '* ';
+          h += '*  ';
         } else {
-          h += '  ';
+          h += '   ';
         }
       }
       h += '\n';
