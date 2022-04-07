@@ -51,8 +51,8 @@ let typing = {
 let starcounting = {
   stars: [],
   guess: [],
-  places: 7,
-  starlimit: 7,
+  places: 8,
+  starlimit: 9,
 
   init: _ => {
     for (let i = 0; i < starcounting.places; i++) {
@@ -80,24 +80,22 @@ let starcounting = {
   render: _ => {
     let sc = starcounting;
     let h = '';
-    for (let i = 0; i < sc.places; i++) {
-      if (i < sc.guess.length) {
-        if (sc.guess[i] == sc.stars[i]) {
-          h += `<span class=matchingletter>${sc.guess[i]}</span>  `;
+    for (let r = 0; r < sc.places; r++) {
+      for (let c = 0; c < 9; c++) {
+        if (c == 5) h += ' ';
+        if (c < sc.stars[r]) {
+          h += '•';
         } else {
-          h += `${sc.guess[i]}  `;
+          h += ' ';
         }
-      } else {
-        h += '_  ';
       }
-    }
-    h += '\n';
-    for (let r = 1; r <= sc.starlimit; r++) {
-      for (let c = 0; c < sc.places; c++) {
-        if (sc.stars[c] >= r) {
-          h += '*  ';
+      h += ' = ';
+      if (r == sc.guess.length) h += '_';
+      if (r < sc.guess.length) {
+        if (sc.guess[r] == sc.stars[r]) {
+          h += `<span class=matchingletter>${sc.guess[r]}</span>`;
         } else {
-          h += '   ';
+          h += `${sc.guess[r]}`;
         }
       }
       h += '\n';
