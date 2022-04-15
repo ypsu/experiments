@@ -51,14 +51,16 @@ let typing = {
 let starcounting = {
   stars: [],
   guess: [],
-  places: 8,
+  places: 6,
   starlimit: 9,
 
   init: _ => {
-    for (let i = 0; i < starcounting.places; i++) {
+    for (let i = 0; i < starcounting.places - 1; i++) {
       let rnd = Math.floor(Math.random() * starcounting.starlimit) + 1;
       starcounting.stars[i] = rnd;
     }
+    let val = Math.floor(Math.random() * 4) + 6;
+    starcounting.stars[starcounting.places - 1] = val;
   },
 
   onkeydown: evt => {
@@ -69,7 +71,14 @@ let starcounting = {
       evt.preventDefault();
     }
     if (sc.guess.length < sc.places && k.length == 1) {
-      if ('0' <= k && k <= '9') sc.guess.push(parseInt(k));
+      if ('0' <= k && k <= '9') {
+        let num = parseInt(k);
+        if (num == sc.stars[sc.guess.length]) {
+          sc.guess.push(num);
+        } else {
+          sc.guess = [];
+        }
+      }
       evt.preventDefault();
     }
     if (sc.guess.length == sc.stars.length) {
