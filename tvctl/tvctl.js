@@ -113,7 +113,58 @@ let starcounting = {
   },
 };
 
-let challenge = starcounting;
+let addition = {
+  nums: [],
+  okcnt: 0,
+  cnt: 6,
+
+  init: _ => {
+    let g = addition;
+    for (let i = 0; i < g.cnt; i++) {
+      do {
+        g.nums[i] = [
+          Math.floor(Math.random() * 5 + 1),
+          Math.floor(Math.random() * 5 + 1),
+        ];
+      } while (g.nums[i][0] + g.nums[i][1] >= 10);
+    }
+    g.okcnt = 0;
+  },
+
+  onkeydown: evt => {
+    let g = addition;
+    let k = evt.key;
+    if (g.okcnt < g.cnt && k.length == 1 && '0' <= k && k <= '9') {
+      let n = parseInt(k);
+      if (n == g.nums[g.okcnt][0] + g.nums[g.okcnt][1]) {
+        g.okcnt++;
+      } else {
+        g.init();
+      }
+      evt.preventDefault();
+    }
+    if (g.okcnt == g.cnt) {
+      winstate();
+    }
+  },
+
+  render: _ => {
+    let g = addition;
+    let h = '';
+    for (let i = 0; i < g.cnt; i++) {
+      h += `${g.nums[i][0]} + ${g.nums[i][1]} = `;
+      if (i < g.okcnt) {
+        h += `<span class=matchingletter>${
+            g.nums[i][0] + g.nums[i][1]}</span>\n`;
+      } else {
+        h += '_\n';
+      }
+    }
+    hchallenge.innerHTML = h;
+  },
+};
+
+let challenge = addition;
 if (challenge.init) challenge.init();
 window.onkeydown = evt => {
   if (evt.altKey || evt.ctrlKey) return;
