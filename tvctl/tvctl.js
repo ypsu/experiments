@@ -1,13 +1,15 @@
+function reward() {
+  hchallenge.hidden = true;
+  hcorrectmsg.hidden = true;
+  window.onkeydown = null;
+  fetch('/reward', {method: 'POST'});
+}
+
 function winstate() {
   hcorrectmsg.hidden = false;
   window.onkeydown = evt => {
     if (evt.altKey || evt.ctrlKey) return;
-    if (evt.key == 'Enter') {
-      hchallenge.hidden = true;
-      hcorrectmsg.hidden = true;
-      window.onkeydown = null;
-      fetch('/reward', {method: 'POST'});
-    }
+    if (evt.key == 'Enter') reward();
   };
 }
 
