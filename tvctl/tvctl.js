@@ -164,7 +164,84 @@ let addition = {
   },
 };
 
-let challenge = addition;
+let pairs = {
+  rows: 2,
+  cols: 4,
+  nums: [],
+  selectedidx: -1,
+  done: [],
+  failed: false,
+
+  init: _ => {
+    let n = pairs.rows * pairs.cols;
+    pairs.selectedidx = -1;
+    pairs.failed = false;
+    for (let i = 0; i < n; i++) {
+      pairs.nums[i] = Math.floor(i / 2) + 1;
+      pairs.done[i] = false;
+    }
+    for (let i = n - 1; i > 0; i--) {
+      let j = Math.floor(Math.random() * (i + 1));
+      [pairs.nums[i], pairs.nums[j]] = [pairs.nums[j], pairs.nums[i]];
+    }
+  },
+
+  fail: _ => {
+    pairs.failed = true;
+    pairs.render();
+    setTimeout(_ => {
+      pairs.init();
+      pairs.render();
+    }, 500);
+  },
+
+  select: idx => {
+    if (pairs.done[idx]) return;
+    if (pairs.selectedidx == -1) {
+      pairs.selectedidx = idx;
+      return pairs.render();
+    }
+    if (pairs.nums[idx] == pairs.nums[pairs.selectedidx]) {
+      pairs.done[pairs.selectedidx] = true;
+      pairs.done[idx] = true;
+      pairs.selectedidx = -1;
+      for (let i = 0; i < pairs.rows * pairs.cols; i++) {
+        if (!pairs.done[i]) return pairs.render();
+      }
+      winstate();
+      return pairs.render();
+    }
+    return pairs.fail();
+  },
+
+  render: _ => {
+    let h = '';
+    h += '<table>\n';
+    let idx = 0;
+    for (let r = 0; r < pairs.rows; r++) {
+      h += '<tr>';
+      for (let c = 0; c < pairs.cols; c++, idx++) {
+        let style = '';
+        if (idx == pairs.selectedidx) {
+          style = 'style=background-color:#ff0';
+        }
+        if (pairs.done[idx]) {
+          style = 'style=background-color:#0f0';
+        }
+        if (pairs.failed) {
+          style = 'style=background-color:#f00';
+        }
+        h +=
+            `<td onclick=pairs.select(${idx}) ${style}>${pairs.nums[idx]}</td>`;
+      }
+      h += '</tr>\n';
+    }
+    h += '</table>';
+    hchallenge.innerHTML = h;
+  },
+};
+
+let challenge = pairs;
 if (challenge.init) challenge.init();
 window.onkeydown = evt => {
   if (evt.altKey || evt.ctrlKey) return;
