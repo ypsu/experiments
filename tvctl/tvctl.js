@@ -167,7 +167,7 @@ let addition = {
 };
 
 let pairs = {
-  rows: 2,
+  rows: 3,
   cols: 4,
   nums: [],
   selectedidx: -1,
