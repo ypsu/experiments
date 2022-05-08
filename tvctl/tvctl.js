@@ -199,6 +199,10 @@ let pairs = {
 
   select: idx => {
     if (pairs.done[idx]) return;
+    if (idx == pairs.selectedidx) {
+      pairs.selectedidx = -1;
+      return pairs.render();
+    }
     if (pairs.selectedidx == -1) {
       pairs.selectedidx = idx;
       return pairs.render();
