@@ -495,7 +495,7 @@ let glyphs = {
     '🎹': 'zongora',
     '🚿': 'zuhanyzó',
   },
-  count: 7,
+  count: 8,
   sel: [],
   order: [],
   solved: [],
