@@ -414,7 +414,6 @@ let glyphs = {
     '✂️': 'olló',
     '🦧': 'orángután',
     '🦁': 'oroszlán',
-    '🦌': 'őz',
     '🛡️': 'pajzs',
     '🥞': 'palacsinta',
     '🌴': 'pálmafa',
