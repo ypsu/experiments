@@ -315,7 +315,6 @@ let glyphs = {
     '🪚': 'fűrész',
     '🕊️': 'galamb',
     '📎': 'gemkapocs',
-    '🌰': 'gesztenye',
     '🎸': 'gitár',
     '🍄': 'gomba',
     '🦍': 'gorilla',
