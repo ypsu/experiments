@@ -563,12 +563,157 @@ let glyphs = {
   },
 };
 
-let challenge = glyphs;
+let circles = {
+  n: 20,
+  r: 50,
+  cx: 50,
+  cy: 50,
+  ocx: 50,
+  ocy: 50,
+  level: 0,
+  obstacles: [],
+  ctx: null,
+  collision: null,
+  // currenty held down keys:
+  up: false,
+  down: false,
+  left: false,
+  right: false,
+
+  init: _ => {
+    hchallenge.innerHTML =
+        '<canvas id=hcanvas width=1800 height=700 style="border:1px solid">';
+    let canvas = hcanvas;
+    let ctx = canvas.getContext('2d');
+    circles.ctx = ctx;
+    let r = circles.r;
+    circles.obstacles = [];
+    let color = '#f00';
+    if (circles.level == 1) color = '#f80';
+    for (let i = 0; i < circles.n; i++) {
+      let cx = Math.random() * 1700 + r, cy = Math.random() * 600 + r;
+      if ((cx >= 1500 && cy >= 500) || (cx < 200 && cy < 200)) {
+        i--;
+        continue;
+      }
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, 0, 2 * Math.PI);
+      ctx.fillStyle = color;
+      ctx.fill();
+      circles.obstacles.push([cx, cy]);
+    }
+    ctx.beginPath();
+    ctx.arc(r, r, r, 0, 2 * Math.PI);
+    ctx.fillStyle = '#000';
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(1800 - r, 700 - r, r, 0, 2 * Math.PI);
+    ctx.fillStyle = '#0f0';
+    ctx.fill();
+    circles.cx = 50;
+    circles.cy = 50;
+    circles.ocx = 50;
+    circles.ocy = 50;
+    circles.collision = null;
+    circles.simulate();
+  },
+
+  onkeydown: evt => {
+    if (evt.code == 'ArrowLeft') circles.left = true;
+    if (evt.code == 'ArrowRight') circles.right = true;
+    if (evt.code == 'ArrowUp') circles.up = true;
+    if (evt.code == 'ArrowDown') circles.down = true;
+    if (evt.code == 'Enter' && circles.collision != null) {
+      hmsg.hidden = true;
+      circles.level = 0;
+      circles.init();
+    }
+  },
+
+  onkeyup: evt => {
+    if (evt.code == 'ArrowLeft') circles.left = false;
+    if (evt.code == 'ArrowRight') circles.right = false;
+    if (evt.code == 'ArrowUp') circles.up = false;
+    if (evt.code == 'ArrowDown') circles.down = false;
+  },
+
+  simulate: _ => {
+    const d = 10;
+    let won = false;
+    if (circles.up || circles.down || circles.left || circles.right) {
+      let r = circles.r;
+      if (circles.up) circles.cy -= d;
+      if (circles.down) circles.cy += d;
+      if (circles.left) circles.cx -= d;
+      if (circles.right) circles.cx += d;
+      if (circles.cx < r) circles.cx = r;
+      if (circles.cx > 1800 - r) circles.cx = 1800 - r;
+      if (circles.cy < r) circles.cy = r;
+      if (circles.cy > 700 - r) circles.cy = 700 - r;
+      let x = circles.cx, y = circles.cy;
+      if (x == 1800 - r && y == 700 - r) {
+        won = true;
+        if (circles.level == 0) {
+          circles.level++;
+          circles.init();
+        } else {
+          winstate();
+        }
+      }
+      r -= 10;
+      for (let i = 0; i < circles.n; i++) {
+        let o = circles.obstacles[i];
+        let dx = o[0] - x, dy = o[1] - y;
+        if (dx * dx + dy * dy > 4 * r * r) continue;
+        circles.collision = [(o[0] + x) / 2, (o[1] + y) / 2];
+        hmsg.hidden = false;
+        break;
+      }
+      circles.render();
+    }
+    if (!won && circles.collision == null) {
+      window.requestAnimationFrame(circles.simulate);
+    }
+  },
+
+  render: _ => {
+    if (circles.ocx == circles.cx && circles.ocy == circles.cy) return;
+    let ctx = circles.ctx;
+    ctx.beginPath();
+    ctx.arc(circles.ocx, circles.ocy, circles.r, 0, 2 * Math.PI);
+    ctx.fillStyle = '#fff';
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(circles.cx, circles.cy, circles.r, 0, 2 * Math.PI);
+    ctx.fillStyle = '#000';
+    ctx.fill();
+    circles.ocx = circles.cx;
+    circles.ocy = circles.cy;
+
+    if (circles.collision) {
+      ctx.beginPath();
+      ctx.moveTo(circles.collision[0], 0);
+      ctx.lineTo(circles.collision[0], 700);
+      ctx.moveTo(0, circles.collision[1]);
+      ctx.lineTo(1800, circles.collision[1]);
+      ctx.stroke();
+    }
+  },
+};
+
+let challenge = circles;
 if (challenge.init) challenge.init();
 window.onkeydown = evt => {
   if (evt.altKey || evt.ctrlKey) return;
   if (challenge.onkeydown) {
     challenge.onkeydown(evt);
+    challenge.render();
+  }
+};
+window.onkeyup = evt => {
+  if (evt.altKey || evt.ctrlKey) return;
+  if (challenge.onkeyup) {
+    challenge.onkeyup(evt);
     challenge.render();
   }
 };
