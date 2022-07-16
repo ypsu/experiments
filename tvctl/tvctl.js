@@ -2,7 +2,9 @@ function reward() {
   hchallenge.hidden = true;
   hcorrectmsg.hidden = true;
   window.onkeydown = null;
-  fetch('/reward', {method: 'POST'});
+  fetch('/reward', {
+    method: 'POST'
+  });
 }
 
 function winstate() {
@@ -238,7 +240,7 @@ let pairs = {
           style = 'style=background-color:#f00';
         }
         h +=
-            `<td onclick=pairs.select(${idx}) ${style}>${pairs.nums[idx]}</td>`;
+          `<td onclick=pairs.select(${idx}) ${style}>${pairs.nums[idx]}</td>`;
       }
       h += '</tr>\n';
     }
@@ -582,7 +584,7 @@ let circles = {
 
   init: _ => {
     hchallenge.innerHTML =
-        '<canvas id=hcanvas width=1800 height=700 style="border:1px solid">';
+      '<canvas id=hcanvas width=1800 height=700 style="border:1px solid">';
     let canvas = hcanvas;
     let ctx = canvas.getContext('2d');
     circles.ctx = ctx;
@@ -591,7 +593,8 @@ let circles = {
     let color = '#f00';
     if (circles.level == 1) color = '#f80';
     for (let i = 0; i < circles.n; i++) {
-      let cx = Math.random() * 1700 + r, cy = Math.random() * 600 + r;
+      let cx = Math.random() * 1700 + r,
+        cy = Math.random() * 600 + r;
       if ((cx >= 1500 && cy >= 500) || (cx < 200 && cy < 200)) {
         i--;
         continue;
@@ -650,7 +653,8 @@ let circles = {
       if (circles.cx > 1800 - r) circles.cx = 1800 - r;
       if (circles.cy < r) circles.cy = r;
       if (circles.cy > 700 - r) circles.cy = 700 - r;
-      let x = circles.cx, y = circles.cy;
+      let x = circles.cx,
+        y = circles.cy;
       if (x == 1800 - r && y == 700 - r) {
         won = true;
         if (circles.level == 0) {
@@ -663,7 +667,8 @@ let circles = {
       r -= 10;
       for (let i = 0; i < circles.n; i++) {
         let o = circles.obstacles[i];
-        let dx = o[0] - x, dy = o[1] - y;
+        let dx = o[0] - x,
+          dy = o[1] - y;
         if (dx * dx + dy * dy > 4 * r * r) continue;
         circles.collision = [(o[0] + x) / 2, (o[1] + y) / 2];
         hmsg.hidden = false;
