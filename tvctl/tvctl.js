@@ -706,20 +706,52 @@ let circles = {
   },
 };
 
-let challenge = circles;
-if (challenge.init) challenge.init();
-window.onkeydown = evt => {
-  if (evt.altKey || evt.ctrlKey) return;
-  if (challenge.onkeydown) {
-    challenge.onkeydown(evt);
-    challenge.render();
-  }
-};
-window.onkeyup = evt => {
-  if (evt.altKey || evt.ctrlKey) return;
-  if (challenge.onkeyup) {
-    challenge.onkeyup(evt);
-    challenge.render();
-  }
-};
-challenge.render();
+function fmt2d(n) {
+  return n.toString(10).padStart(2, ' ')
+}
+
+let countdown = {
+  target: new Date('2022-07-23T12:00Z').valueOf(),
+
+  render: _ => {
+    let r = countdown.target - Date.now()
+    if (r <= 0) {
+      challenge = circles
+      return main()
+    }
+    let h = 'Must wait:\n'
+    r = Math.floor(r / 1000);
+    h += `${fmt2d(r % 60)} seconds\n`
+    r = Math.floor(r / 60)
+    h += `${fmt2d(r % 60)} minutes\n`
+    r = Math.floor(r / 60)
+    h += `${fmt2d(r % 24)} hours\n`
+    r = Math.floor(r / 24)
+    h += `${fmt2d(r)} days`
+    hchallenge.innerHTML = h
+  },
+
+  onkeydown: _ => {},
+}
+
+function main() {
+  if (challenge.init) challenge.init();
+  window.onkeydown = evt => {
+    if (evt.altKey || evt.ctrlKey) return;
+    if (challenge.onkeydown) {
+      challenge.onkeydown(evt);
+      challenge.render();
+    }
+  };
+  window.onkeyup = evt => {
+    if (evt.altKey || evt.ctrlKey) return;
+    if (challenge.onkeyup) {
+      challenge.onkeyup(evt);
+      challenge.render();
+    }
+  };
+  challenge.render();
+}
+
+let challenge = countdown
+main()
