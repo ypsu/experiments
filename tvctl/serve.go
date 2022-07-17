@@ -38,6 +38,7 @@ func main() {
 				w.WriteHeader(404)
 				return
 			}
+			w.Header().Set("Cache-Control", "no-cache")
 			fs.ServeHTTP(w, req)
 		})
 	}
