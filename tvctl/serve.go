@@ -38,7 +38,7 @@ func main() {
 				w.WriteHeader(404)
 				return
 			}
-			w.Header().Set("Cache-Control", "no-cache")
+			w.Header().Set("Cache-Control", "no-store")
 			fs.ServeHTTP(w, req)
 		})
 	}
