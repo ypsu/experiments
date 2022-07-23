@@ -734,6 +734,66 @@ let countdown = {
   onkeydown: _ => {},
 }
 
+let digitmemo = {
+  numcount: 5,
+  numlength: 4,
+  nums: [],
+  okcount: 0,
+
+  init: _ => {
+    let dm = digitmemo
+    dm.okcount = 0
+    dm.nums = []
+    for (let r = 0; r < dm.numcount; r++) {
+      let n = 0
+      dm.nums.push([])
+      for (let c = 0; c < dm.numlength; c++) {
+        dm.nums[r].push(Math.floor(Math.random() * 9) + 1)
+      }
+    }
+  },
+
+  render: _ => {
+    let dm = digitmemo
+    let h = ''
+    for (let r = 0; r < dm.numcount; r++) {
+      let okr = Math.floor(dm.okcount / dm.numlength)
+      h += okr == r ? '-> ' : '   '
+      for (let c = 0; c < dm.numlength; c++) {
+        let okc = dm.okcount % dm.numlength
+        h += '<span '
+        if (r < okr || (r == okr && c < okc)) {
+          h += 'style=color:green'
+        }
+        h += '>'
+        if (r != okr || c < okc || okc == 0) {
+          h += `${dm.nums[r][c]}`
+        } else {
+          h += '.'
+        }
+        h += '</span>'
+      }
+      h += '\n'
+    }
+    hchallenge.innerHTML = h
+  },
+
+  onkeyup: evt => {
+    let dm = digitmemo
+    let k = evt.key
+    if (k < '0' || k > '9' || dm.okcount == dm.numcount * dm.numlength) return
+    k -= '0'
+    let okr = Math.floor(dm.okcount / dm.numlength)
+    let okc = dm.okcount % dm.numlength
+    if (k != dm.nums[okr][okc]) {
+      dm.init()
+      return
+    }
+    dm.okcount++
+    if (dm.okcount == dm.numcount * dm.numlength) winstate()
+  },
+}
+
 function main() {
   if (challenge.init) challenge.init();
   window.onkeydown = evt => {
@@ -753,5 +813,5 @@ function main() {
   challenge.render();
 }
 
-let challenge = countdown
+let challenge = digitmemo
 main()
