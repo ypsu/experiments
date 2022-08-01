@@ -780,7 +780,7 @@ let digitmemo = {
     let h = ''
     for (let r = 0; r < dm.numcount; r++) {
       let okr = Math.floor(dm.okcount / dm.numlength)
-      h += okr == r ? '-> ' : '   '
+      h += okr == r ? ' → ' : '   '
       for (let c = 0; c < dm.numlength; c++) {
         let okc = dm.okcount % dm.numlength
         h += '<span '
