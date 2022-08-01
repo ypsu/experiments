@@ -1,10 +1,24 @@
+currentLevel = 0
+
 function reward() {
-  hchallenge.hidden = true;
-  hcorrectmsg.hidden = true;
-  window.onkeydown = null;
+  hchallenge.hidden = true
+  hcorrectmsg.hidden = true
+  let onkeydown = window.onkeydown
+  window.onkeydown = null
   fetch('/reward', {
     method: 'POST'
-  });
+  })
+  if (challenge.toughen) {
+    setTimeout(_ => {
+      currentLevel++
+      hchallenge.hidden = false
+      hcorrectmsg.hidden = true
+      window.onkeydown = onkeydown
+      challenge.toughen(currentLevel)
+      if (challenge.init) challenge.init()
+      challenge.render()
+    }, 2000)
+  }
 }
 
 function winstate() {
@@ -750,6 +764,14 @@ let digitmemo = {
       for (let c = 0; c < dm.numlength; c++) {
         dm.nums[r].push(Math.floor(Math.random() * 9) + 1)
       }
+    }
+  },
+
+  toughen: currentLevel => {
+    if (currentLevel == 2 || currentLevel == 5) {
+      digitmemo.numlength++
+    } else if (currentLevel < 7) {
+      digitmemo.numcount++
     }
   },
 
