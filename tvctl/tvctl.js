@@ -750,7 +750,7 @@ let countdown = {
 
 let digitmemo = {
   numcount: 5,
-  numlength: 4,
+  numlength: 3,
   nums: [],
   okcount: 0,
 
@@ -768,7 +768,7 @@ let digitmemo = {
   },
 
   toughen: currentLevel => {
-    if (currentLevel == 2 || currentLevel == 5) {
+    if (currentLevel == 2 || currentLevel == 4) {
       digitmemo.numlength++
     } else if (currentLevel < 7) {
       digitmemo.numcount++
