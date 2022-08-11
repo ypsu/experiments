@@ -3,7 +3,6 @@ currentLevel = 0
 function reward() {
   hchallenge.hidden = true
   hcorrectmsg.hidden = true
-  let onkeydown = window.onkeydown
   window.onkeydown = null
   fetch('/reward', {
     method: 'POST'
@@ -13,7 +12,7 @@ function reward() {
       currentLevel++
       hchallenge.hidden = false
       hcorrectmsg.hidden = true
-      window.onkeydown = onkeydown
+      if (challenge.onkeydown) window.onkeydown = challenge.onkeydown
       challenge.toughen(currentLevel)
       if (challenge.init) challenge.init()
       challenge.render()
