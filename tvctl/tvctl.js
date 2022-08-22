@@ -818,6 +818,10 @@ let digitmemo = {
 function main() {
   if (challenge.init) challenge.init();
   window.onkeydown = evt => {
+    if (evt.key == 'F5') {
+      evt.preventDefault()
+      return
+    }
     if (evt.altKey || evt.ctrlKey) return;
     if (challenge.onkeydown) {
       challenge.onkeydown(evt);
