@@ -815,6 +815,73 @@ let digitmemo = {
   },
 }
 
+let lettermemo = {
+  wordcount: 5,
+  wordlength: 3,
+  words: [],
+  okcount: 0,
+
+  init: _ => {
+    let lm = lettermemo
+    lm.okcount = 0
+    lm.words = []
+    for (let r = 0; r < lm.wordcount; r++) {
+      let n = 0
+      lm.words.push([])
+      for (let c = 0; c < lm.wordlength; c++) {
+        lm.words[r].push(String.fromCharCode(Math.floor(Math.random() * 26) + 65))
+      }
+    }
+  },
+
+  toughen: currentLevel => {
+    if (currentLevel == currentLevel == 4) {
+      lettermemo.wordlength++
+    } else if (currentLevel < 7) {
+      lettermemo.wordcount++
+    }
+  },
+
+  render: _ => {
+    let lm = lettermemo
+    let h = ''
+    for (let r = 0; r < lm.wordcount; r++) {
+      let okr = Math.floor(lm.okcount / lm.wordlength)
+      h += okr == r ? ' → ' : '   '
+      for (let c = 0; c < lm.wordlength; c++) {
+        let okc = lm.okcount % lm.wordlength
+        h += '<span '
+        if (r < okr || (r == okr && c < okc)) {
+          h += 'style=color:green'
+        }
+        h += '>'
+        if (r != okr || c < okc || okc == 0) {
+          h += `${lm.words[r][c]}`
+        } else {
+          h += '.'
+        }
+        h += '</span>'
+      }
+      h += '\n'
+    }
+    hchallenge.innerHTML = h
+  },
+
+  onkeyup: evt => {
+    let lm = lettermemo
+    let k = evt.key.toUpperCase()
+    if (k.length != 1 || k < 'A' || k > 'Z' || lm.okcount == lm.wordcount * lm.wordlength) return
+    let okr = Math.floor(lm.okcount / lm.wordlength)
+    let okc = lm.okcount % lm.wordlength
+    if (k != lm.words[okr][okc]) {
+      lm.init()
+      return
+    }
+    lm.okcount++
+    if (lm.okcount == lm.wordcount * lm.wordlength) winstate()
+  },
+}
+
 function main() {
   if (challenge.init) challenge.init();
   window.onkeydown = evt => {
@@ -838,5 +905,5 @@ function main() {
   challenge.render();
 }
 
-let challenge = digitmemo
+let challenge = lettermemo
 main()
