@@ -605,6 +605,7 @@ let circles = {
     circles.obstacles = [];
     let color = '#f00';
     if (circles.level == 1) color = '#f80';
+    if (circles.level == 2) color = '#fb0';
     for (let i = 0; i < circles.n; i++) {
       let cx = Math.random() * 1700 + r,
         cy = Math.random() * 600 + r;
@@ -670,7 +671,7 @@ let circles = {
         y = circles.cy;
       if (x == 1800 - r && y == 700 - r) {
         won = true;
-        if (circles.level == 0) {
+        if (circles.level <= 1) {
           circles.level++;
           circles.init();
         } else {
@@ -905,5 +906,5 @@ function main() {
   challenge.render();
 }
 
-let challenge = lettermemo
+let challenge = circles
 main()
