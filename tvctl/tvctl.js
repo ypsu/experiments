@@ -655,7 +655,7 @@ let circles = {
   },
 
   simulate: _ => {
-    const d = 10;
+    const d = 5;
     let won = false;
     if (circles.up || circles.down || circles.left || circles.right) {
       let r = circles.r;
@@ -906,5 +906,5 @@ function main() {
   challenge.render();
 }
 
-let challenge = circles
+let challenge = lettermemo
 main()
