@@ -768,7 +768,7 @@ let digitmemo = {
   },
 
   toughen: currentLevel => {
-    if (currentLevel == currentLevel == 4) {
+    if (currentLevel == 4) {
       digitmemo.numlength++
     } else if (currentLevel < 7) {
       digitmemo.numcount++
@@ -836,7 +836,7 @@ let lettermemo = {
   },
 
   toughen: currentLevel => {
-    if (currentLevel == currentLevel == 4) {
+    if (currentLevel == 4) {
       lettermemo.wordlength++
     } else if (currentLevel < 7) {
       lettermemo.wordcount++
