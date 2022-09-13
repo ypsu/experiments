@@ -1467,6 +1467,164 @@ let wordsmemo = {
   },
 }
 
+let dircircles = {
+  n: 20,
+  r: 50,
+  cx: 50,
+  cy: 50,
+  cangle: 0,
+  ocx: 50,
+  ocy: 50,
+  oangle: 0,
+  level: 0,
+  obstacles: [],
+  ctx: null,
+  collision: null,
+  // currenty held down keys:
+  up: false,
+  down: false,
+  left: false,
+  right: false,
+
+  init: _ => {
+    hchallenge.innerHTML =
+      '<canvas id=hcanvas width=1800 height=700 style="border:1px solid">';
+    let canvas = hcanvas;
+    let ctx = canvas.getContext('2d');
+    dircircles.ctx = ctx;
+    let r = dircircles.r;
+    dircircles.obstacles = [];
+    let color = '#f00';
+    if (dircircles.level == 1) color = '#f80';
+    if (dircircles.level == 2) color = '#fb0';
+    for (let i = 0; i < dircircles.n; i++) {
+      let cx = Math.random() * 1700 + r,
+        cy = Math.random() * 600 + r;
+      if ((cx >= 1500 && cy >= 500) || (cx < 200 && cy < 200)) {
+        i--;
+        continue;
+      }
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, 0, 2 * Math.PI);
+      ctx.fillStyle = color;
+      ctx.fill();
+      dircircles.obstacles.push([cx, cy]);
+    }
+    ctx.beginPath();
+    ctx.arc(1800 - r, 700 - r, r, 0, 2 * Math.PI);
+    ctx.fillStyle = '#0f0';
+    ctx.fill();
+    dircircles.cx = 50;
+    dircircles.cy = 50;
+    dircircles.cangle = 0;
+    dircircles.ocx = 50;
+    dircircles.ocy = 50;
+    dircircles.oangle = 0;
+    dircircles.collision = null;
+    dircircles.render(true)
+    dircircles.simulate();
+  },
+
+  onkeydown: evt => {
+    if (evt.code == 'ArrowLeft') dircircles.left = true;
+    if (evt.code == 'ArrowRight') dircircles.right = true;
+    if (evt.code == 'ArrowUp') dircircles.up = true;
+    if (evt.code == 'ArrowDown') dircircles.down = true;
+    if (evt.code == 'Enter' && dircircles.collision != null) {
+      hmsg.hidden = true;
+      dircircles.level = 0;
+      dircircles.init();
+    }
+  },
+
+  onkeyup: evt => {
+    if (evt.code == 'ArrowLeft') dircircles.left = false;
+    if (evt.code == 'ArrowRight') dircircles.right = false;
+    if (evt.code == 'ArrowUp') dircircles.up = false;
+    if (evt.code == 'ArrowDown') dircircles.down = false;
+  },
+
+  simulate: _ => {
+    const d = 5;
+    let won = false;
+    if (dircircles.up || dircircles.down || dircircles.left || dircircles.right) {
+      let r = dircircles.r;
+      if (dircircles.left) dircircles.cangle -= d / 100.0;
+      if (dircircles.right) dircircles.cangle += d / 100.0;
+      if (dircircles.up) {
+        dircircles.cx += d * Math.cos(dircircles.cangle)
+        dircircles.cy += d * Math.sin(dircircles.cangle)
+      }
+      if (dircircles.down) {
+        dircircles.cx -= d * Math.cos(dircircles.cangle)
+        dircircles.cy -= d * Math.sin(dircircles.cangle)
+      }
+      if (dircircles.cx < r) dircircles.cx = r;
+      if (dircircles.cx > 1800 - r) dircircles.cx = 1800 - r;
+      if (dircircles.cy < r) dircircles.cy = r;
+      if (dircircles.cy > 700 - r) dircircles.cy = 700 - r;
+      let x = dircircles.cx,
+        y = dircircles.cy;
+      if (x == 1800 - r && y == 700 - r) {
+        won = true;
+        if (dircircles.level <= 1) {
+          dircircles.level++;
+          dircircles.init();
+        } else {
+          winstate();
+        }
+      }
+      r -= 10;
+      for (let i = 0; i < dircircles.n; i++) {
+        let o = dircircles.obstacles[i];
+        let dx = o[0] - x,
+          dy = o[1] - y;
+        if (dx * dx + dy * dy > 4 * r * r) continue;
+        dircircles.collision = [(o[0] + x) / 2, (o[1] + y) / 2];
+        hmsg.hidden = false;
+        break;
+      }
+      dircircles.render();
+    }
+    if (!won && dircircles.collision == null) {
+      window.requestAnimationFrame(dircircles.simulate);
+    }
+  },
+
+  render: force => {
+    let samex = dircircles.ocx == dircircles.cx
+    let samey = dircircles.ocy == dircircles.cy
+    let sameangle = dircircles.oangle == dircircles.cangle
+    if (!force && samex && samey && sameangle) return;
+    let ctx = dircircles.ctx;
+    ctx.beginPath();
+    ctx.arc(dircircles.ocx, dircircles.ocy, dircircles.r, 0, 2 * Math.PI);
+    ctx.fillStyle = '#fff';
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(dircircles.cx, dircircles.cy, dircircles.r, 0, 2 * Math.PI);
+    ctx.fillStyle = '#000';
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(dircircles.cx, dircircles.cy)
+    ctx.arc(dircircles.cx, dircircles.cy, dircircles.r, dircircles.cangle-0.1, dircircles.cangle+0.1);
+    ctx.fillStyle = '#fff';
+    ctx.fill();
+    dircircles.ocx = dircircles.cx;
+    dircircles.ocy = dircircles.cy;
+    dircircles.oangle = dircircles.cangle;
+
+    if (dircircles.collision) {
+      ctx.beginPath();
+      ctx.moveTo(dircircles.collision[0], 0);
+      ctx.lineTo(dircircles.collision[0], 700);
+      ctx.moveTo(0, dircircles.collision[1]);
+      ctx.lineTo(1800, dircircles.collision[1]);
+      ctx.stroke();
+    }
+  },
+};
+
 function main() {
   if (challenge.init) challenge.init();
   window.onkeydown = evt => {
@@ -1490,5 +1648,5 @@ function main() {
   challenge.render();
 }
 
-let challenge = wordsmemo
+let challenge = dircircles
 main()
