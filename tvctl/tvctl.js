@@ -1567,7 +1567,7 @@ let dircircles = {
         y = dircircles.cy;
       if (x == 1800 - r && y == 700 - r) {
         won = true;
-        if (dircircles.level <= 1) {
+        if (dircircles.level < 1) {
           dircircles.level++;
           dircircles.init();
         } else {
