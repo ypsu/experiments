@@ -1525,6 +1525,10 @@ let dircircles = {
     dircircles.simulate();
   },
 
+  toughen: _ => {
+    dircircles.level = 0
+  },
+
   onkeydown: evt => {
     if (evt.code == 'ArrowLeft') dircircles.left = true;
     if (evt.code == 'ArrowRight') dircircles.right = true;
@@ -1607,7 +1611,7 @@ let dircircles = {
     ctx.fill();
     ctx.beginPath();
     ctx.moveTo(dircircles.cx, dircircles.cy)
-    ctx.arc(dircircles.cx, dircircles.cy, dircircles.r, dircircles.cangle-0.1, dircircles.cangle+0.1);
+    ctx.arc(dircircles.cx, dircircles.cy, dircircles.r, dircircles.cangle - 0.1, dircircles.cangle + 0.1);
     ctx.fillStyle = '#fff';
     ctx.fill();
     dircircles.ocx = dircircles.cx;
