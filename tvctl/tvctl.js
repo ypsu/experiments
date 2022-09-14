@@ -1639,6 +1639,10 @@ function main() {
     }
   };
   window.onkeyup = evt => {
+    if (evt.key == 'F5') {
+      evt.preventDefault()
+      return
+    }
     if (evt.altKey || evt.ctrlKey) return;
     if (challenge.onkeyup) {
       challenge.onkeyup(evt);
