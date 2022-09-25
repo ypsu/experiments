@@ -12,7 +12,7 @@ function reward() {
       currentLevel++
       hchallenge.hidden = false
       hcorrectmsg.hidden = true
-      if (challenge.onkeydown) window.onkeydown = challenge.onkeydown
+      if (challenge.onkeydown) window.onkeydown = keydown
       challenge.toughen(currentLevel)
       if (challenge.init) challenge.init()
       challenge.render()
@@ -1674,7 +1674,7 @@ let nback = {
       for (let i = 0; i < nback.n; i++) h += '_ '
     }
     if (nback.solved + nback.n < nback.k) h += `${nback.nums[nback.solved+nback.n]} `
-    for (let i = nback.solved + nback.n; i < nback.k; i++) h += '_ '
+    for (let i = nback.solved + nback.n + 1; i < nback.k; i++) h += '_ '
     if (nback.solved < nback.k) {
       h += '\n'
       for (let i = 0; i < nback.solved; i++) h += '  '
@@ -1684,19 +1684,21 @@ let nback = {
   },
 }
 
+function keydown(evt) {
+  if (evt.key == 'F5') {
+    evt.preventDefault()
+    return
+  }
+  if (evt.altKey || evt.ctrlKey) return;
+  if (challenge.onkeydown) {
+    challenge.onkeydown(evt);
+    challenge.render();
+  }
+}
+
 function main() {
   if (challenge.init) challenge.init();
-  window.onkeydown = evt => {
-    if (evt.key == 'F5') {
-      evt.preventDefault()
-      return
-    }
-    if (evt.altKey || evt.ctrlKey) return;
-    if (challenge.onkeydown) {
-      challenge.onkeydown(evt);
-      challenge.render();
-    }
-  };
+  window.onkeydown = keydown
   window.onkeyup = evt => {
     if (evt.key == 'F5') {
       evt.preventDefault()
