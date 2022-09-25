@@ -1629,6 +1629,61 @@ let dircircles = {
   },
 };
 
+let nback = {
+  k: 12,
+  n: 1,
+  solved: 0,
+  wrong: 0,
+  nums: [],
+
+  toughen: _ => {
+    if (nback.k < 20) nback.k++
+  },
+
+  init: _ => {
+    nback.solved = 0
+    nback.nums = []
+    nback.wrong = 0
+    for (let i = 0; i < nback.k; i++) nback.nums.push(Math.floor(Math.random() * 9) + 1)
+  },
+
+  onkeydown: evt => {
+    if (evt.key < '1' || '9' < evt.key) return
+    let num = parseInt(evt.key)
+    if (nback.nums[nback.solved] == num) {
+      nback.solved++
+      if (nback.solved == nback.k) winstate()
+    } else {
+      nback.wrong = num
+      setTimeout(_ => {
+        nback.init()
+        nback.render()
+      }, 1000)
+    }
+  },
+
+  render: _ => {
+    let h = ''
+    for (let i = 0; i < nback.solved; i++) h += `${nback.nums[i]} `
+    if (nback.wrong != 0) {
+      h += `<span style=color:red>${nback.wrong}</span><span style=color:green>${nback.nums[nback.solved]}</span>`
+      for (let i = 1; i < nback.n; i++) h += '_ '
+    } else if (nback.solved == 0) {
+      for (let i = 0; i < nback.n; i++) h += `${nback.nums[i]} `
+    } else if (nback.solved < nback.k) {
+      for (let i = 0; i < nback.n; i++) h += '_ '
+    }
+    if (nback.solved + nback.n < nback.k) h += `${nback.nums[nback.solved+nback.n]} `
+    for (let i = nback.solved + nback.n; i < nback.k; i++) h += '_ '
+    if (nback.solved < nback.k) {
+      h += '\n'
+      for (let i = 0; i < nback.solved; i++) h += '  '
+      h += '^'
+    }
+    hchallenge.innerHTML = h
+  },
+}
+
 function main() {
   if (challenge.init) challenge.init();
   window.onkeydown = evt => {
@@ -1656,5 +1711,5 @@ function main() {
   challenge.render();
 }
 
-let challenge = dircircles
+let challenge = nback
 main()
