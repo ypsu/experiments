@@ -1685,6 +1685,150 @@ let nback = {
   },
 }
 
+let morse = {
+  laststart: 0,
+  down: 0,
+  ctx: null,
+  gain: null,
+  glyph: '',
+  word: '',
+  pos: 0,
+  code: {
+    'A': '.-',
+    'B': '-...',
+    'C': '-.-.',
+    'D': '-..',
+    'E': '.',
+    'F': '..-.',
+    'G': '--.',
+    'H': '....',
+    'I': '..',
+    'J': '.---',
+    'K': '-.-',
+    'L': '.-..',
+    'M': '--',
+    'N': '-.',
+    'O': '---',
+    'P': '.--.',
+    'Q': '--.-',
+    'R': '.-.',
+    'S': '...',
+    'T': '-',
+    'U': '..-',
+    'V': '...-',
+    'W': '.--',
+    'X': '-..-',
+    'Y': '-.--',
+    'Z': '--..',
+  },
+  // number of correctly entered signals for the current letter so far.
+  oksig: 0,
+
+  init: _ => {
+    morse.pos = 0
+    morse.oksig = 0
+
+    // pick for short words with only english letters.
+    let words = 0
+    for (let g in glyphs.m) {
+      if (glyphs.m[g].length <= 3) continue
+      if (glyphs.m[g].length > 5) continue
+      let ok = true
+      for (let ch of glyphs.m[g]) {
+        if (ch < 'a' || 'z' < ch) {
+          ok = false
+          break
+        }
+      }
+      if (!ok) continue
+      words++
+      if (Math.random() < 1 / words) {
+        morse.glyph = g
+        morse.word = glyphs.m[g].toUpperCase()
+      }
+    }
+
+    // set up audio.
+    morse.ctx = new AudioContext()
+    morse.gain = morse.ctx.createGain()
+    morse.gain.gain.setValueAtTime(0.001, morse.ctx.currentTime)
+    morse.gain.connect(morse.ctx.destination)
+    morse.osc = morse.ctx.createOscillator()
+    morse.osc.connect(morse.gain)
+    morse.osc.start()
+  },
+
+  toughen: _ => {},
+
+  onkeydown: evt => {
+    // replay the current letter's morse code.
+    if (evt.key == 'Enter') {
+      let ch = morse.word[morse.pos]
+      let t = morse.ctx.currentTime + 0.1
+      for (let c of morse.code[ch]) {
+        morse.gain.gain.setValueAtTime(0.001, t)
+        morse.gain.gain.linearRampToValueAtTime(1, t + 0.01)
+        t += 0.11
+        if (c == '-') t += 0.2
+        morse.gain.gain.setValueAtTime(1, t)
+        morse.gain.gain.linearRampToValueAtTime(0.001, t + 0.01)
+        t += 0.11
+      }
+      return
+    }
+
+    // reset state if needed.
+    let tm = Date.now()
+    if (tm - morse.laststart > 1000) {
+      morse.oksig = 0
+    }
+    morse.laststart = tm
+
+    // start beeping.
+    if (evt.key != ' ' || morse.down != 0) return
+    morse.down = tm
+    let t = morse.ctx.currentTime
+    morse.gain.gain.setValueAtTime(0.001, t + 0.01)
+    morse.gain.gain.linearRampToValueAtTime(1, t + 0.02)
+  },
+
+  onkeyup: evt => {
+    if (evt.key != ' ') return
+
+    // detect the signal length.
+    let len = Date.now() - morse.down
+    morse.down = 0
+    let t = morse.ctx.currentTime
+    morse.gain.gain.setValueAtTime(1, t + 0.01)
+    morse.gain.gain.linearRampToValueAtTime(0.001, t + 0.02)
+
+    // process the signal.
+    if (len > 600) {
+      morse.oksig = 0
+      return
+    }
+    let sig = '.'
+    if (len > 200) sig = '-'
+    let code = morse.code[morse.word[morse.pos]]
+    morse.oksig = sig == code[morse.oksig] ? morse.oksig + 1 : 0
+    if (morse.oksig == code.length) {
+      morse.oksig = 0
+      morse.pos++
+    }
+    if (morse.pos == morse.word.length) winstate()
+  },
+
+  render: _ => {
+    let h = ` ${morse.glyph}\n`
+    for (let i in morse.word) {
+      let ch = morse.word[i]
+      h += i == morse.pos ? '→' : ' '
+      h += `${ch}\n`
+    }
+    hchallenge.innerText = h
+  }
+}
+
 function keydown(evt) {
   if (evt.key == 'F5') {
     evt.preventDefault()
