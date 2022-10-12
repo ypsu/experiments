@@ -1473,6 +1473,7 @@ let dircircles = {
   cx: 50,
   cy: 50,
   cangle: 0,
+  v: 0,
   ocx: 50,
   ocy: 50,
   oangle: 0,
@@ -1514,6 +1515,7 @@ let dircircles = {
     ctx.arc(1800 - r, 700 - r, r, 0, 2 * Math.PI);
     ctx.fillStyle = '#0f0';
     ctx.fill();
+    dircircles.v = 0;
     dircircles.cx = 50;
     dircircles.cy = 50;
     dircircles.cangle = 0;
@@ -1551,24 +1553,23 @@ let dircircles = {
   simulate: _ => {
     const d = 5;
     let won = false;
-    if (dircircles.up || dircircles.down || dircircles.left || dircircles.right) {
+    if (dircircles.up || dircircles.down || dircircles.left || dircircles.right || dircircles.v > 0) {
       let r = dircircles.r;
-      if (dircircles.left) dircircles.cangle -= d / 100.0;
-      if (dircircles.right) dircircles.cangle += d / 100.0;
-      if (dircircles.up) {
-        dircircles.cx += d * Math.cos(dircircles.cangle)
-        dircircles.cy += d * Math.sin(dircircles.cangle)
-      }
+      if (dircircles.left) dircircles.cangle -= 0.05
+      if (dircircles.right) dircircles.cangle += 0.05
+      if (dircircles.up) dircircles.v += 0.05
       if (dircircles.down) {
-        dircircles.cx -= d * Math.cos(dircircles.cangle)
-        dircircles.cy -= d * Math.sin(dircircles.cangle)
+        dircircles.v -= 0.05
+        if (dircircles.v < 0) dircircles.v = 0
       }
+      dircircles.cx += dircircles.v * Math.cos(dircircles.cangle)
+      dircircles.cy += dircircles.v * Math.sin(dircircles.cangle)
       if (dircircles.cx < r) dircircles.cx = r;
       if (dircircles.cx > 1800 - r) dircircles.cx = 1800 - r;
       if (dircircles.cy < r) dircircles.cy = r;
       if (dircircles.cy > 700 - r) dircircles.cy = 700 - r;
-      let x = dircircles.cx,
-        y = dircircles.cy;
+      let x = dircircles.cx
+      let y = dircircles.cy
       if (x == 1800 - r && y == 700 - r) {
         won = true;
         if (dircircles.level < 1) {
@@ -1581,8 +1582,8 @@ let dircircles = {
       r -= 10;
       for (let i = 0; i < dircircles.n; i++) {
         let o = dircircles.obstacles[i];
-        let dx = o[0] - x,
-          dy = o[1] - y;
+        let dx = o[0] - x
+        let dy = o[1] - y
         if (dx * dx + dy * dy > 4 * r * r) continue;
         dircircles.collision = [(o[0] + x) / 2, (o[1] + y) / 2];
         hmsg.hidden = false;
@@ -1713,5 +1714,5 @@ function main() {
   challenge.render();
 }
 
-let challenge = nback
+let challenge = dircircles
 main()
