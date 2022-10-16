@@ -589,15 +589,17 @@ let circles = {
   obstacles: [],
   ctx: null,
   collision: null,
-  // currenty held down keys:
-  up: false,
-  down: false,
-  left: false,
-  right: false,
+  dragging: false,
+  won: false,
 
   init: _ => {
     hchallenge.innerHTML =
       '<canvas id=hcanvas width=1800 height=700 style="border:1px solid">';
+    hcanvas.onmousemove = circles.onmousemove
+    hcanvas.onmouseup = circles.onmouseup
+    hcanvas.onmouseleave = _ => circles.dragging = false
+    hcanvas.oncontextmenu = _ => false
+    circles.won = false
     let canvas = hcanvas;
     let ctx = canvas.getContext('2d');
     circles.ctx = ctx;
@@ -635,43 +637,48 @@ let circles = {
     circles.simulate();
   },
 
-  onkeydown: evt => {
-    if (evt.code == 'ArrowLeft') circles.left = true;
-    if (evt.code == 'ArrowRight') circles.right = true;
-    if (evt.code == 'ArrowUp') circles.up = true;
-    if (evt.code == 'ArrowDown') circles.down = true;
-    if (evt.code == 'Enter' && circles.collision != null) {
-      hmsg.hidden = true;
-      circles.level = 0;
-      circles.init();
-    }
+  toughen: _ => {
+    circles.level = 0
   },
 
-  onkeyup: evt => {
-    if (evt.code == 'ArrowLeft') circles.left = false;
-    if (evt.code == 'ArrowRight') circles.right = false;
-    if (evt.code == 'ArrowUp') circles.up = false;
-    if (evt.code == 'ArrowDown') circles.down = false;
+  onmousemove: evt => {
+    if (circles.collision) return
+    if (circles.won) return
+    if (!circles.dragging) {
+      let dx = circles.cx - evt.offsetX
+      let dy = circles.cy - evt.offsetY
+      if (dx * dx + dy * dy > circles.r * circles.r) return
+      circles.dragging = true
+    }
+    circles.cx = evt.offsetX
+    circles.cy = evt.offsetY
+    circles.simulate()
+  },
+
+  onmouseup: evt => {
+    if (evt.button != 2 || !circles.collision) return
+    circles.dragging = false
+    circles.level = 0
+    hmsg.hidden = true
+    circles.init()
+    evt.preventDefault()
   },
 
   simulate: _ => {
     const d = 5;
     let won = false;
-    if (circles.up || circles.down || circles.left || circles.right) {
+    if (circles.cx != circles.ocx || circles.cy != circles.ocy) {
       let r = circles.r;
-      if (circles.up) circles.cy -= d;
-      if (circles.down) circles.cy += d;
-      if (circles.left) circles.cx -= d;
-      if (circles.right) circles.cx += d;
       if (circles.cx < r) circles.cx = r;
       if (circles.cx > 1800 - r) circles.cx = 1800 - r;
       if (circles.cy < r) circles.cy = r;
       if (circles.cy > 700 - r) circles.cy = 700 - r;
-      let x = circles.cx,
-        y = circles.cy;
+      let [x, y] = [circles.cx, circles.cy]
       if (x == 1800 - r && y == 700 - r) {
         won = true;
-        if (circles.level <= 1) {
+        circles.won = true
+        if (circles.level < 1) {
+          circles.dragging = false
           circles.level++;
           circles.init();
         } else {
