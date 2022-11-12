@@ -1754,20 +1754,23 @@ let morse = {
         morse.word = glyphs.m[g].toUpperCase()
       }
     }
-
-    // set up audio.
-    morse.ctx = new AudioContext()
-    morse.gain = morse.ctx.createGain()
-    morse.gain.gain.setValueAtTime(0.001, morse.ctx.currentTime)
-    morse.gain.connect(morse.ctx.destination)
-    morse.osc = morse.ctx.createOscillator()
-    morse.osc.connect(morse.gain)
-    morse.osc.start()
   },
 
   toughen: _ => {},
 
   onkeydown: evt => {
+    if (morse.ctx == null) {
+      // set up audio.
+      // must happen as part of an event handler.
+      morse.ctx = new AudioContext()
+      morse.gain = morse.ctx.createGain()
+      morse.gain.gain.setValueAtTime(0.001, morse.ctx.currentTime)
+      morse.gain.connect(morse.ctx.destination)
+      morse.osc = morse.ctx.createOscillator()
+      morse.osc.connect(morse.gain)
+      morse.osc.start()
+    }
+
     // replay the current letter's morse code.
     if (evt.key == 'Enter') {
       let ch = morse.word[morse.pos]
@@ -1795,8 +1798,8 @@ let morse = {
     if (evt.key != ' ' || morse.down != 0) return
     morse.down = tm
     let t = morse.ctx.currentTime
-    morse.gain.gain.setValueAtTime(0.001, t + 0.01)
-    morse.gain.gain.linearRampToValueAtTime(1, t + 0.02)
+    morse.gain.gain.setValueAtTime(0.001, t + 0.02)
+    morse.gain.gain.linearRampToValueAtTime(1, t + 0.04)
   },
 
   onkeyup: evt => {
@@ -1806,8 +1809,8 @@ let morse = {
     let len = Date.now() - morse.down
     morse.down = 0
     let t = morse.ctx.currentTime
-    morse.gain.gain.setValueAtTime(1, t + 0.01)
-    morse.gain.gain.linearRampToValueAtTime(0.001, t + 0.02)
+    morse.gain.gain.setValueAtTime(1, t + 0.02)
+    morse.gain.gain.linearRampToValueAtTime(0.001, t + 0.04)
 
     // process the signal.
     if (len > 600) {
