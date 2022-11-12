@@ -1728,12 +1728,13 @@ let morse = {
     'Y': '-.--',
     'Z': '--..',
   },
-  // number of correctly entered signals for the current letter so far.
-  oksig: 0,
+  timeoutID: null,
+  // currently entered signals.
+  entered: '',
 
   init: _ => {
     morse.pos = 0
-    morse.oksig = 0
+    morse.entered = ''
 
     // pick for short words with only english letters.
     let words = 0
@@ -1796,6 +1797,7 @@ let morse = {
 
     // start beeping.
     if (evt.key != ' ' || morse.down != 0) return
+    clearTimeout(morse.timeoutID)
     morse.down = tm
     let t = morse.ctx.currentTime
     morse.gain.gain.setValueAtTime(0.001, t + 0.02)
@@ -1804,8 +1806,9 @@ let morse = {
 
   onkeyup: evt => {
     if (evt.key != ' ') return
+    clearTimeout(morse.timeoutID)
 
-    // detect the signal length.
+    // detect the signal length and stop beeping.
     let len = Date.now() - morse.down
     morse.down = 0
     let t = morse.ctx.currentTime
@@ -1813,19 +1816,25 @@ let morse = {
     morse.gain.gain.linearRampToValueAtTime(0.001, t + 0.04)
 
     // process the signal.
-    if (len > 600) {
-      morse.oksig = 0
-      return
-    }
     let sig = '.'
     if (len > 200) sig = '-'
+    if (len > 600) sig = 'x'
+    morse.entered += sig
     let code = morse.code[morse.word[morse.pos]]
-    morse.oksig = sig == code[morse.oksig] ? morse.oksig + 1 : 0
-    if (morse.oksig == code.length) {
-      morse.oksig = 0
-      morse.pos++
-    }
+    //morse.oksig = sig == code[morse.oksig] ? morse.oksig + 1 : 0
+    //if (morse.oksig == code.length) {
+    //  morse.oksig = 0
+    //  morse.pos++
+    //}
+    //if (morse.pos == morse.word.length) winstate()
+    morse.timeoutID = setTimeout(morse.check, 1000)
+  },
+
+  check: _ => {
+    if (morse.entered == morse.code[morse.word[morse.pos]]) morse.pos++
     if (morse.pos == morse.word.length) winstate()
+    morse.entered = ''
+    morse.render()
   },
 
   render: _ => {
@@ -1834,6 +1843,10 @@ let morse = {
       let ch = morse.word[i]
       h += i == morse.pos ? '→' : ' '
       h += `${ch}\n`
+    }
+    if (morse.pos < morse.word.length) {
+      h += `${morse.code[morse.word[morse.pos]]}\n`
+      h += `${morse.entered}\n`
     }
     hchallenge.innerText = h
   }
