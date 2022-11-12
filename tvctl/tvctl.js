@@ -1865,5 +1865,5 @@ function main() {
   challenge.render();
 }
 
-let challenge = dircircles
+let challenge = morse
 main()
