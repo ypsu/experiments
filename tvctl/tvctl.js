@@ -1697,7 +1697,6 @@ let morse = {
   down: 0,
   ctx: null,
   gain: null,
-  glyph: '',
   word: '',
   pos: 0,
   code: {
@@ -1735,26 +1734,8 @@ let morse = {
   init: _ => {
     morse.pos = 0
     morse.entered = ''
-
-    // pick for short words with only english letters.
-    let words = 0
-    for (let g in glyphs.m) {
-      if (glyphs.m[g].length <= 3) continue
-      if (glyphs.m[g].length > 5) continue
-      let ok = true
-      for (let ch of glyphs.m[g]) {
-        if (ch < 'a' || 'z' < ch) {
-          ok = false
-          break
-        }
-      }
-      if (!ok) continue
-      words++
-      if (Math.random() < 1 / words) {
-        morse.glyph = g
-        morse.word = glyphs.m[g].toUpperCase()
-      }
-    }
+    let wl = wordsmemo.wordlist
+    morse.word = wl[Math.floor(Math.random() * wl.length)]
   },
 
   toughen: _ => {},
@@ -1771,6 +1752,7 @@ let morse = {
       morse.osc.connect(morse.gain)
       morse.osc.start()
     }
+    morse.ctx.resume()
 
     // replay the current letter's morse code.
     if (evt.key == 'Enter') {
@@ -1832,13 +1814,16 @@ let morse = {
 
   check: _ => {
     if (morse.entered == morse.code[morse.word[morse.pos]]) morse.pos++
-    if (morse.pos == morse.word.length) winstate()
+    if (morse.pos == morse.word.length) {
+      morse.ctx.suspend()
+      winstate()
+    }
     morse.entered = ''
     morse.render()
   },
 
   render: _ => {
-    let h = ` ${morse.glyph}\n`
+    let h = ''
     for (let i in morse.word) {
       let ch = morse.word[i]
       h += i == morse.pos ? '→' : ' '
