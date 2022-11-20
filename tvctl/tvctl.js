@@ -1803,13 +1803,11 @@ let morse = {
     if (len > 600) sig = 'x'
     morse.entered += sig
     let code = morse.code[morse.word[morse.pos]]
-    //morse.oksig = sig == code[morse.oksig] ? morse.oksig + 1 : 0
-    //if (morse.oksig == code.length) {
-    //  morse.oksig = 0
-    //  morse.pos++
-    //}
-    //if (morse.pos == morse.word.length) winstate()
-    morse.timeoutID = setTimeout(morse.check, 1000)
+    if (morse.entered == morse.code[morse.word[morse.pos]] || !morse.code[morse.word[morse.pos]].startsWith(morse.entered)) {
+      morse.check()
+    } else {
+      morse.timeoutID = setTimeout(morse.check, 1000)
+    }
   },
 
   check: _ => {
@@ -1828,10 +1826,6 @@ let morse = {
       let ch = morse.word[i]
       h += i == morse.pos ? '→' : ' '
       h += `${ch}\n`
-    }
-    if (morse.pos < morse.word.length) {
-      h += `${morse.code[morse.word[morse.pos]]}\n`
-      h += `${morse.entered}\n`
     }
     hchallenge.innerText = h
   }
