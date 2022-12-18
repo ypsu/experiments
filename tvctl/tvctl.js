@@ -3469,5 +3469,5 @@ function main() {
   challenge.render();
 }
 
-let challenge = morse
+let challenge = circles
 main()
