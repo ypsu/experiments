@@ -77,6 +77,7 @@ class missingnum {
   nummask = 0
   solution = 0
   pressed = 0
+  solved = 0
 
   init() {
     this.pressed = 0
@@ -97,7 +98,9 @@ class missingnum {
   }
 
   render() {
-    let html = '<table>'
+    let html = ''
+    html += `level ${this.solved+1} / ${currentLevel+3}<br>`
+    html += '<table>'
     for (let r = 0; r < 3; r++) {
       html += '<tr>'
       for (let c = 0; c < 3; c++) {
@@ -129,11 +132,23 @@ class missingnum {
     }
     this.nums[8] = this.solution
     if ((this.nummask & 1 << this.pressed) == 0) {
-      winstate()
+      if (this.solved + 1 == currentLevel + 3) {
+        winstate()
+        setTimeout(() => {
+          this.solved = 0
+        }, 100)
+      } else {
+        setTimeout(() => {
+          this.solved++
+          this.init()
+          this.render()
+        }, 1000)
+      }
     } else {
       // using a large delay to discourage guessing.
-      const delay = 5000
+      const delay = 3000
       setTimeout(() => {
+        this.solved = 0
         this.init()
         this.render()
       }, delay)
