@@ -154,5 +154,71 @@ class missingnum {
         }
     }
 }
-challenge = new missingnum();
+// randint returns an integer in the [1, n] range.
+function randint(n) {
+    return Math.ceil(Math.random() * n);
+}
+class add3 {
+    constructor() {
+        this.failed = false;
+        this.problems = 0;
+        this.solved = 0;
+        this.nums = new Array();
+    }
+    init() {
+        this.failed = false;
+        this.problems = 4 + currentLevel;
+        this.solved = 0;
+        this.nums = [];
+        for (let i = 0; i < this.problems; i++) {
+            let x, y, z;
+            do {
+                [x, y, z] = [randint(7), randint(7), randint(7)];
+            } while (x + y + z > 9);
+            this.nums.push(x, y, z);
+        }
+    }
+    render() {
+        let html = '';
+        for (let i = 0; i < this.problems; i++) {
+            let [x, y, z] = [this.nums[i * 3 + 0], this.nums[i * 3 + 1], this.nums[i * 3 + 2]];
+            html += `${x} + ${y} + ${z} = `;
+            if (i < this.solved) {
+                html += `${x + y + z}\n`;
+            }
+            else if (i == this.solved) {
+                if (this.failed) {
+                    html += `<span style=color:red>${x + y + z}</span>\n`;
+                }
+                else {
+                    html += '?\n';
+                }
+            }
+            else {
+                html += '\n';
+            }
+        }
+        hchallenge.innerHTML = html;
+    }
+    onkeyup(ev) {
+        if (this.failed)
+            return;
+        let num = parseInt(ev.key);
+        if (!(1 <= num && num <= 9))
+            return;
+        let expected = this.nums[this.solved * 3] + this.nums[this.solved * 3 + 1] + this.nums[this.solved * 3 + 2];
+        if (num != expected) {
+            this.failed = true;
+            setTimeout(() => {
+                this.init();
+                this.render();
+            }, 2000);
+            return;
+        }
+        this.solved++;
+        if (this.solved == this.problems)
+            winstate();
+    }
+}
+challenge = new add3();
 main();
