@@ -220,5 +220,67 @@ class add3 {
             winstate();
     }
 }
-challenge = new add3();
+class sub {
+    constructor() {
+        this.failed = false;
+        this.problems = 0;
+        this.solved = 0;
+        this.nums = new Array();
+    }
+    init() {
+        this.failed = false;
+        this.problems = 4 + currentLevel;
+        this.solved = 0;
+        this.nums = [];
+        for (let i = 0; i < this.problems; i++) {
+            let x, y;
+            do {
+                [x, y] = [randint(9), randint(9)];
+            } while (x < y);
+            this.nums.push(x, y);
+        }
+    }
+    render() {
+        let html = '';
+        for (let i = 0; i < this.problems; i++) {
+            let [x, y] = [this.nums[i * 2 + 0], this.nums[i * 2 + 1]];
+            html += `${x} - ${y} = `;
+            if (i < this.solved) {
+                html += `${x - y}\n`;
+            }
+            else if (i == this.solved) {
+                if (this.failed) {
+                    html += `<span style=color:red>${x - y}</span>\n`;
+                }
+                else {
+                    html += '?\n';
+                }
+            }
+            else {
+                html += '\n';
+            }
+        }
+        hchallenge.innerHTML = html;
+    }
+    onkeyup(ev) {
+        if (this.failed)
+            return;
+        let num = parseInt(ev.key);
+        if (!(0 <= num && num <= 9))
+            return;
+        let expected = this.nums[this.solved * 2] - this.nums[this.solved * 2 + 1];
+        if (num != expected) {
+            this.failed = true;
+            setTimeout(() => {
+                this.init();
+                this.render();
+            }, 2000);
+            return;
+        }
+        this.solved++;
+        if (this.solved == this.problems)
+            winstate();
+    }
+}
+challenge = new sub();
 main();
