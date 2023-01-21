@@ -282,5 +282,91 @@ class sub {
             winstate();
     }
 }
-challenge = new sub();
+class expr {
+    constructor() {
+        this.failed = false;
+        this.problems = 0;
+        this.solved = 0;
+        this.nums = new Array();
+        this.ops = ['-', '+'];
+    }
+    init() {
+        this.failed = false;
+        this.problems = 4 + currentLevel;
+        this.solved = 0;
+        this.nums = [];
+        for (let i = 0; i < this.problems; i++) {
+            let x, op1, y, op2, z;
+            while (true) {
+                [x, op1, y, op2, z] = [randint(9), randint(2) - 1, randint(8), randint(2) - 1, randint(9)];
+                let s = 0;
+                if (op1 == 0)
+                    s = x - y;
+                if (op1 == 1)
+                    s = x + y;
+                if (s < 0 || s > 9)
+                    s = -1;
+                if (s != -1 && op2 == 0)
+                    s -= z;
+                if (s != -1 && op2 == 1)
+                    s += z;
+                if (s < 0 || s > 9)
+                    s = -1;
+                if (s == -1)
+                    continue;
+                this.nums.push(x, op1, y, op2, z, s);
+                break;
+            }
+        }
+    }
+    render() {
+        let html = '';
+        for (let i = 0; i < this.problems; i++) {
+            let [x, op1, y, op2, z, a] = [
+                this.nums[i * 6 + 0],
+                this.nums[i * 6 + 1],
+                this.nums[i * 6 + 2],
+                this.nums[i * 6 + 3],
+                this.nums[i * 6 + 4],
+                this.nums[i * 6 + 5],
+            ];
+            html += `${x} ${this.ops[op1]} ${y} ${this.ops[op2]} ${z} = `;
+            if (i < this.solved) {
+                html += `${a}\n`;
+            }
+            else if (i == this.solved) {
+                if (this.failed) {
+                    html += `<span style=color:red>${a}</span>\n`;
+                }
+                else {
+                    html += '?\n';
+                }
+            }
+            else {
+                html += '\n';
+            }
+        }
+        hchallenge.innerHTML = html;
+    }
+    onkeyup(ev) {
+        if (this.failed)
+            return;
+        let num = parseInt(ev.key);
+        if (!(0 <= num && num <= 9))
+            return;
+        let expected = this.nums[this.solved * 6 + 5];
+        if (num != expected) {
+            this.failed = true;
+            setTimeout(() => {
+                this.init();
+                this.render();
+            }, 2000);
+            return;
+        }
+        this.solved++;
+        if (this.solved == this.problems)
+            winstate();
+    }
+}
+challenge = new expr();
 main();
