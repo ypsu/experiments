@@ -1,5 +1,6 @@
 declare var hchallenge: HTMLElement
 declare var hcorrectmsg: HTMLElement
+declare var shortwords: Array < string > ;
 
 let currentLevel = 0
 
@@ -352,5 +353,69 @@ class expr {
   }
 }
 
-challenge = new expr()
+class typefast {
+  words = new Array < string > ()
+  solved = 0
+  currentOK = 0
+  currentError = ''
+  resetTimer = 0
+
+  init() {
+    let n = 4 + currentLevel
+    this.solved = 0
+    this.currentOK = 0
+    this.currentError = ''
+    this.words = new Array < string > (n)
+    for (let i = 0; i < n; i++) {
+      this.words[i] = shortwords[Math.floor(Math.random() * shortwords.length)]
+    }
+  }
+
+  render() {
+    let html = ''
+    for (let i = 0; i < this.words.length; i++) {
+      if (i < this.solved) {
+        html += `  <span style=color:green>${this.words[i]}</span>\n`
+      } else if (i == this.solved) {
+        html += `> <span style=color:green>${this.words[i].slice(0, this.currentOK)}</span><span style=color:red>${this.currentError}</span>${this.words[i].slice(this.currentOK)}\n`
+      } else {
+        html += `  ${this.words[i]}\n`
+      }
+    }
+    hchallenge.innerHTML = html
+  }
+
+  resetword() {
+    this.currentOK = 0
+    this.currentError = ''
+    this.render()
+  }
+
+  onkeyup(ev: KeyboardEvent) {
+    if (ev.key.length != 1) return
+    if (this.currentError != '' || this.solved == this.words.length) return
+    let k = ev.key.toUpperCase()
+    clearTimeout(this.resetTimer)
+
+    // player pressed the wrong button.
+    if (k != this.words[this.solved][this.currentOK]) {
+      this.currentError = k
+      this.resetTimer = setTimeout(() => this.resetword(), 1000)
+      return
+    }
+
+    // player pressed the right button.
+    this.currentOK++
+    if (this.currentOK == this.words[this.solved].length) {
+      this.solved++
+      this.currentOK = 0
+      this.currentError = ''
+      if (this.solved == this.words.length) winstate()
+    } else {
+      this.resetTimer = setTimeout(() => this.resetword(), 1000)
+    }
+  }
+}
+
+challenge = new typefast()
 main()
