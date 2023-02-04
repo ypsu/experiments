@@ -1,5 +1,5 @@
-declare var hchallenge: HTMLElement
-declare var hcorrectmsg: HTMLElement
+declare var hchallenge: HTMLElement, hcorrectmsg: HTMLElement
+declare var hcanvas: HTMLCanvasElement, hnote: HTMLElement
 declare var shortwords: Array < string > ;
 
 let currentLevel = 0
@@ -417,5 +417,82 @@ class typefast {
   }
 }
 
-challenge = new typefast()
+class blindfind {
+  r = 50
+  pos = [0, 0]
+  oldpos = [0, 0]
+  dst = [0, 0]
+  down = 0
+  rounds = 3
+  round = 0
+  ctx: CanvasRenderingContext2D
+
+  constructor() {
+    hchallenge.innerHTML = '<pre id=hnote></pre><canvas id=hcanvas width=1800 height=700 style="border:1px solid">';
+    this.ctx = hcanvas.getContext('2d') as CanvasRenderingContext2D
+  }
+
+  init() {
+    this.pos = [50, 50]
+    this.dst = [Math.random() * 1500 + 200, Math.random() * 500 + 100]
+    this.round++
+  }
+
+  onkeydown(ev: KeyboardEvent) {
+    let olddown = this.down
+    if (ev.code == 'ArrowLeft') this.down |= 1
+    if (ev.code == 'ArrowRight') this.down |= 2
+    if (ev.code == 'ArrowUp') this.down |= 4
+    if (ev.code == 'ArrowDown') this.down |= 8
+    if (olddown == 0 && this.down > 0) this.simulate()
+  }
+
+  onkeyup(ev: KeyboardEvent) {
+    if (ev.code == 'ArrowLeft') this.down &= ~1
+    if (ev.code == 'ArrowRight') this.down &= ~2
+    if (ev.code == 'ArrowUp') this.down &= ~4
+    if (ev.code == 'ArrowDown') this.down &= ~8
+  }
+
+  render() {
+    this.ctx.beginPath()
+    this.ctx.arc(this.oldpos[0], this.oldpos[1], this.r, 0, 2 * Math.PI)
+    this.ctx.fillStyle = '#fff'
+    this.ctx.fill()
+    this.oldpos[0] = this.pos[0]
+    this.oldpos[1] = this.pos[1]
+    this.ctx.beginPath()
+    this.ctx.arc(this.pos[0], this.pos[1], this.r, 0, 2 * Math.PI)
+    this.ctx.fillStyle = '#000'
+    this.ctx.fill()
+    if (hcorrectmsg.hidden) {
+      hnote.innerText = `round ${this.round}/${this.rounds}: ${Math.round(Math.hypot(this.dst[0]-this.pos[0], this.dst[1]-this.pos[1]))}`
+    } else {
+      hnote.innerText = 'all done!'
+    }
+  }
+
+  simulate() {
+    let f = 5
+    if ((this.down & 1) != 0 && this.pos[0] - f >= this.r) this.pos[0] -= f
+    if ((this.down & 2) != 0 && this.pos[0] + f <= 1800 - this.r) this.pos[0] += f
+    if ((this.down & 4) != 0 && this.pos[1] - f >= this.r) this.pos[1] -= f
+    if ((this.down & 8) != 0 && this.pos[1] + f <= 700 - this.r) this.pos[1] += f
+    this.render()
+    if (Math.hypot(this.dst[0] - this.pos[0], this.dst[1] - this.pos[1]) < 50) {
+      if (this.round == this.rounds) {
+        this.round = 0
+        winstate()
+      } else {
+        this.init()
+      }
+      return
+    }
+    if (this.down > 0) {
+      window.requestAnimationFrame(() => this.simulate());
+    }
+  }
+}
+
+challenge = new blindfind()
 main()
