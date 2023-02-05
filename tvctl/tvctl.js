@@ -475,7 +475,7 @@ class blindfind {
     }
     render() {
         this.ctx.beginPath();
-        this.ctx.arc(this.oldpos[0], this.oldpos[1], this.r, 0, 2 * Math.PI);
+        this.ctx.arc(this.oldpos[0], this.oldpos[1], this.r + 1, 0, 2 * Math.PI);
         this.ctx.fillStyle = '#fff';
         this.ctx.fill();
         this.oldpos[0] = this.pos[0];
