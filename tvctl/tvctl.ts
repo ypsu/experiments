@@ -455,6 +455,8 @@ class blindfind {
   }
 
   render() {
+    let oldd = Math.hypot(this.dst[0]-this.oldpos[0], this.dst[1]-this.oldpos[1])
+    let newd = Math.hypot(this.dst[0]-this.pos[0], this.dst[1]-this.pos[1])
     this.ctx.beginPath()
     this.ctx.arc(this.oldpos[0], this.oldpos[1], this.r+1, 0, 2 * Math.PI)
     this.ctx.fillStyle = '#fff'
@@ -464,6 +466,8 @@ class blindfind {
     this.ctx.beginPath()
     this.ctx.arc(this.pos[0], this.pos[1], this.r, 0, 2 * Math.PI)
     this.ctx.fillStyle = '#000'
+    if (newd < oldd) this.ctx.fillStyle = '#0f0'
+    if (newd > oldd) this.ctx.fillStyle = '#f00'
     this.ctx.fill()
     if (hcorrectmsg.hidden) {
       hnote.innerText = `round ${this.round}/${this.rounds}: ${Math.round(Math.hypot(this.dst[0]-this.pos[0], this.dst[1]-this.pos[1]))}`
