@@ -304,7 +304,7 @@ class expr {
                     s = x - y;
                 if (op1 == 1)
                     s = x + y;
-                if (s < 0 || s > 9)
+                if (s < 0 || s > 11)
                     s = -1;
                 if (s != -1 && op2 == 0)
                     s -= z;
@@ -523,5 +523,5 @@ class blindfind {
         }
     }
 }
-challenge = new blindfind();
+challenge = new expr();
 main();

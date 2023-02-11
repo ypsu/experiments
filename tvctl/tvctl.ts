@@ -297,7 +297,7 @@ class expr {
         let s = 0
         if (op1 == 0) s = x - y
         if (op1 == 1) s = x + y
-        if (s < 0 || s > 9) s = -1
+        if (s < 0 || s > 11) s = -1
         if (s != -1 && op2 == 0) s -= z
         if (s != -1 && op2 == 1) s += z
         if (s < 0 || s > 9) s = -1
@@ -498,5 +498,5 @@ class blindfind {
   }
 }
 
-challenge = new blindfind()
+challenge = new expr()
 main()
