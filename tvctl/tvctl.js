@@ -523,5 +523,62 @@ class blindfind {
         }
     }
 }
-challenge = new expr();
+class compare {
+    constructor() {
+        this.nums = new Array();
+        this.ok = 0;
+        this.failed = false;
+    }
+    init() {
+        let n = 6 - currentLevel;
+        this.ok = 0;
+        this.failed = false;
+        this.nums = new Array();
+        while (this.nums.length < 2 * n) {
+            this.nums.push(Math.floor(Math.random() * 300));
+            let k = this.nums.length - 2;
+            if (k >= 0 && this.nums[k] == this.nums[k + 1])
+                this.nums.pop();
+        }
+    }
+    render() {
+        let html = '';
+        for (let i = 0; i < this.nums.length / 2; i++) {
+            html += `${this.nums[2 * i]} `;
+            if (i == this.ok && !this.failed) {
+                html += '?';
+            }
+            else {
+                let color = 'white';
+                if (i < this.ok) {
+                    color = 'green';
+                }
+                else if (i == this.ok && this.failed) {
+                    color = 'red';
+                }
+                html += `<span style=color:${color}>`;
+                html += this.nums[2 * i] < this.nums[2 * i + 1] ? '<' : '>';
+                html += '</span>';
+            }
+            html += ` ${this.nums[2 * i + 1]}\n`;
+        }
+        hchallenge.innerHTML = html;
+    }
+    onkeyup(ev) {
+        if (ev.key != '1' && ev.key != '2')
+            return;
+        if (this.failed)
+            return this.init();
+        let k = this.ok;
+        if ((this.nums[2 * k] < this.nums[2 * k + 1]) == (ev.key == '1')) {
+            this.ok++;
+        }
+        else {
+            this.failed = true;
+        }
+        if (this.ok == this.nums.length / 2)
+            winstate();
+    }
+}
+challenge = new compare();
 main();
