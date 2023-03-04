@@ -504,7 +504,7 @@ class compare {
   failed = false
 
   init() {
-    let n = 6 - currentLevel
+    let n = 6 + currentLevel
     this.ok = 0
     this.failed = false
     this.nums = new Array < number > ()
