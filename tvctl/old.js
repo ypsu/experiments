@@ -1639,8 +1639,8 @@ let dircircles = {
 };
 
 let nback = {
-  k: 12,
-  n: 1,
+  k: 7,
+  n: 2,
   solved: 0,
   wrong: 0,
   nums: [],
@@ -1676,11 +1676,11 @@ let nback = {
     for (let i = 0; i < nback.solved; i++) h += `${nback.nums[i]} `
     if (nback.wrong != 0) {
       h += `<span style=color:red>${nback.wrong}</span><span style=color:green>${nback.nums[nback.solved]}</span>`
-      for (let i = 1; i < nback.n; i++) h += '_ '
+      for (let i = 1; i < nback.n && i + nback.solved < nback.k; i++) h += '_ '
     } else if (nback.solved == 0) {
       for (let i = 0; i < nback.n; i++) h += `${nback.nums[i]} `
     } else if (nback.solved < nback.k) {
-      for (let i = 0; i < nback.n; i++) h += '_ '
+      for (let i = 0; i < nback.n && i + nback.solved < nback.k; i++) h += '_ '
     }
     if (nback.solved + nback.n < nback.k) h += `${nback.nums[nback.solved+nback.n]} `
     for (let i = nback.solved + nback.n + 1; i < nback.k; i++) h += '_ '
@@ -3470,5 +3470,5 @@ function main() {
   challenge.render();
 }
 
-let challenge = circles
+let challenge = nback
 main()
