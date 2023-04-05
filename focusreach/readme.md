@@ -40,4 +40,5 @@ i don't really know my previous data so i omitted it rather than guessing it.
 2019-Feb-01 sph:-4.75,-4.75 pd:33,33
 2019-Mar-20 started wearing -4.25D lenses
 2020-Aug-05 machine measurement: -4.50D both eyes, got same lenses too.
+2023-Apr-05 machine measured left:-4.25D, right:-4.5, but then the manual measurement was left: -4.5, right: -5.0.
 ```
