@@ -1640,7 +1640,7 @@ let dircircles = {
 
 let nback = {
   k: 9,
-  n: 2,
+  n: 3,
   solved: 0,
   wrong: 0,
   nums: [],
