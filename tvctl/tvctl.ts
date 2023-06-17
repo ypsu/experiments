@@ -553,5 +553,88 @@ class compare {
   }
 }
 
-challenge = new blindfind()
+class colorNBack {
+  k = 9
+  n = 2
+  solved = 0
+  nums = [0]
+  wrong = 0
+  colors = [
+    '#000',
+    '#22f',
+    '#080',
+    '#0cc',
+    '#f80',
+    '#f00',
+    '#f0f',
+    '#808',
+    '#cc0',
+  ]
+
+  init() {
+    this.k = 9 + currentLevel
+    this.nums = []
+    this.solved = 0
+    this.wrong = 0
+    for (let i = 0; i < this.k; i++) this.nums.push(Math.floor(Math.random() * this.colors.length))
+  }
+
+  render() {
+    let h = ''
+    for (let i = 0; i < this.solved; i++) {
+      let c = this.colors[this.nums[i]]
+      h += `<span style=color:${c}>■</span> `
+    }
+    if (this.wrong != 0) {
+      let c = this.colors[this.nums[this.solved]]
+      h += `<span style=color:${c}>■</span> `
+      for (let i = 1; i < this.n && i + this.solved < this.k; i++) h += '_ '
+    } else if (this.solved == 0) {
+      for (let i = 0; i < this.n; i++) {
+        let c = this.colors[this.nums[i]]
+        h += `<span style=color:${c}>■</span> `
+      }
+    } else if (this.solved < this.k) {
+      for (let i = 0; i < this.n && i + this.solved < this.k; i++) h += '_ '
+    }
+    if (this.solved + this.n < this.k) {
+      let c = this.colors[this.nums[this.solved + this.n]]
+      h += `<span style=color:${c}>■</span> `
+    }
+    for (let i = this.solved + this.n + 1; i < this.k; i++) h += '_ '
+    if (this.solved < this.k) {
+      h += '\n'
+      for (let i = 0; i < this.solved; i++) h += '  '
+      if (this.wrong != 0) {
+        h += 'x'
+      } else {
+        h += '^'
+      }
+    }
+    h += '\n\n'
+    for (let i = 0; i < this.colors.length; i++) {
+      h += `<span style=color:${this.colors[i]} id=hColor${i}>■</span> `
+    }
+    hchallenge.innerHTML = h
+    for (let i = 0; i < this.colors.length; i++) {
+      (document.getElementById(`hColor${i}`) as HTMLElement).onclick = () => this.click(i)
+    }
+  }
+
+  click(num: number) {
+    if (this.nums[this.solved] == num) {
+      this.solved++
+      if (this.solved == this.k) winstate()
+    } else if (this.solved > 0) {
+      this.wrong = 1
+      setTimeout(() => {
+        this.init()
+        this.render()
+      }, 1000)
+    }
+    this.render()
+  }
+}
+
+challenge = new colorNBack()
 main()
