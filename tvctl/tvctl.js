@@ -586,7 +586,7 @@ class compare {
 class colorNBack {
     constructor() {
         this.k = 9;
-        this.n = 2;
+        this.n = 3;
         this.solved = 0;
         this.nums = [0];
         this.wrong = 0;

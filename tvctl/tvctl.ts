@@ -555,7 +555,7 @@ class compare {
 
 class colorNBack {
   k = 9
-  n = 2
+  n = 3
   solved = 0
   nums = [0]
   wrong = 0
