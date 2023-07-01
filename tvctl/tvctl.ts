@@ -636,5 +636,84 @@ class colorNBack {
   }
 }
 
-challenge = new colorNBack()
+class wordsearch {
+  n = 5
+  grid = ['']
+  dr = [-1, -1, +0, +1, +1, +1, +0, -1]
+  dc = [+0, +1, +1, +1, +0, -1, -1, -1]
+  clicked = [0]
+
+  init() {
+    this.n = 5 + currentLevel
+    if (this.n > 6) this.n = 6
+    this.clicked = []
+    this.grid = new Array < string > (this.n * this.n)
+    for (let r = 0; r < this.n; r++) {
+      for (let c = 0; c < this.n; c++) {
+        this.grid[r * this.n + c] = String.fromCharCode(65 + Math.random() * 26)
+      }
+    }
+    let s, sr, sc, d, e, er, ec
+    do {
+      s = Math.floor(Math.random() * this.n * this.n)
+      sr = Math.floor(s / this.n)
+      sc = s % this.n
+      d = Math.floor(Math.random() * 8)
+      er = sr + 3 * this.dr[d]
+      ec = sc + 3 * this.dc[d]
+      e = er * this.n + ec
+    } while (er < 0 || er >= this.n || ec < 0 || ec >= this.n)
+    this.grid[s] = 'A'
+    this.grid[s + this.dr[d] * this.n + this.dc[d]] = 'D'
+    this.grid[s + 2 * this.dr[d] * this.n + 2 * this.dc[d]] = 'A'
+    this.grid[e] = 'M'
+  }
+
+  click(id: number) {
+    if (this.clicked.length == 0 && this.grid[id] != 'A') return
+    if (this.clicked.length == 0) {
+      this.clicked.push(id)
+      this.render()
+      return
+    }
+    if (this.grid[id] != 'ADAM'[this.clicked.length]) {
+      this.init()
+      this.render()
+      return
+    }
+    let lid = this.clicked[this.clicked.length - 1]
+    if (id == lid) return
+    let lr = Math.floor(lid / this.n)
+    let lc = lid % this.n
+    let r = Math.floor(id / this.n)
+    let c = id % this.n
+    if (Math.abs(r-lr) >= 2 || Math.abs(c-lc) >= 2) {
+      this.init()
+      this.render()
+      return
+    }
+    this.clicked.push(id)
+    if (this.clicked.length == 4) winstate()
+    this.render()
+  }
+
+  render() {
+    let h = ''
+    for (let r = 0; r < this.n; r++) {
+      for (let c = 0; c < this.n; c++) {
+        let id = r * this.n + c
+        let style = ''
+        if (this.clicked.includes(id)) style = ' style=color:green'
+        h += `<span id=cell${id}${style}>${this.grid[id]}</span> `
+      }
+      h += '\n'
+    }
+    hchallenge.innerHTML = h
+    for (let i = 0; i < this.n * this.n; i++) {
+      (document.getElementById(`cell${i}`) as HTMLElement).onclick = () => this.click(i)
+    }
+  }
+}
+
+challenge = new wordsearch()
 main()
