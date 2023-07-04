@@ -637,15 +637,20 @@ class colorNBack {
 }
 
 class wordsearch {
-  n = 5
+  n = 7
+  round = 0
+  rounds = 3
   grid = ['']
   dr = [-1, -1, +0, +1, +1, +1, +0, -1]
   dc = [+0, +1, +1, +1, +0, -1, -1, -1]
   clicked = [0]
 
   init() {
-    this.n = 5 + currentLevel
-    if (this.n > 6) this.n = 6
+    this.round = 1
+    this.reset()
+  }
+
+  reset() {
     this.clicked = []
     this.grid = new Array < string > (this.n * this.n)
     for (let r = 0; r < this.n; r++) {
@@ -676,7 +681,7 @@ class wordsearch {
       this.render()
       return
     }
-    if (this.grid[id] != 'ADAM'[this.clicked.length]) {
+    if (this.grid[id] != 'ADAM' [this.clicked.length]) {
       this.init()
       this.render()
       return
@@ -687,18 +692,27 @@ class wordsearch {
     let lc = lid % this.n
     let r = Math.floor(id / this.n)
     let c = id % this.n
-    if (Math.abs(r-lr) >= 2 || Math.abs(c-lc) >= 2) {
+    if (Math.abs(r - lr) >= 2 || Math.abs(c - lc) >= 2) {
       this.init()
       this.render()
       return
     }
     this.clicked.push(id)
-    if (this.clicked.length == 4) winstate()
+    if (this.clicked.length == 4) {
+      if (this.round == this.rounds) {
+        this.render()
+        winstate()
+        return
+      }
+      this.round++
+      this.reset()
+    }
     this.render()
   }
 
   render() {
     let h = ''
+    h += `round ${this.round}/${this.rounds}\n`
     for (let r = 0; r < this.n; r++) {
       for (let c = 0; c < this.n; c++) {
         let id = r * this.n + c

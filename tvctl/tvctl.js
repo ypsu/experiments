@@ -676,16 +676,19 @@ class colorNBack {
 }
 class wordsearch {
     constructor() {
-        this.n = 5;
+        this.n = 7;
+        this.round = 0;
+        this.rounds = 3;
         this.grid = [''];
         this.dr = [-1, -1, +0, +1, +1, +1, +0, -1];
         this.dc = [+0, +1, +1, +1, +0, -1, -1, -1];
         this.clicked = [0];
     }
     init() {
-        this.n = 5 + currentLevel;
-        if (this.n > 6)
-            this.n = 6;
+        this.round = 1;
+        this.reset();
+    }
+    reset() {
         this.clicked = [];
         this.grid = new Array(this.n * this.n);
         for (let r = 0; r < this.n; r++) {
@@ -734,12 +737,20 @@ class wordsearch {
             return;
         }
         this.clicked.push(id);
-        if (this.clicked.length == 4)
-            winstate();
+        if (this.clicked.length == 4) {
+            if (this.round == this.rounds) {
+                this.render();
+                winstate();
+                return;
+            }
+            this.round++;
+            this.reset();
+        }
         this.render();
     }
     render() {
         let h = '';
+        h += `round ${this.round}/${this.rounds}\n`;
         for (let r = 0; r < this.n; r++) {
             for (let c = 0; c < this.n; c++) {
                 let id = r * this.n + c;
