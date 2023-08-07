@@ -737,6 +737,7 @@ enum tttResult {
 }
 class tictactoe {
   board = new Array < string > (9)
+  status = ''
 
   winner3(a: string, b: string, c: string): string {
     if (a != b || a != c) return ''
@@ -797,6 +798,7 @@ class tictactoe {
   }
 
   reset() {
+    this.status = ''
     for (let i = 0; i < 9; i++) this.board[i] = ''
     let [r, m] = this.computeMove('O', 'X')
     this.board[m] = 'O'
@@ -807,7 +809,8 @@ class tictactoe {
     h += this.cell(0) + this.cell(1) + this.cell(2) + '\n<tr>'
     h += this.cell(3) + this.cell(4) + this.cell(5) + '\n<tr>'
     h += this.cell(6) + this.cell(7) + this.cell(8) + '\n<tr>'
-    h += '</table>'
+    h += '</table>\n'
+    h += this.status
     hchallenge.innerHTML = h
     for (let i = 0; i < 9; i++) {
       (document.getElementById(`cell${i}`) as HTMLElement).onclick = () => this.click(i)
@@ -821,18 +824,27 @@ class tictactoe {
   }
 
   click(i: number) {
+    if (this.status != '') {
+      this.reset()
+      this.render()
+      return
+    }
     if (this.board[i] != '') return
     this.board[i] = 'X'
-    if (this.extractResult('X', 'O') == tttResult.win) console.log('X won')
-    let [r, m] = this.computeMove('O', 'X')
-    this.board[m] = 'O'
-    if (this.extractResult('O', 'X') == tttResult.win) console.log('O won')
-    if (this.extractResult('O', 'X') == tttResult.draw) console.log('draw')
-    console.log(r, m)
+    if (this.extractResult('X', 'O') == tttResult.win) this.status = 'X WON! \\o/'
+    if (this.extractResult('O', 'X') == tttResult.draw) this.status = 'DRAW \\o/'
     this.render()
+
+    setTimeout(() => {
+      let [r, m] = this.computeMove('O', 'X')
+      this.board[m] = 'O'
+      if (this.extractResult('O', 'X') == tttResult.win) this.status = 'O WON! /o\\'
+      if (this.extractResult('O', 'X') == tttResult.draw) this.status = 'DRAW \\o/'
+      if (this.status.startsWith('DRAW')) winstate()
+      this.render()
+    }, 2000)
   }
 }
 
-// todo: switch to tictactoe.
-challenge = new wordsearch()
+challenge = new tictactoe()
 main()
