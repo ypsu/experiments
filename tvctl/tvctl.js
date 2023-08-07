@@ -769,35 +769,119 @@ class wordsearch {
 }
 var tttResult;
 (function (tttResult) {
-    tttResult[tttResult["lose"] = 0] = "lose";
-    tttResult[tttResult["draw"] = 1] = "draw";
-    tttResult[tttResult["win"] = 2] = "win";
+    tttResult[tttResult["unknown"] = 0] = "unknown";
+    tttResult[tttResult["lose"] = 1] = "lose";
+    tttResult[tttResult["draw"] = 2] = "draw";
+    tttResult[tttResult["win"] = 3] = "win";
 })(tttResult || (tttResult = {}));
 class tictactoe {
     constructor() {
         this.board = new Array(9);
     }
-    computeResult() {
-        return [tttResult.win, 0];
+    winner3(a, b, c) {
+        if (a != b || a != c)
+            return '';
+        return a;
+    }
+    winner9() {
+        let p = '';
+        p += this.winner3(this.board[0], this.board[1], this.board[2]);
+        p += this.winner3(this.board[3], this.board[4], this.board[5]);
+        p += this.winner3(this.board[6], this.board[7], this.board[8]);
+        p += this.winner3(this.board[0], this.board[3], this.board[6]);
+        p += this.winner3(this.board[1], this.board[4], this.board[7]);
+        p += this.winner3(this.board[2], this.board[5], this.board[8]);
+        p += this.winner3(this.board[0], this.board[4], this.board[8]);
+        p += this.winner3(this.board[2], this.board[4], this.board[6]);
+        if (p == '')
+            return '';
+        return p.slice(0, 1);
+    }
+    pickRandomly(a) {
+        return a[Math.floor(Math.random() * a.length)];
+    }
+    extractResult(p, n) {
+        let w = this.winner9();
+        if (w == p)
+            return tttResult.win;
+        if (w == n)
+            return tttResult.lose;
+        for (let i = 0; i < 9; i++) {
+            if (this.board[i] == '')
+                return tttResult.unknown;
+        }
+        return tttResult.draw;
+    }
+    computeMove(p, n) {
+        let r = this.extractResult(p, n);
+        if (r != tttResult.unknown)
+            return [r, -1];
+        let winMoves = [];
+        let drawMoves = [];
+        let loseMoves = [];
+        for (let i = 0; i < 9; i++) {
+            if (this.board[i] != '')
+                continue;
+            this.board[i] = p;
+            let [r, m] = this.computeMove(n, p);
+            if (r == tttResult.win)
+                loseMoves.push(i);
+            if (r == tttResult.draw)
+                drawMoves.push(i);
+            if (r == tttResult.lose)
+                winMoves.push(i);
+            this.board[i] = '';
+        }
+        if (winMoves.length > 0)
+            return [tttResult.win, this.pickRandomly(winMoves)];
+        if (drawMoves.length > 0)
+            return [tttResult.draw, this.pickRandomly(drawMoves)];
+        if (loseMoves.length > 0)
+            return [tttResult.lose, this.pickRandomly(loseMoves)];
+        return [tttResult.unknown, -1];
     }
     init() {
         this.reset();
     }
     reset() {
-        let todo = [' ', 'O', 'X'];
         for (let i = 0; i < 9; i++)
-            this.board[i] = todo[i % 3];
+            this.board[i] = '';
+        let [r, m] = this.computeMove('O', 'X');
+        this.board[m] = 'O';
     }
     render() {
-        let h = '';
-        h += ' ' + this.board[0] + ' │ ' + this.board[1] + ' │ ' + this.board[2] + '\n';
-        h += '───┼───┼───\n';
-        h += ' ' + this.board[3] + ' │ ' + this.board[4] + ' │ ' + this.board[5] + '\n';
-        h += '───┼───┼───\n';
-        h += ' ' + this.board[6] + ' │ ' + this.board[7] + ' │ ' + this.board[8] + '\n';
+        let h = '<table>\n<tr>';
+        h += this.cell(0) + this.cell(1) + this.cell(2) + '\n<tr>';
+        h += this.cell(3) + this.cell(4) + this.cell(5) + '\n<tr>';
+        h += this.cell(6) + this.cell(7) + this.cell(8) + '\n<tr>';
+        h += '</table>';
         hchallenge.innerHTML = h;
+        for (let i = 0; i < 9; i++) {
+            document.getElementById(`cell${i}`).onclick = () => this.click(i);
+        }
+    }
+    cell(i) {
+        let s = this.board[i];
+        if (s == '')
+            s = ' ';
+        return `<td id=cell${i}>${s}</td>`;
+    }
+    click(i) {
+        if (this.board[i] != '')
+            return;
+        this.board[i] = 'X';
+        if (this.extractResult('X', 'O') == tttResult.win)
+            console.log('X won');
+        let [r, m] = this.computeMove('O', 'X');
+        this.board[m] = 'O';
+        if (this.extractResult('O', 'X') == tttResult.win)
+            console.log('O won');
+        if (this.extractResult('O', 'X') == tttResult.draw)
+            console.log('draw');
+        console.log(r, m);
+        this.render();
     }
 }
-// todo: switch to tictactoe
+// todo: switch to tictactoe.
 challenge = new wordsearch();
 main();
