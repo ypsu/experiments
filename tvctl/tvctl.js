@@ -767,5 +767,37 @@ class wordsearch {
         }
     }
 }
+var tttResult;
+(function (tttResult) {
+    tttResult[tttResult["lose"] = 0] = "lose";
+    tttResult[tttResult["draw"] = 1] = "draw";
+    tttResult[tttResult["win"] = 2] = "win";
+})(tttResult || (tttResult = {}));
+class tictactoe {
+    constructor() {
+        this.board = new Array(9);
+    }
+    computeResult() {
+        return [tttResult.win, 0];
+    }
+    init() {
+        this.reset();
+    }
+    reset() {
+        let todo = [' ', 'O', 'X'];
+        for (let i = 0; i < 9; i++)
+            this.board[i] = todo[i % 3];
+    }
+    render() {
+        let h = '';
+        h += ' ' + this.board[0] + ' │ ' + this.board[1] + ' │ ' + this.board[2] + '\n';
+        h += '───┼───┼───\n';
+        h += ' ' + this.board[3] + ' │ ' + this.board[4] + ' │ ' + this.board[5] + '\n';
+        h += '───┼───┼───\n';
+        h += ' ' + this.board[6] + ' │ ' + this.board[7] + ' │ ' + this.board[8] + '\n';
+        hchallenge.innerHTML = h;
+    }
+}
+// todo: switch to tictactoe
 challenge = new wordsearch();
 main();

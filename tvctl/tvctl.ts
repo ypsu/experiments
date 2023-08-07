@@ -729,5 +729,38 @@ class wordsearch {
   }
 }
 
+enum tttResult {
+  lose,
+  draw,
+  win
+}
+class tictactoe {
+  board = new Array < string > (9)
+
+  computeResult(): [tttResult, number] {
+    return [tttResult.win, 0]
+  }
+
+  init() {
+    this.reset()
+  }
+
+  reset() {
+    let todo = [' ', 'O', 'X']
+    for (let i = 0; i < 9; i++) this.board[i] = todo[i % 3]
+  }
+
+  render() {
+    let h = ''
+    h += ' ' + this.board[0] + ' │ ' + this.board[1] + ' │ ' + this.board[2] + '\n'
+    h += '───┼───┼───\n'
+    h += ' ' + this.board[3] + ' │ ' + this.board[4] + ' │ ' + this.board[5] + '\n'
+    h += '───┼───┼───\n'
+    h += ' ' + this.board[6] + ' │ ' + this.board[7] + ' │ ' + this.board[8] + '\n'
+    hchallenge.innerHTML = h
+  }
+}
+
+// todo: switch to tictactoe
 challenge = new wordsearch()
 main()
