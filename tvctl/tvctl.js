@@ -1,4 +1,13 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 let currentLevel = 0;
 let challenge;
 function keydown(evt) {
@@ -22,23 +31,32 @@ function keyup(evt) {
     }
 }
 function reward() {
-    hchallenge.hidden = true;
-    hcorrectmsg.hidden = true;
-    window.onkeydown = null;
-    fetch('/reward', {
-        method: 'POST'
-    });
-    currentLevel++;
-    setTimeout(() => {
-        hchallenge.hidden = false;
+    return __awaiter(this, void 0, void 0, function* () {
+        if (pass != 'PASS') {
+            let r = yield fetch('/reward', {
+                method: 'POST',
+                body: pass,
+            });
+            if (!r.ok)
+                return;
+        }
+        pass = '';
+        hchallenge.hidden = true;
         hcorrectmsg.hidden = true;
-        if (challenge.onkeydown)
-            window.onkeydown = keydown;
-        if (challenge.init)
-            challenge.init();
-        challenge.render();
-    }, 2000);
+        window.onkeydown = null;
+        currentLevel++;
+        setTimeout(() => {
+            hchallenge.hidden = false;
+            hcorrectmsg.hidden = true;
+            if (challenge.onkeydown)
+                window.onkeydown = keydown;
+            if (challenge.init)
+                challenge.init();
+            challenge.render();
+        }, 2000);
+    });
 }
+let pass = '';
 function winstate() {
     hcorrectmsg.hidden = false;
     window.onkeydown = evt => {
@@ -46,6 +64,11 @@ function winstate() {
             return;
         if (evt.key == 'Enter')
             reward();
+        if (evt.key == 'Backspace' && pass.length > 0)
+            pass = pass.slice(0, -1);
+        if (evt.key.length == 1)
+            pass += evt.key.toUpperCase();
+        hpasscode.innerText = pass;
     };
 }
 function main() {

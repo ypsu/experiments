@@ -1,4 +1,4 @@
-declare var hchallenge: HTMLElement, hcorrectmsg: HTMLElement
+declare var hchallenge: HTMLElement, hcorrectmsg: HTMLElement, hpasscode: HTMLElement
 declare var hcanvas: HTMLCanvasElement, hnote: HTMLElement
 declare var shortwords: Array < string > ;
 
@@ -31,13 +31,18 @@ function keyup(evt: KeyboardEvent) {
   }
 }
 
-function reward() {
+async function reward() {
+  if (pass != 'PASS') {
+    let r = await fetch('/reward', {
+      method: 'POST',
+      body: pass,
+    })
+    if (!r.ok) return
+  }
+  pass = ''
   hchallenge.hidden = true
   hcorrectmsg.hidden = true
   window.onkeydown = null
-  fetch('/reward', {
-    method: 'POST'
-  })
   currentLevel++
   setTimeout(() => {
     hchallenge.hidden = false
@@ -48,11 +53,16 @@ function reward() {
   }, 2000)
 }
 
+let pass = ''
+
 function winstate() {
-  hcorrectmsg.hidden = false;
+  hcorrectmsg.hidden = false
   window.onkeydown = evt => {
-    if (evt.altKey || evt.ctrlKey) return;
-    if (evt.key == 'Enter') reward();
+    if (evt.altKey || evt.ctrlKey) return
+    if (evt.key == 'Enter') reward()
+    if (evt.key == 'Backspace' && pass.length > 0) pass = pass.slice(0, -1)
+    if (evt.key.length == 1) pass += evt.key.toUpperCase()
+    hpasscode.innerText = pass
   };
 }
 
