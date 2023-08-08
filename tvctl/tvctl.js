@@ -1,13 +1,4 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 let currentLevel = 0;
 let challenge;
 function keydown(evt) {
@@ -30,31 +21,29 @@ function keyup(evt) {
         challenge.render();
     }
 }
-function reward() {
-    return __awaiter(this, void 0, void 0, function* () {
-        if (pass != 'PASS') {
-            let r = yield fetch('/reward', {
-                method: 'POST',
-                body: pass,
-            });
-            if (!r.ok)
-                return;
-        }
-        pass = '';
-        hchallenge.hidden = true;
+async function reward() {
+    if (pass != 'PASS') {
+        let r = await fetch('/reward', {
+            method: 'POST',
+            body: pass,
+        });
+        if (!r.ok)
+            return;
+    }
+    pass = '';
+    hchallenge.hidden = true;
+    hcorrectmsg.hidden = true;
+    window.onkeydown = null;
+    currentLevel++;
+    setTimeout(() => {
+        hchallenge.hidden = false;
         hcorrectmsg.hidden = true;
-        window.onkeydown = null;
-        currentLevel++;
-        setTimeout(() => {
-            hchallenge.hidden = false;
-            hcorrectmsg.hidden = true;
-            if (challenge.onkeydown)
-                window.onkeydown = keydown;
-            if (challenge.init)
-                challenge.init();
-            challenge.render();
-        }, 2000);
-    });
+        if (challenge.onkeydown)
+            window.onkeydown = keydown;
+        if (challenge.init)
+            challenge.init();
+        challenge.render();
+    }, 2000);
 }
 let pass = '';
 function winstate() {
@@ -90,13 +79,11 @@ function main() {
     challenge.render();
 }
 class missingnum {
-    constructor() {
-        this.nums = new Array(9);
-        this.nummask = 0;
-        this.solution = 0;
-        this.pressed = 0;
-        this.solved = 0;
-    }
+    nums = new Array(9);
+    nummask = 0;
+    solution = 0;
+    pressed = 0;
+    solved = 0;
     init() {
         this.pressed = 0;
         this.nummask = 0;
@@ -182,12 +169,10 @@ function randint(n) {
     return Math.ceil(Math.random() * n);
 }
 class add3 {
-    constructor() {
-        this.failed = false;
-        this.problems = 0;
-        this.solved = 0;
-        this.nums = new Array();
-    }
+    failed = false;
+    problems = 0;
+    solved = 0;
+    nums = new Array();
     init() {
         this.failed = false;
         this.problems = 4 + currentLevel;
@@ -244,12 +229,10 @@ class add3 {
     }
 }
 class sub {
-    constructor() {
-        this.failed = false;
-        this.problems = 0;
-        this.solved = 0;
-        this.nums = new Array();
-    }
+    failed = false;
+    problems = 0;
+    solved = 0;
+    nums = new Array();
     init() {
         this.failed = false;
         this.problems = 4 + currentLevel;
@@ -306,13 +289,11 @@ class sub {
     }
 }
 class expr {
-    constructor() {
-        this.failed = false;
-        this.problems = 0;
-        this.solved = 0;
-        this.nums = new Array();
-        this.ops = ['-', '+'];
-    }
+    failed = false;
+    problems = 0;
+    solved = 0;
+    nums = new Array();
+    ops = ['-', '+'];
     init() {
         this.failed = false;
         this.problems = 4 + currentLevel;
@@ -392,13 +373,11 @@ class expr {
     }
 }
 class typefast {
-    constructor() {
-        this.words = new Array();
-        this.solved = 0;
-        this.currentOK = 0;
-        this.currentError = '';
-        this.resetTimer = 0;
-    }
+    words = new Array();
+    solved = 0;
+    currentOK = 0;
+    currentError = '';
+    resetTimer = 0;
     init() {
         let n = 4 + currentLevel;
         this.solved = 0;
@@ -457,15 +436,16 @@ class typefast {
     }
 }
 class blindfind {
+    r = 50;
+    pos = [0, 0];
+    oldpos = [0, 0];
+    dst = [0, 0];
+    down = 0;
+    rounds = 3;
+    round = 0;
+    color = false;
+    ctx;
     constructor() {
-        this.r = 50;
-        this.pos = [0, 0];
-        this.oldpos = [0, 0];
-        this.dst = [0, 0];
-        this.down = 0;
-        this.rounds = 3;
-        this.round = 0;
-        this.color = false;
         hchallenge.innerHTML = '<pre id=hnote></pre><canvas id=hcanvas width=1800 height=700 style="border:1px solid">';
         this.ctx = hcanvas.getContext('2d');
     }
@@ -550,11 +530,9 @@ class blindfind {
     }
 }
 class compare {
-    constructor() {
-        this.nums = new Array();
-        this.ok = 0;
-        this.failed = false;
-    }
+    nums = new Array();
+    ok = 0;
+    failed = false;
     init() {
         let n = 6 + currentLevel;
         this.ok = 0;
@@ -607,24 +585,22 @@ class compare {
     }
 }
 class colorNBack {
-    constructor() {
-        this.k = 9;
-        this.n = 3;
-        this.solved = 0;
-        this.nums = [0];
-        this.wrong = 0;
-        this.colors = [
-            '#000',
-            '#22f',
-            '#080',
-            '#0cc',
-            '#f80',
-            '#f00',
-            '#f0f',
-            '#808',
-            '#cc0',
-        ];
-    }
+    k = 9;
+    n = 3;
+    solved = 0;
+    nums = [0];
+    wrong = 0;
+    colors = [
+        '#000',
+        '#22f',
+        '#080',
+        '#0cc',
+        '#f80',
+        '#f00',
+        '#f0f',
+        '#808',
+        '#cc0',
+    ];
     init() {
         this.k = 9 + currentLevel;
         this.nums = [];
@@ -698,15 +674,13 @@ class colorNBack {
     }
 }
 class wordsearch {
-    constructor() {
-        this.n = 7;
-        this.round = 0;
-        this.rounds = 3;
-        this.grid = [''];
-        this.dr = [-1, -1, +0, +1, +1, +1, +0, -1];
-        this.dc = [+0, +1, +1, +1, +0, -1, -1, -1];
-        this.clicked = [0];
-    }
+    n = 7;
+    round = 0;
+    rounds = 3;
+    grid = [''];
+    dr = [-1, -1, +0, +1, +1, +1, +0, -1];
+    dc = [+0, +1, +1, +1, +0, -1, -1, -1];
+    clicked = [0];
     init() {
         this.round = 1;
         this.reset();
@@ -798,10 +772,8 @@ var tttResult;
     tttResult[tttResult["win"] = 3] = "win";
 })(tttResult || (tttResult = {}));
 class tictactoe {
-    constructor() {
-        this.board = new Array(9);
-        this.status = '';
-    }
+    board = new Array(9);
+    status = '';
     winner3(a, b, c) {
         if (a != b || a != c)
             return '';
