@@ -43,6 +43,12 @@ func rewardHandler(w http.ResponseWriter, req *http.Request) {
 		respond(w, http.StatusBadRequest, "missing request body")
 		return
 	}
+	for _, ch := range show {
+		if ch < 'a' || ch > 'z' {
+			respond(w, http.StatusBadRequest, "invalid show name")
+			return
+		}
+	}
 	log.Printf("received request for %q", show)
 	showdir := filepath.Join(*showsPath, show)
 	glob := filepath.Join(showdir, "*/*")
