@@ -73,14 +73,28 @@ func rewardHandler(w http.ResponseWriter, req *http.Request) {
 	}
 	respond(w, http.StatusOK, "ok")
 
+	// prepare the command to run.
+	// allow overriding the default mpv command with a "cmd" file.
+	cmdfile, _ := os.ReadFile(filepath.Join(showdir, "cmd"))
+	cmdargs := make([]string, 0, 8)
+	for _, arg := range strings.Split(string(cmdfile), "\n") {
+		if arg := strings.TrimSpace(arg); arg != "" && arg[0] != '#' {
+			cmdargs = append(cmdargs, arg)
+		}
+	}
+	if len(cmdargs) == 0 {
+		cmdargs = append(cmdargs, "mpv")
+	}
+	cmdargs = append(cmdargs, dst)
+	cmd := exec.Command(cmdargs[0], cmdargs[1:]...)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+
 	// play the file in the background.
 	// todo: read mpv customization.
 	go func() {
-		cmd := exec.Command("mpv", dst)
-		cmd.Stdout = os.Stdout
-		cmd.Stderr = os.Stderr
-		log.Printf("running mpv %q.", dst)
-		log.Print("mpv completed: ", cmd.Run())
+		log.Printf("running %q", cmdargs)
+		log.Print("command completed, err: ", cmd.Run())
 	}()
 }
 

@@ -40,6 +40,7 @@ async function reward() {
     if (!r.ok) return
   }
   pass = ''
+  hpasscode.innerText = ''
   hchallenge.hidden = true
   hcorrectmsg.hidden = true
   window.onkeydown = null

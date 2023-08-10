@@ -31,6 +31,7 @@ async function reward() {
             return;
     }
     pass = '';
+    hpasscode.innerText = '';
     hchallenge.hidden = true;
     hcorrectmsg.hidden = true;
     window.onkeydown = null;
