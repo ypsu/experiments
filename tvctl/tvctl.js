@@ -871,6 +871,15 @@ class tictactoe {
             this.render();
             return;
         }
+        let emptycnt = 0;
+        for (let i = 0; i < 9; i++) {
+            if (this.board[i] == '')
+                emptycnt++;
+        }
+        if (emptycnt % 2 == 1) {
+            // ignore click, wait for the bot to move instead.
+            return;
+        }
         if (this.board[i] != '')
             return;
         this.board[i] = 'X';
