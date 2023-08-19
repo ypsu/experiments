@@ -773,6 +773,8 @@ var tttResult;
     tttResult[tttResult["win"] = 3] = "win";
 })(tttResult || (tttResult = {}));
 class tictactoe {
+    round = 0;
+    rounds = 3;
     board = new Array(9);
     status = '';
     winner3(a, b, c) {
@@ -841,6 +843,12 @@ class tictactoe {
         this.reset();
     }
     reset() {
+        if (this.status.startsWith('DRAW')) {
+            this.round++;
+        }
+        else {
+            this.round = 0;
+        }
         this.status = '';
         for (let i = 0; i < 9; i++)
             this.board[i] = '';
@@ -848,7 +856,14 @@ class tictactoe {
         this.board[m] = 'O';
     }
     render() {
-        let h = '<table>\n<tr>';
+        let h = '';
+        if (this.round < this.rounds) {
+            h += `round ${this.round + 1}/${this.rounds}:`;
+        }
+        else {
+            h += `all ${this.rounds} rounds done!`;
+        }
+        h += '<table>\n<tr>';
         h += this.cell(0) + this.cell(1) + this.cell(2) + '\n<tr>';
         h += this.cell(3) + this.cell(4) + this.cell(5) + '\n<tr>';
         h += this.cell(6) + this.cell(7) + this.cell(8) + '\n<tr>';
@@ -866,6 +881,8 @@ class tictactoe {
         return `<td id=cell${i}>${s}</td>`;
     }
     click(i) {
+        if (this.round == this.rounds)
+            return;
         if (this.status != '') {
             this.reset();
             this.render();
@@ -895,8 +912,12 @@ class tictactoe {
                 this.status = 'O WON! /o\\';
             if (this.extractResult('O', 'X') == tttResult.draw)
                 this.status = 'DRAW \\o/';
-            if (this.status.startsWith('DRAW'))
-                winstate();
+            if (this.status.startsWith('DRAW')) {
+                if (this.round == this.rounds - 1) {
+                    this.round++;
+                    winstate();
+                }
+            }
             this.render();
         }, 2000);
     }
