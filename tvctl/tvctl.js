@@ -919,7 +919,7 @@ class tictactoe {
                 }
             }
             this.render();
-        }, 2000);
+        }, 500);
     }
 }
 challenge = new tictactoe();

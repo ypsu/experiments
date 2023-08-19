@@ -880,7 +880,7 @@ class tictactoe {
         }
       }
       this.render()
-    }, 2000)
+    }, 500)
   }
 }
 
