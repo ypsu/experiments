@@ -820,8 +820,6 @@ class tictactoe {
     }
     this.status = ''
     for (let i = 0; i < 9; i++) this.board[i] = ''
-    let [r, m] = this.computeMove('O', 'X')
-    this.board[m] = 'O'
   }
 
   render() {
@@ -860,7 +858,7 @@ class tictactoe {
     for (let i = 0; i < 9; i++) {
       if (this.board[i] == '') emptycnt++
     }
-    if (emptycnt % 2 == 1) {
+    if (emptycnt % 2 == 0) {
       // ignore click, wait for the bot to move instead.
       return
     }
