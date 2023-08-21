@@ -807,6 +807,8 @@ class tictactoe {
   }
 
   init() {
+    this.round = 0
+    this.status = ''
     this.reset()
   }
 

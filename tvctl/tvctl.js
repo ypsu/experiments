@@ -840,6 +840,8 @@ class tictactoe {
         return [tttResult.unknown, -1];
     }
     init() {
+        this.round = 0;
+        this.status = '';
         this.reset();
     }
     reset() {
