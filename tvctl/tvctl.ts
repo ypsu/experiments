@@ -1,6 +1,7 @@
 declare var hchallenge: HTMLElement, hcorrectmsg: HTMLElement, hpasscode: HTMLElement
 declare var hcanvas: HTMLCanvasElement, hnote: HTMLElement
 declare var shortwords: Array < string > ;
+declare var emojis: Map < string, string > ;
 
 let currentLevel = 0
 
@@ -648,53 +649,81 @@ class colorNBack {
 }
 
 class wordsearch {
-  n = 7
+  n = 7 // grid size
+  k = 3 // number of words to find
   round = 0
-  rounds = 3
+  rounds = 1
   grid = ['']
-  dr = [-1, -1, +0, +1, +1, +1, +0, -1]
-  dc = [+0, +1, +1, +1, +0, -1, -1, -1]
-  clicked = [0]
+  selection: string[] = []
+  done = new Map < string, boolean > ()
+  clicked: number[] = []
+  word = ''
+  emojis: string[] = []
 
   init() {
+    for (let [e, w] of emojis) {
+      if (w.length <= 5 && 3 <= w.length) this.emojis.push(e)
+    }
     this.round = 1
     this.reset()
   }
 
   reset() {
+    // initialize member variables.
     this.clicked = []
+    this.done = new Map < string, boolean > ()
+    this.word = ''
     this.grid = new Array < string > (this.n * this.n)
+    let used = new Array < boolean > (this.n * this.n)
+
+    // generate a random grid.
     for (let r = 0; r < this.n; r++) {
       for (let c = 0; c < this.n; c++) {
         this.grid[r * this.n + c] = String.fromCharCode(65 + Math.random() * 26)
+        used[r * this.n + c] = false
       }
     }
-    let s, sr, sc, d, e, er, ec
-    do {
-      s = Math.floor(Math.random() * this.n * this.n)
-      sr = Math.floor(s / this.n)
-      sc = s % this.n
-      d = Math.floor(Math.random() * 8)
-      er = sr + 3 * this.dr[d]
-      ec = sc + 3 * this.dc[d]
-      e = er * this.n + ec
-    } while (er < 0 || er >= this.n || ec < 0 || ec >= this.n)
-    this.grid[s] = 'A'
-    this.grid[s + this.dr[d] * this.n + this.dc[d]] = 'D'
-    this.grid[s + 2 * this.dr[d] * this.n + 2 * this.dc[d]] = 'A'
-    this.grid[e] = 'M'
+
+    // generate and place words to find.
+    for (let i = 0; i < this.k; i++) {
+      let emoji: string
+      do {
+        emoji = this.emojis[Math.floor(Math.random() * this.emojis.length)]
+      } while (emojis.get(emoji) as string in this.done)
+      let w = (emojis.get(emoji) as string).toUpperCase()
+      this.selection[i] = emoji
+      let wl = w.length
+      this.done.set(w, false)
+      let s, sr, sc, dr, dc, ok, j
+      do {
+        ok = false
+        s = Math.floor(Math.random() * this.n * this.n)
+        sr = Math.floor(s / this.n)
+        sc = s % this.n
+        dr = Math.floor(Math.random() * 3) - 1
+        dc = Math.floor(Math.random() * 3) - 1
+        if (dr == 0 && dc == 0) continue
+        let er = sr + (wl - 1) * dr
+        let ec = sc + (wl - 1) * dc
+        if (er < 0 || er >= this.n || ec < 0 || ec >= this.n) continue
+        // avoid crossing other words.
+        for (j = 0; j < wl; j++) {
+          if (used[(sr + j * dr) * this.n + (sc + j * dc)]) break
+        }
+        if (j == wl) ok = true
+      } while (!ok)
+      for (j = 0; j < wl; j++) {
+        let p = (sr + j * dr) * this.n + (sc + j * dc)
+        used[p] = true
+        this.grid[p] = w[j]
+      }
+    }
   }
 
   click(id: number) {
-    if (this.clicked.length == 0 && this.grid[id] != 'A') return
     if (this.clicked.length == 0) {
       this.clicked.push(id)
-      this.render()
-      return
-    }
-    if (this.grid[id] != 'ADAM' [this.clicked.length]) {
-      this.init()
-      this.render()
+      this.word = this.grid[id]
       return
     }
     let lid = this.clicked[this.clicked.length - 1]
@@ -703,39 +732,77 @@ class wordsearch {
     let lc = lid % this.n
     let r = Math.floor(id / this.n)
     let c = id % this.n
-    if (Math.abs(r - lr) >= 2 || Math.abs(c - lc) >= 2) {
-      this.init()
-      this.render()
+    let rdiff = Math.abs(r - lr)
+    let cdiff = Math.abs(c - lc)
+    if (rdiff >= 2 || cdiff >= 2 || rdiff == 0 && cdiff == 0) {
+      this.clicked = [id]
+      this.word = this.grid[id]
+      return
+    }
+    if (this.clicked.length == 1) {
+      this.clicked.push(id)
+      this.word += this.grid[id]
+      return
+    }
+    let llid = this.clicked[this.clicked.length - 2]
+    let llr = Math.floor(llid / this.n)
+    let llc = llid % this.n
+    let lrdiff = Math.abs(lr - llr)
+    let lcdiff = Math.abs(lc - llc)
+    if (rdiff != lrdiff || cdiff != lcdiff) {
+      this.clicked = [lid, id]
+      this.word = this.grid[lid] + this.grid[id]
       return
     }
     this.clicked.push(id)
-    if (this.clicked.length == 4) {
-      if (this.round == this.rounds) {
-        this.render()
-        winstate()
-        return
-      }
+    this.word += this.grid[id]
+
+    for (let [w, d] of this.done) {
+      if (d) continue
+      if (this.word.endsWith(w)) this.done.set(w, true)
+    }
+    let alldone = true
+    for (let [w, d] of this.done) {
+      if (!d) alldone = false
+    }
+    if (!alldone) return
+
+    if (this.round == this.rounds) {
+      winstate()
+      return
+    }
+    setTimeout(() => {
       this.round++
       this.reset()
-    }
-    this.render()
+      this.render()
+    }, 1000)
   }
 
   render() {
     let h = ''
-    h += `round ${this.round}/${this.rounds}\n`
+    h += `round ${this.round}/${this.rounds}\n\n`
     for (let r = 0; r < this.n; r++) {
       for (let c = 0; c < this.n; c++) {
         let id = r * this.n + c
-        let style = ''
-        if (this.clicked.includes(id)) style = ' style=color:green'
-        h += `<span id=cell${id}${style}>${this.grid[id]}</span> `
+        h += `<span id=cell${id}>${this.grid[id]}</span> `
+      }
+      if (r < this.k) {
+        let e = this.selection[r]
+        let w = (emojis.get(e) as string).toUpperCase()
+        if (this.done.get(w)) {
+          h += `   <span style=color:green>✓ ${e} ${w}</span>`
+        } else {
+          h += `     ${e} ${w}`
+        }
       }
       h += '\n'
     }
     hchallenge.innerHTML = h
     for (let i = 0; i < this.n * this.n; i++) {
-      (document.getElementById(`cell${i}`) as HTMLElement).onclick = () => this.click(i)
+      (document.getElementById(`cell${i}`) as HTMLElement).onclick = () => {
+        this.click(i)
+        this.render()
+      }
     }
   }
 }
@@ -884,5 +951,5 @@ class tictactoe {
   }
 }
 
-challenge = new tictactoe()
+challenge = new wordsearch()
 main()
