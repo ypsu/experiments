@@ -700,8 +700,8 @@ class wordsearch {
         s = Math.floor(Math.random() * this.n * this.n)
         sr = Math.floor(s / this.n)
         sc = s % this.n
-        dr = Math.floor(Math.random() * 3) - 1
-        dc = Math.floor(Math.random() * 3) - 1
+        dr = Math.floor(Math.random() * 2)
+        dc = Math.floor(Math.random() * 2)
         if (dr == 0 && dc == 0) continue
         let er = sr + (wl - 1) * dr
         let ec = sc + (wl - 1) * dc
