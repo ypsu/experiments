@@ -992,5 +992,93 @@ class tictactoe {
         }, 500);
     }
 }
-challenge = new wordsearch();
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+function runAsync(f) {
+    setTimeout(f, 0);
+}
+class gridpattern {
+    n = 4;
+    k = 4;
+    round = 0;
+    rounds = 3;
+    pattern = [0];
+    hi = 0;
+    hicolor = '';
+    async generate() {
+        this.hicolor = 'blue';
+        this.pattern = [];
+        for (let i = 0; i < this.k; i++) {
+            let rnd = Math.floor(Math.random() * this.n * this.n);
+            this.pattern.push(rnd);
+        }
+        // play the generated pattern.
+        for (let i = 0; i < this.pattern.length; i++) {
+            this.hi = this.pattern[i];
+            this.render();
+            await sleep(600);
+            this.hi = -1;
+            this.render();
+            await sleep(200);
+        }
+        this.hicolor = '';
+    }
+    init() {
+        this.round = 0;
+        this.generate();
+    }
+    render() {
+        let h = '';
+        h += `round ${this.round + 1} / ${this.rounds}\n\n`;
+        h += '<table>\n';
+        for (let r = 0; r < this.n; r++) {
+            h += '<tr>';
+            for (let c = 0; c < this.n; c++) {
+                let id = `cell${r * this.n + c}`;
+                if (r * this.n + c == this.hi) {
+                    h += `<td bgcolor=${this.hicolor} id=${id}>`;
+                }
+                else {
+                    h += `<td id=${id}>`;
+                }
+                h += '&nbsp;&nbsp;&nbsp';
+            }
+            h += '\n';
+        }
+        h += '</table>\n';
+        hchallenge.innerHTML = h;
+        for (let i = 0; i < this.n * this.n; i++) {
+            document.getElementById(`cell${i}`).onmousedown = () => {
+                this.click(i);
+                this.render();
+            };
+        }
+    }
+    click(id) {
+        if (!hcorrectmsg.hidden)
+            return;
+        if (this.hicolor != '')
+            return;
+        if (id != this.pattern[0]) {
+            this.hi = id;
+            this.hicolor = 'red';
+            setTimeout(() => {
+                this.round = 0;
+                this.generate();
+            }, 1000);
+            return;
+        }
+        this.pattern.shift();
+        if (this.pattern.length == 0) {
+            if (this.round + 1 == this.rounds) {
+                winstate();
+                return;
+            }
+            this.round++;
+            this.generate();
+        }
+    }
+}
+challenge = new gridpattern();
 main();
