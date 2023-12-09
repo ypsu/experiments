@@ -1017,7 +1017,7 @@ class gridpattern {
         for (let i = 0; i < this.pattern.length; i++) {
             this.hi = this.pattern[i];
             this.render();
-            await sleep(600);
+            await sleep(1000);
             this.hi = -1;
             this.render();
             await sleep(200);
