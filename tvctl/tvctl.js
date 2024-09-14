@@ -1000,7 +1000,7 @@ function runAsync(f) {
 }
 class gridpattern {
     n = 4;
-    k = 5;
+    k = 6;
     round = 0;
     rounds = 3;
     pattern = [0];
