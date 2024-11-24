@@ -1,47 +1,47 @@
 declare var hchallenge: HTMLElement, hcorrectmsg: HTMLElement, hpasscode: HTMLElement
 declare var hcanvas: HTMLCanvasElement, hnote: HTMLElement
-declare var shortwords: Array < string > ;
-declare var emojis: Map < string, string > ;
+declare var shortwords: Array<string>
+declare var emojis: Map<string, string>
 
 let currentLevel = 0
 
 let challenge: {
-  init ? : () => void,
-  render: () => void,
-  onkeydown ? : (ev: KeyboardEvent) => void,
-  onkeyup ? : (ev: KeyboardEvent) => void,
+  init?: () => void
+  render: () => void
+  onkeydown?: (ev: KeyboardEvent) => void
+  onkeyup?: (ev: KeyboardEvent) => void
 }
 
 function keydown(evt: KeyboardEvent) {
-  if (evt.key == 'F5') {
+  if (evt.key == "F5") {
     evt.preventDefault()
     return
   }
-  if (evt.altKey || evt.ctrlKey) return;
+  if (evt.altKey || evt.ctrlKey) return
   if (challenge.onkeydown) {
-    challenge.onkeydown(evt);
-    challenge.render();
+    challenge.onkeydown(evt)
+    challenge.render()
   }
 }
 
 function keyup(evt: KeyboardEvent) {
-  if (evt.altKey || evt.ctrlKey) return;
+  if (evt.altKey || evt.ctrlKey) return
   if (challenge.onkeyup) {
-    challenge.onkeyup(evt);
-    challenge.render();
+    challenge.onkeyup(evt)
+    challenge.render()
   }
 }
 
 async function reward() {
-  if (pass != 'PASS') {
-    let r = await fetch('/reward', {
-      method: 'POST',
+  if (pass != "PASS") {
+    let r = await fetch("/reward", {
+      method: "POST",
       body: pass,
     })
     if (!r.ok) return
   }
-  pass = ''
-  hpasscode.innerText = ''
+  pass = ""
+  hpasscode.innerText = ""
   hchallenge.hidden = true
   hcorrectmsg.hidden = true
   window.onkeydown = null
@@ -55,38 +55,38 @@ async function reward() {
   }, 2000)
 }
 
-let pass = ''
+let pass = ""
 
 function winstate() {
   hcorrectmsg.hidden = false
-  window.onkeydown = evt => {
+  window.onkeydown = (evt) => {
     if (evt.altKey || evt.ctrlKey) return
-    if (evt.key == 'Enter') reward()
-    if (evt.key == 'Backspace' && pass.length > 0) pass = pass.slice(0, -1)
+    if (evt.key == "Enter") reward()
+    if (evt.key == "Backspace" && pass.length > 0) pass = pass.slice(0, -1)
     if (evt.key.length == 1) pass += evt.key.toUpperCase()
     hpasscode.innerText = pass
-  };
+  }
 }
 
 function main() {
-  if (challenge.init) challenge.init();
+  if (challenge.init) challenge.init()
   window.onkeydown = keydown
-  window.onkeyup = evt => {
-    if (evt.key == 'F5') {
+  window.onkeyup = (evt) => {
+    if (evt.key == "F5") {
       evt.preventDefault()
       return
     }
-    if (evt.altKey || evt.ctrlKey) return;
+    if (evt.altKey || evt.ctrlKey) return
     if (challenge.onkeyup) {
-      challenge.onkeyup(evt);
-      challenge.render();
+      challenge.onkeyup(evt)
+      challenge.render()
     }
-  };
-  challenge.render();
+  }
+  challenge.render()
 }
 
 class missingnum {
-  nums = new Array < number | '?' > (9)
+  nums = new Array<number | "?">(9)
   nummask = 0
   solution = 0
   pressed = 0
@@ -100,39 +100,39 @@ class missingnum {
         let rnd: number
         do {
           rnd = Math.floor(Math.random() * 9) + 1
-        } while ((this.nummask & 1 << rnd) != 0)
+        } while ((this.nummask & (1 << rnd)) != 0)
         this.nums[r * 3 + c] = rnd
         this.nummask |= 1 << rnd
       }
     }
     this.solution = this.nums[8] as number
     this.nummask ^= 1 << this.solution
-    this.nums[8] = '?'
+    this.nums[8] = "?"
   }
 
   render() {
-    let html = ''
-    html += `level ${this.solved+1} / ${currentLevel+3}<br>`
-    html += '<table>'
+    let html = ""
+    html += `level ${this.solved + 1} / ${currentLevel + 3}<br>`
+    html += "<table>"
     for (let r = 0; r < 3; r++) {
-      html += '<tr>'
+      html += "<tr>"
       for (let c = 0; c < 3; c++) {
         if (r == 2 && c == 2) {
           if (this.pressed === this.nums[8]) {
-            html += '<td style=background-color:lightgreen>'
+            html += "<td style=background-color:lightgreen>"
           } else {
-            html += '<td>'
+            html += "<td>"
           }
         } else if (this.nums[r * 3 + c] == this.pressed) {
-          html += '<td style=background-color:orange>'
+          html += "<td style=background-color:orange>"
         } else {
-          html += '<td>'
+          html += "<td>"
         }
-        html += `${this.nums[r*3+c]}</td>`
+        html += `${this.nums[r * 3 + c]}</td>`
       }
-      html += '</tr>'
+      html += "</tr>"
     }
-    html += '</table>'
+    html += "</table>"
     hchallenge.innerHTML = html
   }
 
@@ -144,7 +144,7 @@ class missingnum {
       return
     }
     this.nums[8] = this.solution
-    if ((this.nummask & 1 << this.pressed) == 0) {
+    if ((this.nummask & (1 << this.pressed)) == 0) {
       if (this.solved + 1 == currentLevel + 3) {
         winstate()
         setTimeout(() => {
@@ -178,7 +178,7 @@ class add3 {
   failed = false
   problems = 0
   solved = 0
-  nums = new Array < number > ()
+  nums = new Array<number>()
 
   init() {
     this.failed = false
@@ -188,27 +188,27 @@ class add3 {
     for (let i = 0; i < this.problems; i++) {
       let x, y, z: number
       do {
-        [x, y, z] = [randint(7), randint(7), randint(7)]
+        ;[x, y, z] = [randint(7), randint(7), randint(7)]
       } while (x + y + z > 9)
       this.nums.push(x, y, z)
     }
   }
 
   render() {
-    let html = ''
+    let html = ""
     for (let i = 0; i < this.problems; i++) {
       let [x, y, z] = [this.nums[i * 3 + 0], this.nums[i * 3 + 1], this.nums[i * 3 + 2]]
       html += `${x} + ${y} + ${z} = `
       if (i < this.solved) {
-        html += `${x+y+z}\n`
+        html += `${x + y + z}\n`
       } else if (i == this.solved) {
         if (this.failed) {
-          html += `<span style=color:red>${x+y+z}</span>\n`
+          html += `<span style=color:red>${x + y + z}</span>\n`
         } else {
-          html += '?\n'
+          html += "?\n"
         }
       } else {
-        html += '\n'
+        html += "\n"
       }
     }
     hchallenge.innerHTML = html
@@ -236,7 +236,7 @@ class sub {
   failed = false
   problems = 0
   solved = 0
-  nums = new Array < number > ()
+  nums = new Array<number>()
 
   init() {
     this.failed = false
@@ -246,27 +246,27 @@ class sub {
     for (let i = 0; i < this.problems; i++) {
       let x, y: number
       do {
-        [x, y] = [randint(9), randint(9)]
+        ;[x, y] = [randint(9), randint(9)]
       } while (x < y)
       this.nums.push(x, y)
     }
   }
 
   render() {
-    let html = ''
+    let html = ""
     for (let i = 0; i < this.problems; i++) {
       let [x, y] = [this.nums[i * 2 + 0], this.nums[i * 2 + 1]]
       html += `${x} - ${y} = `
       if (i < this.solved) {
-        html += `${x-y}\n`
+        html += `${x - y}\n`
       } else if (i == this.solved) {
         if (this.failed) {
-          html += `<span style=color:red>${x-y}</span>\n`
+          html += `<span style=color:red>${x - y}</span>\n`
         } else {
-          html += '?\n'
+          html += "?\n"
         }
       } else {
-        html += '\n'
+        html += "\n"
       }
     }
     hchallenge.innerHTML = html
@@ -294,8 +294,8 @@ class expr {
   failed = false
   problems = 0
   solved = 0
-  nums = new Array < number > ()
-  ops = ['-', '+']
+  nums = new Array<number>()
+  ops = ["-", "+"]
 
   init() {
     this.failed = false
@@ -305,7 +305,7 @@ class expr {
     for (let i = 0; i < this.problems; i++) {
       let x, op1, y, op2, z: number
       while (true) {
-        [x, op1, y, op2, z] = [randint(9), randint(2) - 1, randint(8), randint(2) - 1, randint(9)]
+        ;[x, op1, y, op2, z] = [randint(9), randint(2) - 1, randint(8), randint(2) - 1, randint(9)]
         let s = 0
         if (op1 == 0) s = x - y
         if (op1 == 1) s = x + y
@@ -321,7 +321,7 @@ class expr {
   }
 
   render() {
-    let html = ''
+    let html = ""
     for (let i = 0; i < this.problems; i++) {
       let [x, op1, y, op2, z, a] = [
         this.nums[i * 6 + 0],
@@ -338,10 +338,10 @@ class expr {
         if (this.failed) {
           html += `<span style=color:red>${a}</span>\n`
         } else {
-          html += '?\n'
+          html += "?\n"
         }
       } else {
-        html += '\n'
+        html += "\n"
       }
     }
     hchallenge.innerHTML = html
@@ -366,25 +366,25 @@ class expr {
 }
 
 class typefast {
-  words = new Array < string > ()
+  words = new Array<string>()
   solved = 0
   currentOK = 0
-  currentError = ''
+  currentError = ""
   resetTimer = 0
 
   init() {
     let n = 4 + currentLevel
     this.solved = 0
     this.currentOK = 0
-    this.currentError = ''
-    this.words = new Array < string > (n)
+    this.currentError = ""
+    this.words = new Array<string>(n)
     for (let i = 0; i < n; i++) {
       this.words[i] = shortwords[Math.floor(Math.random() * shortwords.length)]
     }
   }
 
   render() {
-    let html = ''
+    let html = ""
     for (let i = 0; i < this.words.length; i++) {
       if (i < this.solved) {
         html += `  <span style=color:green>${this.words[i]}</span>\n`
@@ -399,13 +399,13 @@ class typefast {
 
   resetword() {
     this.currentOK = 0
-    this.currentError = ''
+    this.currentError = ""
     this.render()
   }
 
   onkeyup(ev: KeyboardEvent) {
     if (ev.key.length != 1) return
-    if (this.currentError != '' || this.solved == this.words.length) return
+    if (this.currentError != "" || this.solved == this.words.length) return
     let k = ev.key.toUpperCase()
     clearTimeout(this.resetTimer)
 
@@ -421,7 +421,7 @@ class typefast {
     if (this.currentOK == this.words[this.solved].length) {
       this.solved++
       this.currentOK = 0
-      this.currentError = ''
+      this.currentError = ""
       if (this.solved == this.words.length) winstate()
     } else {
       this.resetTimer = setTimeout(() => this.resetword(), 1000)
@@ -441,8 +441,8 @@ class blindfind {
   ctx: CanvasRenderingContext2D
 
   constructor() {
-    hchallenge.innerHTML = '<pre id=hnote></pre><canvas id=hcanvas width=1800 height=700 style="border:1px solid">';
-    this.ctx = hcanvas.getContext('2d') as CanvasRenderingContext2D
+    hchallenge.innerHTML = '<pre id=hnote></pre><canvas id=hcanvas width=1800 height=700 style="border:1px solid">'
+    this.ctx = hcanvas.getContext("2d") as CanvasRenderingContext2D
   }
 
   init() {
@@ -453,18 +453,18 @@ class blindfind {
 
   onkeydown(ev: KeyboardEvent) {
     let olddown = this.down
-    if (ev.code == 'ArrowLeft') this.down |= 1
-    if (ev.code == 'ArrowRight') this.down |= 2
-    if (ev.code == 'ArrowUp') this.down |= 4
-    if (ev.code == 'ArrowDown') this.down |= 8
+    if (ev.code == "ArrowLeft") this.down |= 1
+    if (ev.code == "ArrowRight") this.down |= 2
+    if (ev.code == "ArrowUp") this.down |= 4
+    if (ev.code == "ArrowDown") this.down |= 8
     if (olddown == 0 && this.down > 0) this.simulate()
   }
 
   onkeyup(ev: KeyboardEvent) {
-    if (ev.code == 'ArrowLeft') this.down &= ~1
-    if (ev.code == 'ArrowRight') this.down &= ~2
-    if (ev.code == 'ArrowUp') this.down &= ~4
-    if (ev.code == 'ArrowDown') this.down &= ~8
+    if (ev.code == "ArrowLeft") this.down &= ~1
+    if (ev.code == "ArrowRight") this.down &= ~2
+    if (ev.code == "ArrowUp") this.down &= ~4
+    if (ev.code == "ArrowDown") this.down &= ~8
   }
 
   render() {
@@ -472,22 +472,22 @@ class blindfind {
     let newd = Math.hypot(this.dst[0] - this.pos[0], this.dst[1] - this.pos[1])
     this.ctx.beginPath()
     this.ctx.arc(this.oldpos[0], this.oldpos[1], this.r + 1, 0, 2 * Math.PI)
-    this.ctx.fillStyle = '#fff'
+    this.ctx.fillStyle = "#fff"
     this.ctx.fill()
     this.oldpos[0] = this.pos[0]
     this.oldpos[1] = this.pos[1]
     this.ctx.beginPath()
     this.ctx.arc(this.pos[0], this.pos[1], this.r, 0, 2 * Math.PI)
-    this.ctx.fillStyle = '#000'
+    this.ctx.fillStyle = "#000"
     if (this.color) {
-      if (newd < oldd) this.ctx.fillStyle = '#0f0'
-      if (newd > oldd) this.ctx.fillStyle = '#f00'
+      if (newd < oldd) this.ctx.fillStyle = "#0f0"
+      if (newd > oldd) this.ctx.fillStyle = "#f00"
     }
     this.ctx.fill()
     if (hcorrectmsg.hidden) {
-      hnote.innerText = `round ${this.round}/${this.rounds}: ${Math.round(Math.hypot(this.dst[0]-this.pos[0], this.dst[1]-this.pos[1]))}`
+      hnote.innerText = `round ${this.round}/${this.rounds}: ${Math.round(Math.hypot(this.dst[0] - this.pos[0], this.dst[1] - this.pos[1]))}`
     } else {
-      hnote.innerText = 'all done!'
+      hnote.innerText = "all done!"
     }
   }
 
@@ -508,13 +508,13 @@ class blindfind {
       return
     }
     if (this.down > 0) {
-      window.requestAnimationFrame(() => this.simulate());
+      window.requestAnimationFrame(() => this.simulate())
     }
   }
 }
 
 class compare {
-  nums = new Array < number > ()
+  nums = new Array<number>()
   ok = 0
   failed = false
 
@@ -522,7 +522,7 @@ class compare {
     let n = 6 + currentLevel
     this.ok = 0
     this.failed = false
-    this.nums = new Array < number > ()
+    this.nums = new Array<number>()
     while (this.nums.length < 2 * n) {
       this.nums.push(Math.floor(Math.random() * 300))
       let k = this.nums.length - 2
@@ -531,37 +531,37 @@ class compare {
   }
 
   render() {
-    let html = ''
+    let html = ""
     for (let i = 0; i < this.nums.length / 2; i++) {
-      html += `${this.nums[2*i]} `
+      html += `${this.nums[2 * i]} `
       if (i == this.ok && !this.failed) {
-        html += '?'
+        html += "?"
       } else {
-        let color = 'white'
+        let color = "white"
         if (i < this.ok) {
-          color = 'green'
+          color = "green"
         } else if (i == this.ok && this.failed) {
-          color = 'red'
+          color = "red"
         }
         html += `<span style=color:${color}>`
-        html += this.nums[2 * i] < this.nums[2 * i + 1] ? '<' : '>'
-        html += '</span>'
+        html += this.nums[2 * i] < this.nums[2 * i + 1] ? "<" : ">"
+        html += "</span>"
       }
-      html += ` ${this.nums[2*i+1]}\n`
+      html += ` ${this.nums[2 * i + 1]}\n`
     }
     hchallenge.innerHTML = html
   }
 
   onkeyup(ev: KeyboardEvent) {
-    if (ev.key != '1' && ev.key != '2') return
+    if (ev.key != "1" && ev.key != "2") return
     if (this.failed) return this.init()
     let k = this.ok
-    if ((this.nums[2 * k] < this.nums[2 * k + 1]) == (ev.key == '1')) {
+    if (this.nums[2 * k] < this.nums[2 * k + 1] == (ev.key == "1")) {
       this.ok++
     } else {
       this.failed = true
     }
-    if (this.ok == this.nums.length / 2) winstate();
+    if (this.ok == this.nums.length / 2) winstate()
   }
 }
 
@@ -571,17 +571,7 @@ class colorNBack {
   solved = 0
   nums = [0]
   wrong = 0
-  colors = [
-    '#000',
-    '#22f',
-    '#080',
-    '#0cc',
-    '#f80',
-    '#f00',
-    '#f0f',
-    '#808',
-    '#cc0',
-  ]
+  colors = ["#000", "#22f", "#080", "#0cc", "#f80", "#f00", "#f0f", "#808", "#cc0"]
 
   init() {
     this.k = 9 + currentLevel
@@ -592,7 +582,7 @@ class colorNBack {
   }
 
   render() {
-    let h = ''
+    let h = ""
     for (let i = 0; i < this.solved; i++) {
       let c = this.colors[this.nums[i]]
       h += `<span style=color:${c}>■</span> `
@@ -600,36 +590,36 @@ class colorNBack {
     if (this.wrong != 0) {
       let c = this.colors[this.nums[this.solved]]
       h += `<span style=color:${c}>■</span> `
-      for (let i = 1; i < this.n && i + this.solved < this.k; i++) h += '_ '
+      for (let i = 1; i < this.n && i + this.solved < this.k; i++) h += "_ "
     } else if (this.solved == 0) {
       for (let i = 0; i < this.n; i++) {
         let c = this.colors[this.nums[i]]
         h += `<span style=color:${c}>■</span> `
       }
     } else if (this.solved < this.k) {
-      for (let i = 0; i < this.n && i + this.solved < this.k; i++) h += '_ '
+      for (let i = 0; i < this.n && i + this.solved < this.k; i++) h += "_ "
     }
     if (this.solved + this.n < this.k) {
       let c = this.colors[this.nums[this.solved + this.n]]
       h += `<span style=color:${c}>■</span> `
     }
-    for (let i = this.solved + this.n + 1; i < this.k; i++) h += '_ '
+    for (let i = this.solved + this.n + 1; i < this.k; i++) h += "_ "
     if (this.solved < this.k) {
-      h += '\n'
-      for (let i = 0; i < this.solved; i++) h += '  '
+      h += "\n"
+      for (let i = 0; i < this.solved; i++) h += "  "
       if (this.wrong != 0) {
-        h += 'x'
+        h += "x"
       } else {
-        h += '^'
+        h += "^"
       }
     }
-    h += '\n\n'
+    h += "\n\n"
     for (let i = 0; i < this.colors.length; i++) {
       h += `<span style=color:${this.colors[i]} id=hColor${i}>■</span> `
     }
     hchallenge.innerHTML = h
     for (let i = 0; i < this.colors.length; i++) {
-      (document.getElementById(`hColor${i}`) as HTMLElement).onclick = () => this.click(i)
+      ;(document.getElementById(`hColor${i}`) as HTMLElement).onclick = () => this.click(i)
     }
   }
 
@@ -653,11 +643,11 @@ class wordsearch {
   k = 3 // number of words to find
   round = 0
   rounds = 1
-  grid = ['']
+  grid = [""]
   selection: string[] = []
-  done = new Map < string, boolean > ()
+  done = new Map<string, boolean>()
   clicked: number[] = []
-  word = ''
+  word = ""
   emojis: string[] = []
 
   init() {
@@ -671,10 +661,10 @@ class wordsearch {
   reset() {
     // initialize member variables.
     this.clicked = []
-    this.done = new Map < string, boolean > ()
-    this.word = ''
-    this.grid = new Array < string > (this.n * this.n)
-    let used = new Array < boolean > (this.n * this.n)
+    this.done = new Map<string, boolean>()
+    this.word = ""
+    this.grid = new Array<string>(this.n * this.n)
+    let used = new Array<boolean>(this.n * this.n)
 
     // generate a random grid.
     for (let r = 0; r < this.n; r++) {
@@ -689,7 +679,7 @@ class wordsearch {
       let emoji: string
       do {
         emoji = this.emojis[Math.floor(Math.random() * this.emojis.length)]
-      } while (emojis.get(emoji) as string in this.done)
+      } while ((emojis.get(emoji) as string) in this.done)
       let w = (emojis.get(emoji) as string).toUpperCase()
       this.selection[i] = emoji
       let wl = w.length
@@ -734,7 +724,7 @@ class wordsearch {
     let c = id % this.n
     let rdiff = Math.abs(r - lr)
     let cdiff = Math.abs(c - lc)
-    if (rdiff >= 2 || cdiff >= 2 || rdiff == 0 && cdiff == 0) {
+    if (rdiff >= 2 || cdiff >= 2 || (rdiff == 0 && cdiff == 0)) {
       this.clicked = [id]
       this.word = this.grid[id]
       return
@@ -779,7 +769,7 @@ class wordsearch {
   }
 
   render() {
-    let h = ''
+    let h = ""
     h += `round ${this.round}/${this.rounds}\n\n`
     for (let r = 0; r < this.n; r++) {
       for (let c = 0; c < this.n; c++) {
@@ -795,11 +785,11 @@ class wordsearch {
           h += `     ${e} ${w}`
         }
       }
-      h += '\n'
+      h += "\n"
     }
     hchallenge.innerHTML = h
     for (let i = 0; i < this.n * this.n; i++) {
-      (document.getElementById(`cell${i}`) as HTMLElement).onclick = () => {
+      ;(document.getElementById(`cell${i}`) as HTMLElement).onclick = () => {
         this.click(i)
         this.render()
       }
@@ -811,21 +801,21 @@ enum tttResult {
   unknown,
   lose,
   draw,
-  win
+  win,
 }
 class tictactoe {
   round = 0
   rounds = 3
-  board = new Array < string > (9)
-  status = ''
+  board = new Array<string>(9)
+  status = ""
 
   winner3(a: string, b: string, c: string): string {
-    if (a != b || a != c) return ''
+    if (a != b || a != c) return ""
     return a
   }
 
   winner9(): string {
-    let p = ''
+    let p = ""
     p += this.winner3(this.board[0], this.board[1], this.board[2])
     p += this.winner3(this.board[3], this.board[4], this.board[5])
     p += this.winner3(this.board[6], this.board[7], this.board[8])
@@ -834,11 +824,11 @@ class tictactoe {
     p += this.winner3(this.board[2], this.board[5], this.board[8])
     p += this.winner3(this.board[0], this.board[4], this.board[8])
     p += this.winner3(this.board[2], this.board[4], this.board[6])
-    if (p == '') return ''
+    if (p == "") return ""
     return p.slice(0, 1)
   }
 
-  pickRandomly(a: Array < number > ): number {
+  pickRandomly(a: Array<number>): number {
     return a[Math.floor(Math.random() * a.length)]
   }
 
@@ -847,7 +837,7 @@ class tictactoe {
     if (w == p) return tttResult.win
     if (w == n) return tttResult.lose
     for (let i = 0; i < 9; i++) {
-      if (this.board[i] == '') return tttResult.unknown
+      if (this.board[i] == "") return tttResult.unknown
     }
     return tttResult.draw
   }
@@ -859,13 +849,13 @@ class tictactoe {
     let drawMoves = []
     let loseMoves = []
     for (let i = 0; i < 9; i++) {
-      if (this.board[i] != '') continue
+      if (this.board[i] != "") continue
       this.board[i] = p
       let [r, m] = this.computeMove(n, p)
       if (r == tttResult.win) loseMoves.push(i)
       if (r == tttResult.draw) drawMoves.push(i)
       if (r == tttResult.lose) winMoves.push(i)
-      this.board[i] = ''
+      this.board[i] = ""
     }
     if (winMoves.length > 0) return [tttResult.win, this.pickRandomly(winMoves)]
     if (drawMoves.length > 0) return [tttResult.draw, this.pickRandomly(drawMoves)]
@@ -875,72 +865,72 @@ class tictactoe {
 
   init() {
     this.round = 0
-    this.status = ''
+    this.status = ""
     this.reset()
   }
 
   reset() {
-    if (this.status.startsWith('DRAW')) {
+    if (this.status.startsWith("DRAW")) {
       this.round++
     } else {
       this.round = 0
     }
-    this.status = ''
-    for (let i = 0; i < 9; i++) this.board[i] = ''
+    this.status = ""
+    for (let i = 0; i < 9; i++) this.board[i] = ""
   }
 
   render() {
-    let h = ''
+    let h = ""
     if (this.round < this.rounds) {
-      h += `round ${this.round+1}/${this.rounds}:`
+      h += `round ${this.round + 1}/${this.rounds}:`
     } else {
       h += `all ${this.rounds} rounds done!`
     }
-    h += '<table>\n<tr>'
-    h += this.cell(0) + this.cell(1) + this.cell(2) + '\n<tr>'
-    h += this.cell(3) + this.cell(4) + this.cell(5) + '\n<tr>'
-    h += this.cell(6) + this.cell(7) + this.cell(8) + '\n<tr>'
-    h += '</table>\n'
+    h += "<table>\n<tr>"
+    h += this.cell(0) + this.cell(1) + this.cell(2) + "\n<tr>"
+    h += this.cell(3) + this.cell(4) + this.cell(5) + "\n<tr>"
+    h += this.cell(6) + this.cell(7) + this.cell(8) + "\n<tr>"
+    h += "</table>\n"
     h += this.status
     hchallenge.innerHTML = h
     for (let i = 0; i < 9; i++) {
-      (document.getElementById(`cell${i}`) as HTMLElement).onclick = () => this.click(i)
+      ;(document.getElementById(`cell${i}`) as HTMLElement).onclick = () => this.click(i)
     }
   }
 
   cell(i: number) {
     let s = this.board[i]
-    if (s == '') s = ' '
+    if (s == "") s = " "
     return `<td id=cell${i}>${s}</td>`
   }
 
   click(i: number) {
     if (this.round == this.rounds) return
-    if (this.status != '') {
+    if (this.status != "") {
       this.reset()
       this.render()
       return
     }
     let emptycnt = 0
     for (let i = 0; i < 9; i++) {
-      if (this.board[i] == '') emptycnt++
+      if (this.board[i] == "") emptycnt++
     }
     if (emptycnt % 2 == 0) {
       // ignore click, wait for the bot to move instead.
       return
     }
-    if (this.board[i] != '') return
-    this.board[i] = 'X'
-    if (this.extractResult('X', 'O') == tttResult.win) this.status = 'X WON! \\o/'
-    if (this.extractResult('O', 'X') == tttResult.draw) this.status = 'DRAW \\o/'
+    if (this.board[i] != "") return
+    this.board[i] = "X"
+    if (this.extractResult("X", "O") == tttResult.win) this.status = "X WON! \\o/"
+    if (this.extractResult("O", "X") == tttResult.draw) this.status = "DRAW \\o/"
     this.render()
 
     setTimeout(() => {
-      let [r, m] = this.computeMove('O', 'X')
-      this.board[m] = 'O'
-      if (this.extractResult('O', 'X') == tttResult.win) this.status = 'O WON! /o\\'
-      if (this.extractResult('O', 'X') == tttResult.draw) this.status = 'DRAW \\o/'
-      if (this.status.startsWith('DRAW')) {
+      let [r, m] = this.computeMove("O", "X")
+      this.board[m] = "O"
+      if (this.extractResult("O", "X") == tttResult.win) this.status = "O WON! /o\\"
+      if (this.extractResult("O", "X") == tttResult.draw) this.status = "DRAW \\o/"
+      if (this.status.startsWith("DRAW")) {
         if (this.round == this.rounds - 1) {
           this.round++
           winstate()
@@ -952,7 +942,7 @@ class tictactoe {
 }
 
 function sleep(ms: number) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
 function runAsync(f: any) {
@@ -966,10 +956,10 @@ class gridpattern {
   rounds = 3
   pattern = [0]
   hi = 0
-  hicolor = ''
+  hicolor = ""
 
   async generate() {
-    this.hicolor = 'blue'
+    this.hicolor = "blue"
     this.pattern = []
     for (let i = 0; i < this.k; i++) {
       let rnd = Math.floor(Math.random() * this.n * this.n)
@@ -985,7 +975,7 @@ class gridpattern {
       this.render()
       await sleep(200)
     }
-    this.hicolor = ''
+    this.hicolor = ""
   }
 
   init() {
@@ -994,28 +984,28 @@ class gridpattern {
   }
 
   render() {
-    let h = ''
-    h += `round ${this.round+1} / ${this.rounds}\n\n`
-    h += '<table>\n'
+    let h = ""
+    h += `round ${this.round + 1} / ${this.rounds}\n\n`
+    h += "<table>\n"
 
     for (let r = 0; r < this.n; r++) {
-      h += '<tr>'
+      h += "<tr>"
       for (let c = 0; c < this.n; c++) {
-        let id = `cell${r*this.n + c}`
+        let id = `cell${r * this.n + c}`
         if (r * this.n + c == this.hi) {
           h += `<td bgcolor=${this.hicolor} id=${id}>`
         } else {
           h += `<td id=${id}>`
         }
-        h += '&nbsp;&nbsp;&nbsp'
+        h += "&nbsp;&nbsp;&nbsp"
       }
-      h += '\n'
+      h += "\n"
     }
 
-    h += '</table>\n'
+    h += "</table>\n"
     hchallenge.innerHTML = h
     for (let i = 0; i < this.n * this.n; i++) {
-      (document.getElementById(`cell${i}`) as HTMLElement).onmousedown = () => {
+      ;(document.getElementById(`cell${i}`) as HTMLElement).onmousedown = () => {
         this.click(i)
         this.render()
       }
@@ -1024,11 +1014,11 @@ class gridpattern {
 
   click(id: number) {
     if (!hcorrectmsg.hidden) return
-    if (this.hicolor != '') return
+    if (this.hicolor != "") return
 
     if (id != this.pattern[0]) {
       this.hi = id
-      this.hicolor = 'red'
+      this.hicolor = "red"
       setTimeout(() => {
         this.round = 0
         this.generate()
