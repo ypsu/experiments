@@ -52,6 +52,8 @@ function winstate() {
     window.onkeydown = (evt) => {
         if (evt.altKey || evt.ctrlKey)
             return;
+        if (evt.key == " ")
+            return;
         if (evt.key == "Enter")
             reward();
         if (evt.key == "Backspace" && pass.length > 0)
@@ -62,8 +64,6 @@ function winstate() {
     };
 }
 function main() {
-    if (challenge.init)
-        challenge.init();
     window.onkeydown = keydown;
     window.onkeyup = (evt) => {
         if (evt.key == "F5") {
@@ -77,7 +77,15 @@ function main() {
             challenge.render();
         }
     };
+    if (challenge.init)
+        challenge.init();
     challenge.render();
+}
+class empty {
+    init() {
+        winstate();
+    }
+    render() { }
 }
 class missingnum {
     nums = new Array(9);
@@ -1077,5 +1085,5 @@ class gridpattern {
         }
     }
 }
-challenge = new gridpattern();
+challenge = new empty();
 main();

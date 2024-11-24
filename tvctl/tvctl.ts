@@ -61,6 +61,7 @@ function winstate() {
   hcorrectmsg.hidden = false
   window.onkeydown = (evt) => {
     if (evt.altKey || evt.ctrlKey) return
+    if (evt.key == " ") return
     if (evt.key == "Enter") reward()
     if (evt.key == "Backspace" && pass.length > 0) pass = pass.slice(0, -1)
     if (evt.key.length == 1) pass += evt.key.toUpperCase()
@@ -69,7 +70,6 @@ function winstate() {
 }
 
 function main() {
-  if (challenge.init) challenge.init()
   window.onkeydown = keydown
   window.onkeyup = (evt) => {
     if (evt.key == "F5") {
@@ -82,7 +82,16 @@ function main() {
       challenge.render()
     }
   }
+  if (challenge.init) challenge.init()
   challenge.render()
+}
+
+class empty {
+  init() {
+    winstate()
+  }
+
+  render() {}
 }
 
 class missingnum {
@@ -1038,5 +1047,5 @@ class gridpattern {
   }
 }
 
-challenge = new gridpattern()
+challenge = new empty()
 main()
