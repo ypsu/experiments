@@ -187,6 +187,7 @@ class add3 {
   failed = false
   problems = 0
   solved = 0
+  input = 0
   nums = new Array<number>()
 
   init() {
@@ -197,8 +198,8 @@ class add3 {
     for (let i = 0; i < this.problems; i++) {
       let x, y, z: number
       do {
-        ;[x, y, z] = [randint(7), randint(7), randint(7)]
-      } while (x + y + z > 9)
+        ;[x, y, z] = [randint(9), randint(9), randint(9)]
+      } while (x + y + z <= 9 || (i % 2 == 1 && x + y <= 9))
       this.nums.push(x, y, z)
     }
   }
@@ -207,12 +208,18 @@ class add3 {
     let html = ""
     for (let i = 0; i < this.problems; i++) {
       let [x, y, z] = [this.nums[i * 3 + 0], this.nums[i * 3 + 1], this.nums[i * 3 + 2]]
-      html += `${x} + ${y} + ${z} = `
+      if (i % 2 == 0) {
+        html += `${x} + ${y} + ${z} = `
+      } else {
+        html += `${x + y} + ${z} = `
+      }
       if (i < this.solved) {
         html += `${x + y + z}\n`
       } else if (i == this.solved) {
         if (this.failed) {
-          html += `<span style=color:red>${x + y + z}</span>\n`
+          html += `<span style=color:red>${this.input}</span> <span style=color:green>${x + y + z}</span>\n`
+        } else if (this.input > 0) {
+          html += `${this.input}?\n`
         } else {
           html += "?\n"
         }
@@ -226,17 +233,21 @@ class add3 {
   onkeyup(ev: KeyboardEvent) {
     if (this.failed) return
     let num = parseInt(ev.key)
-    if (!(1 <= num && num <= 9)) return
+    if (!(0 <= num && num <= 9)) return
     let expected = this.nums[this.solved * 3] + this.nums[this.solved * 3 + 1] + this.nums[this.solved * 3 + 2]
-    if (num != expected) {
+    if (this.input < 10) this.input = this.input * 10 + num
+    if (this.input < 10) return
+    if (this.input != expected) {
       this.failed = true
       setTimeout(() => {
+        this.input = 0
         this.init()
         this.render()
       }, 2000)
       return
     }
     this.solved++
+    this.input = 0
     if (this.solved == this.problems) winstate()
   }
 }
@@ -1047,5 +1058,5 @@ class gridpattern {
   }
 }
 
-challenge = new empty()
+challenge = new add3()
 main()
