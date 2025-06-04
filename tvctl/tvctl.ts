@@ -252,6 +252,76 @@ class add3 {
   }
 }
 
+class add2 {
+  failed = false
+  problems = 0
+  solved = 0
+  input = 0
+  nums = new Array<number>()
+
+  init() {
+    this.failed = false
+    this.problems = 4 + currentLevel
+    this.solved = 0
+    this.nums = []
+    for (let i = 0; i < this.problems; i++) {
+      let x, y, s: number
+      do {
+        ;[x, y] = [randint(30), randint(80)]
+        s = x + 10 + y - 40
+      } while ((-10 < y - 40 && y - 40 < 10) || s < 10 || 40 < s)
+      this.nums.push(x, y)
+    }
+  }
+
+  render() {
+    let html = ""
+    for (let i = 0; i < this.problems; i++) {
+      let [x, y] = [this.nums[i * 2 + 0], this.nums[i * 2 + 1]]
+      if (y - 40 < 0) {
+        html += `${x + 10} - ${40 - y} = `
+      } else {
+        html += `${x + 10} + ${y - 40} = `
+      }
+      if (i < this.solved) {
+        html += `${x + 10 + y - 40}\n`
+      } else if (i == this.solved) {
+        if (this.failed) {
+          html += `<span style=color:red>${this.input}</span> <span style=color:green>${x + 10 + y - 40}</span>\n`
+        } else if (this.input > 0) {
+          html += `${this.input}?\n`
+        } else {
+          html += "?\n"
+        }
+      } else {
+        html += "\n"
+      }
+    }
+    hchallenge.innerHTML = html
+  }
+
+  onkeyup(ev: KeyboardEvent) {
+    if (this.failed) return
+    let num = parseInt(ev.key)
+    if (!(0 <= num && num <= 9)) return
+    let expected = this.nums[this.solved * 2] + 10 + this.nums[this.solved * 2 + 1] - 40
+    if (this.input < 10) this.input = this.input * 10 + num
+    if (this.input < 10) return
+    if (this.input != expected) {
+      this.failed = true
+      setTimeout(() => {
+        this.input = 0
+        this.init()
+        this.render()
+      }, 7000)
+      return
+    }
+    this.solved++
+    this.input = 0
+    if (this.solved == this.problems) winstate()
+  }
+}
+
 class sub {
   failed = false
   problems = 0
@@ -1058,5 +1128,5 @@ class gridpattern {
   }
 }
 
-challenge = new add3()
+challenge = new add2()
 main()
