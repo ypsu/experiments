@@ -322,6 +322,68 @@ class add2 {
   }
 }
 
+class div {
+  failed = false
+  problems = 0
+  solved = 0
+  input = 0
+  nums = new Array<number>()
+
+  init() {
+    this.failed = false
+    this.problems = 5 + currentLevel
+    this.solved = 0
+    this.nums = []
+    for (let i = 0; i < this.problems; i++) {
+      let x, y: number
+      do {
+        ;[x, y] = [randint(10), randint(10)]
+      } while (!(x == 2 || x == 4) || y <= 2 || y >= 10)
+      this.nums.push(x, y)
+    }
+  }
+
+  render() {
+    let html = ""
+    for (let i = 0; i < this.problems; i++) {
+      let [x, y] = [this.nums[i * 2 + 0], this.nums[i * 2 + 1]]
+      html += `${x * y} : ${x} = `
+      if (i < this.solved) {
+        html += `${y}\n`
+      } else if (i == this.solved) {
+        if (this.failed) {
+          html += `<span style=color:red>${this.input}</span> <span style=color:green>${y}</span>\n`
+        } else {
+          html += "?\n"
+        }
+      } else {
+        html += "\n"
+      }
+    }
+    hchallenge.innerHTML = html
+  }
+
+  onkeyup(ev: KeyboardEvent) {
+    if (this.failed) return
+    let num = parseInt(ev.key)
+    if (!(0 <= num && num <= 9)) return
+    let expected = this.nums[this.solved * 2 + 1]
+    this.input = num
+    if (this.input != expected) {
+      this.failed = true
+      setTimeout(() => {
+        this.input = 0
+        this.init()
+        this.render()
+      }, 7000)
+      return
+    }
+    this.solved++
+    this.input = 0
+    if (this.solved == this.problems) winstate()
+  }
+}
+
 class sub {
   failed = false
   problems = 0
@@ -1128,5 +1190,5 @@ class gridpattern {
   }
 }
 
-challenge = new add2()
+challenge = new div()
 main()
