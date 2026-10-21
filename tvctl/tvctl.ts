@@ -1190,5 +1190,5 @@ class gridpattern {
   }
 }
 
-challenge = new div()
+challenge = new empty()
 main()
