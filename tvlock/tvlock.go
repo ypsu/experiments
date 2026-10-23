@@ -49,7 +49,7 @@ func muldiv() error {
 			time.Sleep(4 * time.Second)
 			return fmt.Errorf("WA")
 		} else if kind == 1 && r != a {
-			fmt.Printf("WRONG! Correct: %d\n", a/b)
+			fmt.Printf("WRONG! Correct: %d\n", a)
 			time.Sleep(4 * time.Second)
 			return fmt.Errorf("WA")
 		}
